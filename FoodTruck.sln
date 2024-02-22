@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34511.98
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{4F46AE7F-B36D-4951-BAF8-D87221D93DD1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{2E6DB7E4-C498-40F5-9907-6E9FE3ABDEEF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{F9C7603D-8F68-40A4-B94F-D5C44FF25534}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodTruck.Domain", "Core\FoodTruck.Domain\FoodTruck.Domain.csproj", "{6B82E2DB-4ECC-4AB9-9A65-B1FA37CAEA3E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodTruck.Application", "Core\FoodTruck.Application\FoodTruck.Application.csproj", "{7FE80D42-56D0-47ED-AF6D-15CA2AE6B917}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodTruck.WebUI", "Frontend\FoodTruck.WebUI\FoodTruck.WebUI.csproj", "{DD1182F3-C25D-4A7C-9AEA-1F8C3D0C3655}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodTruck.Dto", "FoodTruck.Dto\FoodTruck.Dto.csproj", "{F5BB46AD-F1DC-4728-A682-FBBA8ECA84CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodTruck.WebApi", "FoodTruck.WebApi\FoodTruck.WebApi.csproj", "{02F9DE6C-B608-48E9-A5F2-8F5AF913E68C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B82E2DB-4ECC-4AB9-9A65-B1FA37CAEA3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B82E2DB-4ECC-4AB9-9A65-B1FA37CAEA3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B82E2DB-4ECC-4AB9-9A65-B1FA37CAEA3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B82E2DB-4ECC-4AB9-9A65-B1FA37CAEA3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE80D42-56D0-47ED-AF6D-15CA2AE6B917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE80D42-56D0-47ED-AF6D-15CA2AE6B917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE80D42-56D0-47ED-AF6D-15CA2AE6B917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE80D42-56D0-47ED-AF6D-15CA2AE6B917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD1182F3-C25D-4A7C-9AEA-1F8C3D0C3655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD1182F3-C25D-4A7C-9AEA-1F8C3D0C3655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD1182F3-C25D-4A7C-9AEA-1F8C3D0C3655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD1182F3-C25D-4A7C-9AEA-1F8C3D0C3655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5BB46AD-F1DC-4728-A682-FBBA8ECA84CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5BB46AD-F1DC-4728-A682-FBBA8ECA84CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5BB46AD-F1DC-4728-A682-FBBA8ECA84CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5BB46AD-F1DC-4728-A682-FBBA8ECA84CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02F9DE6C-B608-48E9-A5F2-8F5AF913E68C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02F9DE6C-B608-48E9-A5F2-8F5AF913E68C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02F9DE6C-B608-48E9-A5F2-8F5AF913E68C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02F9DE6C-B608-48E9-A5F2-8F5AF913E68C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B82E2DB-4ECC-4AB9-9A65-B1FA37CAEA3E} = {4F46AE7F-B36D-4951-BAF8-D87221D93DD1}
+		{7FE80D42-56D0-47ED-AF6D-15CA2AE6B917} = {4F46AE7F-B36D-4951-BAF8-D87221D93DD1}
+		{DD1182F3-C25D-4A7C-9AEA-1F8C3D0C3655} = {2E6DB7E4-C498-40F5-9907-6E9FE3ABDEEF}
+		{F5BB46AD-F1DC-4728-A682-FBBA8ECA84CD} = {2E6DB7E4-C498-40F5-9907-6E9FE3ABDEEF}
+		{02F9DE6C-B608-48E9-A5F2-8F5AF913E68C} = {F9C7603D-8F68-40A4-B94F-D5C44FF25534}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5014B386-56D7-48DD-B373-02DD7946D6B5}
+	EndGlobalSection
+EndGlobal
