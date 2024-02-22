@@ -13,7 +13,7 @@ namespace FoodTruck.Domain.Entities
         public int CategoryId { get; set; }
         [Required]
         public string CategoryName { get; set; }
-        public bool IsValid { get; set; }
+        public Boolean IsValid { get; set; }
         public IEnumerable<Food> Foods { get; set; }
     }
 }

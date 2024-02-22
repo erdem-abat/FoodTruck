@@ -9,7 +9,13 @@ namespace FoodTruck.WebApi.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasCharSet(null, DelegationModes.ApplyToDatabases);
+        }
+        
         public DbSet<Food> Foods { get; set; }
         public DbSet<Category> Categories { get; set; }
+
     }
 }
