@@ -2,6 +2,7 @@ using FoodTruck.Application.Interfaces;
 using FoodTruck.Application.Services;
 using FoodTruck.WebApi.Data;
 using FoodTruck.WebApi.Repositories;
+using FoodTruck.WebApi.Repositories.FoodRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<FoodTruckContext>(options => options.UseMySql(conn
 
 // Add services to the container.
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IFoodRepository), typeof(FoodRepository));
 builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddControllers();

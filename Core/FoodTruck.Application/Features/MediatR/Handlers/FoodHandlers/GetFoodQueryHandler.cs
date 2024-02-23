@@ -8,22 +8,22 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
 {
     public class GetFoodQueryHandler : IRequestHandler<GetFoodQuery, List<GetFoodQueryResult>>
     {
-        private readonly IRepository<Food> _repository;
+        private readonly IFoodRepository _repository;
 
-        public GetFoodQueryHandler(IRepository<Food> repository)
+        public GetFoodQueryHandler(IFoodRepository repository)
         {
             _repository = repository;
         }
 
         public async Task<List<GetFoodQueryResult>> Handle(GetFoodQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<Food> foods = await _repository.GetAllAsync();
+            IEnumerable<Food> foods = await _repository.GetFoodsWithCategory();
             return foods.Select(x => new GetFoodQueryResult
             {
                 Country = x.Country,
                 Description = x.Description,
                 ImageLocalPath = x.ImageLocalPath,
-                CategoryName = "deneme",
+                CategoryName = x.Category.CategoryName,
                 ImageUrl = x.ImageUrl,
                 Name = x.Name,
                 Price = x.Price,
