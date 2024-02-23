@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FoodTruck.Application.Features.MediatR.Results.FoodResults
+namespace FoodTruck.Application.Features.MediateR.Results.FoodResults
 {
     public class GetFoodQueryResult
     {

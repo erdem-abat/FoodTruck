@@ -1,7 +1,7 @@
-﻿using FoodTruck.Application.Features.MediatR.Results.FoodResults;
+﻿using FoodTruck.Application.Features.MediateR.Results.FoodResults;
 using MediatR;
 
-namespace FoodTruck.Application.Features.MediatR.Queries.FoodQueries
+namespace FoodTruck.Application.Features.MediateR.Queries.FoodQueries
 {
     public class GetFoodByIdQuery : IRequest<GetFoodByIdQueryResult>
     {
