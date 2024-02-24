@@ -19,7 +19,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.FoodHandlers
             await _repository.CreateAsync(new Food
             {
                 CategoryId = request.CategoryId,
-                Country = request.Country,
+                CountryId = request.CountryId,
                 Description = request.Description,
                 ImageLocalPath = request.ImageLocalPath,
                 ImageUrl = request.ImageUrl,

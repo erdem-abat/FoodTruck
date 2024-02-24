@@ -23,7 +23,7 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
         public async Task Handle(UpdateFoodCommand request, CancellationToken cancellationToken)
         {
             var value = await _repository.GetByIdAsync(request.FoodId);
-            value.Country = request.Country;
+            value.CountryId = request.CountryId;
             value.CategoryId = request.CategoryId;
             value.ImageLocalPath = request.ImageLocalPath;
             value.Price = request.Price;

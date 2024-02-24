@@ -17,17 +17,19 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
 
         public async Task<List<GetFoodQueryResult>> Handle(GetFoodQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<Food> foods = await _repository.GetFoodsWithCategory();
+            IEnumerable<Food> foods = await _repository.GetFoodsWithAll();
             return foods.Select(x => new GetFoodQueryResult
             {
-                Country = x.Country,
+                CountryName = x.Country.Name,
                 Description = x.Description,
                 ImageLocalPath = x.ImageLocalPath,
                 CategoryName = x.Category.CategoryName,
                 ImageUrl = x.ImageUrl,
                 Name = x.Name,
                 Price = x.Price,
-                FoodId = x.FoodId
+                FoodId = x.FoodId,
+                MoodName = x.FoodMoods.FirstOrDefault(z => z.FoodId == x.FoodId).Mood.Name,
+                TasteName = x.FoodTastes.FirstOrDefault(y => y.FoodId == x.FoodId).Taste.Name
             }).ToList();
         }
     }

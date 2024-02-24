@@ -10,5 +10,6 @@ namespace FoodTruck.Application.Interfaces
     public interface IFoodRepository
     {
         Task<List<Food>> GetFoodsWithCategory();
+        Task<List<Food>> GetFoodsWithAll();
     }
 }

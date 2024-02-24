@@ -2,13 +2,12 @@
 
 namespace FoodTruck.Domain.Entities
 {
-    public class Category
+    public class Mood
     {
         [Key]
-        public int CategoryId { get; set; }
+        public int MoodId { get; set; }
         [Required]
-        public string CategoryName { get; set; }
-        public bool IsValid { get; set; }
+        public string Name { get; set; }
         public IEnumerable<Food> Foods { get; set; }
     }
 }

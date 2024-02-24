@@ -34,6 +34,21 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
+        [HttpGet("GetFoodsMainPage")]
+        public async Task<IActionResult> GetFoodsMainPage()
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetFoodMainPageQuery());
+                _response.Result = values;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
         [HttpPost]
         public async Task<IActionResult> CreateFood(CreateFoodCommand createFoodCommand)
         {
@@ -64,7 +79,7 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveFood(RemoveFoodCommand removeFoodCommand)
         {
             try
