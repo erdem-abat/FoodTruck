@@ -15,10 +15,10 @@ namespace FoodTruck.Domain.Entities
         public string? ImageLocalPath { get; set; }
 
         public int CountryId { get; set; }
-        public Country Country { get; set; }
+        public virtual Country Country { get; set; }
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
-        public IEnumerable<FoodMood> FoodMoods { get; set; }
-        public IEnumerable<FoodTaste> FoodTastes { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual IEnumerable<FoodMood> FoodMoods { get; set; }
+        public virtual IEnumerable<FoodTaste> FoodTastes { get; set; }
     }
 }

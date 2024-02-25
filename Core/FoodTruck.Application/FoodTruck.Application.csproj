@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\FoodTruck.Dto\FoodTruck.Dto.csproj" />
     <ProjectReference Include="..\FoodTruck.Domain\FoodTruck.Domain.csproj" />
   </ItemGroup>
 

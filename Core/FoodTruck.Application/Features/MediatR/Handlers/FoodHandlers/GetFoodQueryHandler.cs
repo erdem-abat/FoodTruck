@@ -2,6 +2,7 @@
 using FoodTruck.Application.Features.MediateR.Results.FoodResults;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
+using FoodTruck.Dto.FoodDtos;
 using MediatR;
 
 namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
@@ -17,19 +18,19 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
 
         public async Task<List<GetFoodQueryResult>> Handle(GetFoodQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<Food> foods = await _repository.GetFoodsWithAll();
+            IEnumerable<FoodWithAllDto> foods = await _repository.GetFoodsWithAll();
             return foods.Select(x => new GetFoodQueryResult
             {
                 CountryName = x.Country.Name,
-                Description = x.Description,
-                ImageLocalPath = x.ImageLocalPath,
-                CategoryName = x.Category.CategoryName,
-                ImageUrl = x.ImageUrl,
-                Name = x.Name,
-                Price = x.Price,
-                FoodId = x.FoodId,
-                MoodName = x.FoodMoods.FirstOrDefault(z => z.FoodId == x.FoodId).Mood.Name,
-                TasteName = x.FoodTastes.FirstOrDefault(y => y.FoodId == x.FoodId).Taste.Name
+                Description = x.Food.Description,
+                ImageLocalPath = x.Food.ImageLocalPath,
+                CategoryName = x.Food.Category.CategoryName,
+                ImageUrl = x.Food.ImageUrl,
+                Name = x.Food.Name,
+                Price = x.Food.Price,
+                FoodId = x.Food.FoodId,
+                MoodName = x.Food.FoodMoods.FirstOrDefault(z => z.FoodId == x.Food.FoodId).Mood.Name,
+                TasteName = x.Food.FoodTastes.FirstOrDefault(y => y.FoodId == x.Food.FoodId).Taste.Name
             }).ToList();
         }
     }

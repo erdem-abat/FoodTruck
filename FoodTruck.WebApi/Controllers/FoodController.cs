@@ -80,11 +80,11 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveFood(RemoveFoodCommand removeFoodCommand)
+        public async Task<IActionResult> RemoveFood(int id)
         {
             try
             {
-                await _mediator.Send(removeFoodCommand);
+                await _mediator.Send(new RemoveFoodCommand(id));
                 _response.Result = "Food successfully deleted.";
             }
             catch (Exception ex)

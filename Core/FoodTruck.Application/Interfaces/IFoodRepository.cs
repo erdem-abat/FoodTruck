@@ -1,4 +1,5 @@
 ﻿using FoodTruck.Domain.Entities;
+using FoodTruck.Dto.FoodDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace FoodTruck.Application.Interfaces
     public interface IFoodRepository
     {
         Task<List<Food>> GetFoodsWithCategory();
-        Task<List<Food>> GetFoodsWithAll();
+        Task<List<FoodWithAllDto>> GetFoodsWithAll();
     }
 }

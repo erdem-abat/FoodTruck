@@ -27,7 +27,16 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IFoodRepository), typeof(FoodRepository));
 builder.Services.AddApplicationServices(builder.Configuration);
 
+builder.Services.AddStackExchangeRedisCache(redisOptions=>
+{
+    string connection = builder.Configuration
+    .GetConnectionString("Redis");
+
+    redisOptions.Configuration = connection;
+});
+
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
