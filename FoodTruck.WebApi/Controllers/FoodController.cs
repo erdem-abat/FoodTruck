@@ -1,5 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
+using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,23 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
+        [HttpGet]
+        [Route("GetFoodsByFilter/getFoodsByFilterParameters")]
+        public async Task<IActionResult> GetFoodsByFilter([FromQuery]GetFoodsByFilterParameters getFoodsByFilterParameters)
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetFoodsByFilterQuery(getFoodsByFilterParameters));
+                _response.Result = values;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateFood(CreateFoodCommand createFoodCommand)
         {

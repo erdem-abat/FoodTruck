@@ -12,5 +12,6 @@ namespace FoodTruck.Application.Interfaces
     {
         Task<List<Food>> GetFoodsWithCategory();
         Task<List<FoodWithAllDto>> GetFoodsWithAll();
+        Task<List<FoodWithAllDto>> GetFoodsByFilter(GetFoodsByFilterParameters getFoodsByFilterParameters);
     }
 }
