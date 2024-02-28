@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\MediatR\Results\AuthResults\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 
