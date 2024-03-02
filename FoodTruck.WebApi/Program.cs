@@ -1,16 +1,18 @@
+using AutoMapper;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Application.Services;
 using FoodTruck.Domain.Entities;
+using FoodTruck.WebApi;
 using FoodTruck.WebApi.Data;
 using FoodTruck.WebApi.Models;
 using FoodTruck.WebApi.Repositories;
+using FoodTruck.WebApi.Repositories.CartRepository;
 using FoodTruck.WebApi.Repositories.FoodRepository;
 using FoodTruck.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(opt =>
@@ -33,9 +35,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 // Add services to the container.
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IFoodRepository), typeof(FoodRepository));
+builder.Services.AddScoped(typeof(ICartRepository), typeof(CartRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddApplicationServices(builder.Configuration);
+
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddStackExchangeRedisCache(redisOptions=>
 {

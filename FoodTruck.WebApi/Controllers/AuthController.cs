@@ -1,6 +1,10 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.AuthCommands;
+using FoodTruck.Application.Features.MediatR.Queries.AuthQueries;
+using FoodTruck.Application.Interfaces;
+using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.AuthDtos;
 using FoodTruck.WebApi.Models.Dto;
+using FoodTruck.WebApi.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +16,13 @@ namespace FoodTruck.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private ResponseDto _response;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-        public AuthController(IMediator mediator)
+        public AuthController(IMediator mediator, IJwtTokenGenerator jwtTokenGenerator)
         {
             _mediator = mediator;
             _response = new ResponseDto();
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
         [HttpPost("register")]
@@ -24,7 +30,7 @@ namespace FoodTruck.WebApi.Controllers
         {
             try
             {
-               await _mediator.Send(registerUserCommand);
+                await _mediator.Send(registerUserCommand);
                 _response.Result = "Register successfully.";
             }
             catch (Exception ex)
@@ -37,12 +43,22 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserCommand loginUserCommand)
+        public async Task<IActionResult> Login(GetLoginUserQuery getLoginUserQuery)
         {
             try
             {
-                await _mediator.Send(loginUserCommand);
-                _response.Result = "Login successfully.";
+                var values = await _mediator.Send(getLoginUserQuery);
+
+                if (values.IsExist)
+                {
+                    _response.Result = _jwtTokenGenerator.GenerateToken(values.AppUser, values.Roles);
+                }
+                else
+                {
+                    _response.Message = "Username or password invalid.";
+                    _response.IsSuccess = false;
+                }
+               
             }
             catch (Exception ex)
             {

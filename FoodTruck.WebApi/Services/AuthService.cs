@@ -49,6 +49,7 @@ namespace FoodTruck.WebApi.Services
                 return (new LoginResponseDto()
                 {
                     User = null,
+                    AppUser=null,
                     Token = ""
                 });
             }
@@ -61,12 +62,14 @@ namespace FoodTruck.WebApi.Services
                 Username = user.UserName,
                 ID = user.Id,
                 Name = user.Name,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                Roles = roles.ToList()
             };
 
             return new LoginResponseDto
             {
                 User = userDTO,
+                AppUser = user,
                 Token = token
             };
         }
