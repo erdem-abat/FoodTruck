@@ -4,6 +4,7 @@ using FoodTruck.Application.Services;
 using FoodTruck.Domain.Entities;
 using FoodTruck.WebApi;
 using FoodTruck.WebApi.Data;
+using FoodTruck.WebApi.Extensions;
 using FoodTruck.WebApi.Models;
 using FoodTruck.WebApi.Repositories;
 using FoodTruck.WebApi.Repositories.CartRepository;
@@ -81,6 +82,8 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+builder.AddAppAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

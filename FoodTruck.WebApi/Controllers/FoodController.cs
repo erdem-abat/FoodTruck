@@ -3,6 +3,7 @@ using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTruck.WebApi.Controllers
@@ -19,7 +20,7 @@ namespace FoodTruck.WebApi.Controllers
             _mediator = mediator;
             _response = new ResponseDto();
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetFoods()
         {
