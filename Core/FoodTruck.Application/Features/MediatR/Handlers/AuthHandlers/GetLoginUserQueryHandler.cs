@@ -38,6 +38,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
                 values.Roles = userResponse.Result.User.Roles;
                 values.UserId = userResponse.Result.User.ID;
                 values.AppUser = userResponse.Result.AppUser;
+                values.Token = userResponse.Result.Token;
             }
             return values;
         }

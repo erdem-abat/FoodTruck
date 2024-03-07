@@ -51,7 +51,7 @@ namespace FoodTruck.WebApi.Controllers
 
                 if (values.IsExist)
                 {
-                    _response.Result = _jwtTokenGenerator.GenerateToken(values.AppUser, values.Roles);
+                    _response.Result = values;
                 }
                 else
                 {

@@ -6,6 +6,7 @@ namespace FoodTruck.Application.Features.MediatR.Results.AuthResults
     {
         public string UserId { get; set; }
         public string Username { get; set; }
+        public string Token { get; set; }
         public IEnumerable<string> Roles { get; set; }
         public bool IsExist { get; set; }
         public ApplicationUser AppUser { get; set; }
