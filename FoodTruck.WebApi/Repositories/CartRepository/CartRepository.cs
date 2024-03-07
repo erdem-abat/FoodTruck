@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Azure;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
+using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace FoodTruck.WebApi.Repositories.CartRepository
 {
@@ -11,11 +14,13 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
     {
         private readonly FoodTruckContext _dbContext;
         private IMapper _mapper;
+        private readonly IFoodRepository _foodRepository;
 
-        public CartRepository(FoodTruckContext dbContext, IMapper mapper)
+        public CartRepository(FoodTruckContext dbContext, IMapper mapper, IFoodRepository foodRepository)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _foodRepository = foodRepository;
         }
 
         public async Task<CartsDto> CartUpsert(CartsDto cartsDto)
@@ -61,6 +66,45 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             {
                 throw;
             }
+        }
+
+        public async Task<CartsDto> GetCart(string userId)
+        {
+            try
+            {
+                CartsDto cartDto = new()
+                {
+                    CartHeader = _mapper.Map<CartHeaderDto>(_dbContext.CartHeaders.First(x => x.UserId == userId))
+                };
+                cartDto.CartDetails = _mapper.Map<IEnumerable<CartDetailDto>>(_dbContext.CartDetails
+                    .Where(x => x.CartHeaderId == cartDto.CartHeader.CartHeaderId));
+
+                IEnumerable<FoodDto> foodDto = await _foodRepository.GetFoods();
+
+                foreach (var item in cartDto.CartDetails)
+                {
+                    item.Food = _mapper.Map<Food>(foodDto.FirstOrDefault(x => x.FoodId == item.FoodId));
+                    cartDto.CartHeader.CartTotal += (item.Count * item.Food.Price);
+                }
+
+                //if (!string.IsNullOrEmpty(cartDto.CartHeader.CouponCode))
+                //{
+                //    Coupon coupon = await _couponService.GetCoupon(cartDto.CartHeader.CouponCode);
+                //    if (coupon != null && cartDto.CartHeader.CartTotal > coupon.minAmount)
+                //    {
+                //        cartDto.CartHeader.CartTotal -= coupon.DiscountAmount;
+                //        cartDto.CartHeader.Discount = coupon.DiscountAmount;
+                //    }
+                //}
+
+                return cartDto;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+         
         }
     }
 }

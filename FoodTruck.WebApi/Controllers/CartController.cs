@@ -1,4 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.CartCommands;
+using FoodTruck.Application.Features.MediatR.Queries.CartQueries;
+using FoodTruck.Dto.CartDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,24 @@ namespace FoodTruck.WebApi.Controllers
             _mediator = mediator;
             _response = new ResponseDto();
         }
+
+        [HttpGet("GetCart")]
+        public async Task<IActionResult> GetCart([FromQuery] string userId)
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetCartQuery(userId));
+                _response.Result = values;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return Ok(_response);
+        }
+
 
         [HttpPost("CartUpsert")]
         public async Task<IActionResult> CartUpsert(CartUpsertCommand cartUpsertCommand)

@@ -11,6 +11,7 @@ namespace FoodTruck.Application.Interfaces
     public interface IFoodRepository
     {
         Task<List<Food>> GetFoodsWithCategory();
+        Task<List<FoodDto>> GetFoods();
         Task<List<FoodWithAllDto>> GetFoodsWithAll();
         Task<List<FoodWithAllDto>> GetFoodsByFilter(GetFoodsByFilterParameters getFoodsByFilterParameters);
     }

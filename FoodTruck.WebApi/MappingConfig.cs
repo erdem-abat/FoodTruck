@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
+using FoodTruck.Dto.FoodDtos;
 
 namespace FoodTruck.WebApi
 {
@@ -12,6 +13,7 @@ namespace FoodTruck.WebApi
             {
                 config.CreateMap<CartHeader, CartHeaderDto>().ReverseMap();
                 config.CreateMap<CartDetail, CartDetailDto>().ReverseMap();
+                config.CreateMap<Food, FoodDto>().ReverseMap();
             });
             return mappingConfig;
         }

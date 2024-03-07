@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace FoodTruck.WebApi.Repositories.FoodRepository
 {
@@ -18,7 +19,20 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             _context = context;
             _distributedCache = distributedCache;
         }
+        public async Task<List<FoodDto>> GetFoods()
+        {
+            var foods = await _context.Foods.Select(x=> new FoodDto
+            {
+                Description = x.Description,
+                FoodId = x.FoodId,
+                ImageLocalPath = x.ImageLocalPath,
+                Name = x.Name,
+                ImageUrl = x.ImageUrl,
+                Price = x.Price
+            }).ToListAsync();
 
+            return foods;
+        }
         public async Task<List<Food>> GetFoodsWithCategory()
         {
             return await _context.Foods.Include(x => x.Category).ToListAsync();
