@@ -28,8 +28,8 @@ builder.Services.AddCors(opt =>
     });
 });
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
-builder.Services.AddDbContext<FoodTruckContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-builder.Services.AddDbContext<UserIdentityDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddDbContext<FoodTruckContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<UserIdentityDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<UserIdentityDbContext>()
     .AddDefaultTokenProviders();
