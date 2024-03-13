@@ -8,6 +8,7 @@ using FoodTruck.WebApi.Extensions;
 using FoodTruck.WebApi.Models;
 using FoodTruck.WebApi.Repositories;
 using FoodTruck.WebApi.Repositories.CartRepository;
+using FoodTruck.WebApi.Repositories.CouponRepository;
 using FoodTruck.WebApi.Repositories.FoodRepository;
 using FoodTruck.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,6 +38,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IFoodRepository), typeof(FoodRepository));
 builder.Services.AddScoped(typeof(ICartRepository), typeof(CartRepository));
+builder.Services.AddScoped(typeof(ICouponRepository), typeof(CouponRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddApplicationServices(builder.Configuration);

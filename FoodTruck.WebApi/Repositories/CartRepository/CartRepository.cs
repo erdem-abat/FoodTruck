@@ -15,12 +15,14 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
         private readonly FoodTruckContext _dbContext;
         private IMapper _mapper;
         private readonly IFoodRepository _foodRepository;
+        private readonly IRepository<Coupon> _couponRepository;
 
-        public CartRepository(FoodTruckContext dbContext, IMapper mapper, IFoodRepository foodRepository)
+        public CartRepository(FoodTruckContext dbContext, IMapper mapper, IFoodRepository foodRepository, IRepository<Coupon> couponRepository)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _foodRepository = foodRepository;
+            _couponRepository = couponRepository;
         }
 
         public async Task<CartsDto> CartUpsert(CartsDto cartsDto)
@@ -87,15 +89,15 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                     cartDto.CartHeader.CartTotal += (item.Count * item.Food.Price);
                 }
 
-                //if (!string.IsNullOrEmpty(cartDto.CartHeader.CouponCode))
-                //{
-                //    Coupon coupon = await _couponService.GetCoupon(cartDto.CartHeader.CouponCode);
-                //    if (coupon != null && cartDto.CartHeader.CartTotal > coupon.minAmount)
-                //    {
-                //        cartDto.CartHeader.CartTotal -= coupon.DiscountAmount;
-                //        cartDto.CartHeader.Discount = coupon.DiscountAmount;
-                //    }
-                //}
+                if (!string.IsNullOrEmpty(cartDto.CartHeader.CouponCode))
+                {
+                    Coupon? coupon = await _couponRepository.GetByFilterAsync(x => x.CouponCode == cartDto.CartHeader.CouponCode);
+                    if (coupon != null && cartDto.CartHeader.CartTotal > coupon.minAmount)
+                    {
+                        cartDto.CartHeader.CartTotal -= coupon.DiscountAmount;
+                        cartDto.CartHeader.Discount = coupon.DiscountAmount;
+                    }
+                }
 
                 return cartDto;
             }
@@ -104,7 +106,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                 throw;
             }
 
-         
+
         }
     }
 }

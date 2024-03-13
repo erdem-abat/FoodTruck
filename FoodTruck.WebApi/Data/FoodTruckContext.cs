@@ -17,6 +17,7 @@ namespace FoodTruck.WebApi.Data
         public DbSet<Food> Foods { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
         public DbSet<Mood> Moods { get; set; }
         public DbSet<Taste> Tastes { get; set; }
         public DbSet<FoodTaste> FoodTaste { get; set; }
