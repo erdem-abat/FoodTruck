@@ -5,6 +5,7 @@ using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -105,8 +106,49 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             {
                 throw;
             }
+        }
 
+        public async Task<bool> ApplyCoupon(CartsDto cartsDto)
+        {
+            try
+            {
+                var cartFromDb = await _dbContext.CartHeaders.FirstAsync(x => x.UserId == cartsDto.CartHeader.UserId);
+                cartFromDb.CouponCode = cartsDto.CartHeader.CouponCode;
+                _dbContext.CartHeaders.Update(cartFromDb);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
+        public async Task<bool> CartRemove(int cartDetailId)
+        {
+            try
+            {
+                CartDetail cartDetails = await _dbContext.CartDetails
+                                         .FirstAsync(x => x.CartDetailId == cartDetailId);
+
+                int totalCountofCartItem = await _dbContext.CartDetails.Where(x => x.CartHeaderId == cartDetails.CartHeaderId).CountAsync();
+
+                _dbContext.CartDetails.Remove(cartDetails);
+
+                if (totalCountofCartItem == 1)
+                {
+                    var cartHeaderToRemove = await _dbContext.CartHeaders
+                         .FirstAsync(x => x.CartHeaderId == cartDetails.CartHeaderId);
+
+                    _dbContext.CartHeaders.Remove(cartHeaderToRemove);
+                }
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
                 Email = request.Email,
                 Password = request.Password,
                 Name = request.Name,
-                Role = request.Role
+                Role = "USER"
             });
         }
     }

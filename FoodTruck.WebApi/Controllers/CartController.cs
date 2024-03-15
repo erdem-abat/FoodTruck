@@ -1,5 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.CartCommands;
 using FoodTruck.Application.Features.MediatR.Queries.CartQueries;
+using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
@@ -53,6 +54,40 @@ namespace FoodTruck.WebApi.Controllers
             }
 
             return Ok(_response);
+        }
+
+        [HttpPost("ApplyCoupon")]
+        public async Task<object> ApplyCoupon([FromQuery] CartsDto cartsDto)
+        {
+            try
+            {
+                var value = await _mediator.Send(new GetCartCouponApplyQuery(cartsDto));
+                _response.Result = value.IsApply == true ? "Coupon applied!" : "Check coupon code!";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return Ok(_response);
+        }
+
+        [HttpPost("RemoveCart")]
+        public async Task<ResponseDto> RemoveCart(CartRemoveCommand cartRemoveCommand)
+        {
+            try
+            {
+                var value = await _mediator.Send(cartRemoveCommand);
+                _response.Result = value.IsDeleted == true ? "Cart removed!" : "Check the cart!";
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message.ToString();
+                _response.IsSuccess = false;
+            }
+
+            return _response;
         }
     }
 }

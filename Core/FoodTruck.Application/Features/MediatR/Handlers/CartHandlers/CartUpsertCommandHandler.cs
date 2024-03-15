@@ -12,9 +12,9 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
         {
             _repository = repository;
         }
-        public Task Handle(CartUpsertCommand request, CancellationToken cancellationToken)
+        public async Task Handle(CartUpsertCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _repository.CartUpsert(request.CartsDto);
         }
     }
 }

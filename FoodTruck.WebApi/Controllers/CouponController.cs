@@ -3,6 +3,7 @@ using FoodTruck.Application.Features.MediatR.Commands.CartCommands;
 using FoodTruck.Application.Features.MediatR.Commands.CouponCommands;
 using FoodTruck.Application.Features.MediatR.Queries.CouponQueries;
 using FoodTruck.Domain.Entities;
+using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.CouponDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
@@ -92,5 +93,7 @@ namespace FoodTruck.WebApi.Controllers
             }
             return _response;
         }
+
+        
     }
 }
