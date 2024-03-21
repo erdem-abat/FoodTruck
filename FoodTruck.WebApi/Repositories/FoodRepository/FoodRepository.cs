@@ -178,7 +178,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                 _context.Foods.Add(food);
                 await _context.SaveChangesAsync();
 
-                if (food.ImageUrl != null)
+                if (food.Image != null)
                 {
                     string fileName = food.FoodId + Path.GetExtension(food.Image.FileName);
                     string filePath = @"wwwroot\FoodImages\" + fileName;
