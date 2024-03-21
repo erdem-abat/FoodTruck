@@ -12,6 +12,17 @@ namespace FoodTruck.WebApi.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasCharSet(null, DelegationModes.ApplyToDatabases);
+
+            modelBuilder.Entity<TruckReservation>()
+                .HasOne(x => x.FromLocation)
+                .WithMany(y => y.FromReservation)
+                .HasForeignKey(z => z.FromLocationId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            modelBuilder.Entity<TruckReservation>()
+                .HasOne(x => x.ToLocation)
+                .WithMany(y => y.ToReservation)
+                .HasForeignKey(z => z.ToLocationId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
         
         public DbSet<Food> Foods { get; set; }
@@ -27,6 +38,11 @@ namespace FoodTruck.WebApi.Data
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<CartHeader> CartHeaders { get; set; }
         public DbSet<CartDetail> CartDetails { get; set; }
-
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Truck> Trucks { get; set; }
+        public DbSet<TruckReservation> TruckReservations { get; set; }
+        public DbSet<FoodTruck.Domain.Entities.FoodTruck> FoodTrucks { get; set; }
+        public DbSet<Chef> Chefs { get; set; }
+        public DbSet<FoodChef> FoodChefs { get; set; }
     }
 }

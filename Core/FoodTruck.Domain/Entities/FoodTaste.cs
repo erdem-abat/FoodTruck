@@ -1,12 +1,4 @@
-﻿using MongoDB.Driver.Core.Misc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FoodTruck.Domain.Entities
+﻿namespace FoodTruck.Domain.Entities
 {
     public class FoodTaste
     {

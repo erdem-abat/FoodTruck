@@ -21,5 +21,7 @@ namespace FoodTruck.Domain.Entities
         public virtual IEnumerable<FoodMood> FoodMoods { get; set; }
         public virtual IEnumerable<FoodTaste> FoodTastes { get; set; }
         public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public virtual IEnumerable<Truck> Trucks { get; set; }
+        public virtual IEnumerable<Chef> Chefs { get; set; }
     }
 }
