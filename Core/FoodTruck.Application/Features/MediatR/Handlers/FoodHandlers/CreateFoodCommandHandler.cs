@@ -21,8 +21,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.FoodHandlers
                 CategoryId = request.CategoryId,
                 CountryId = request.CountryId,
                 Description = request.Description,
-                ImageLocalPath = request.ImageLocalPath,
-                ImageUrl = request.ImageUrl,
+                Image = request.Image,
                 Name = request.Name,
                 Price = request.Price
             });

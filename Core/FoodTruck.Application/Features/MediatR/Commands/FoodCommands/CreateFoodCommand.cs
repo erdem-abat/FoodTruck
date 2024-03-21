@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Amazon.Util.Internal;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace FoodTruck.Application.Features.MediateR.Commands.FoodCommands
 {
@@ -11,5 +13,6 @@ namespace FoodTruck.Application.Features.MediateR.Commands.FoodCommands
         public int CategoryId { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageLocalPath { get; set; }
+        public IFormFile Image { get; set; }
     }
 }
