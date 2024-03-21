@@ -4,9 +4,8 @@ using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Identity.Client;
 using Newtonsoft.Json;
-using System.Collections.Generic;
+
 
 namespace FoodTruck.WebApi.Repositories.FoodRepository
 {
@@ -21,7 +20,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         }
         public async Task<List<FoodDto>> GetFoods()
         {
-            var foods = await _context.Foods.Select(x=> new FoodDto
+            var foods = await _context.Foods.Select(x => new FoodDto
             {
                 Description = x.Description,
                 FoodId = x.FoodId,
@@ -170,6 +169,40 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                                 }).ToListAsync();
 
             return values.Select(x => (x.Name, x.Price, x.ImageUrl)).ToList();
+        }
+
+        public async Task<Food> CreateFood(Food food)
+        {
+            try
+            {
+                _context.Foods.Add(food);
+                await _context.SaveChangesAsync();
+
+                if (food.ImageUrl != null)
+                {
+                    string fileName = food.FoodId + Path.GetExtension(food.Image.FileName);
+                    string filePath = @"wwwroot\FoodImages\" + fileName;
+                    var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+                    using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
+                    {
+                        food.Image.CopyTo(fileStream);
+                    }
+
+                    food.ImageUrl = "/FoodImages/" + fileName;
+                    food.ImageLocalPath = filePath;
+                }
+                else
+                {
+                    food.ImageUrl = "https://placehold.co/600x400";
+                }
+                _context.Foods.Update(food);
+                await _context.SaveChangesAsync();
+                return food;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

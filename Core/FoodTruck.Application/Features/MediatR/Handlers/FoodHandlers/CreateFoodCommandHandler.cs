@@ -7,16 +7,16 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.FoodHandlers
 {
     public class CreateFoodCommandHandler : IRequestHandler<CreateFoodCommand>
     {
-        private readonly IRepository<Food> _repository;
+        private readonly IFoodRepository _repository;
 
-        public CreateFoodCommandHandler(IRepository<Food> repository)
+        public CreateFoodCommandHandler(IFoodRepository repository)
         {
             _repository = repository;
         }
 
         public async Task Handle(CreateFoodCommand request, CancellationToken cancellationToken)
         {
-            await _repository.CreateAsync(new Food
+            await _repository.CreateFood(new Food
             {
                 CategoryId = request.CategoryId,
                 CountryId = request.CountryId,

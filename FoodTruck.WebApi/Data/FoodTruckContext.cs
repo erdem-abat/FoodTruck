@@ -11,6 +11,7 @@ namespace FoodTruck.WebApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.HasCharSet(null, DelegationModes.ApplyToDatabases);
 
             modelBuilder.Entity<TruckReservation>()

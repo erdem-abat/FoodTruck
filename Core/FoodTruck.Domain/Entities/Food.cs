@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FoodTruck.Domain.Entities
 {
@@ -13,6 +15,8 @@ namespace FoodTruck.Domain.Entities
         public string Description { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageLocalPath { get; set; }
+        [NotMapped]
+        public IFormFile? Image { get; set; }
 
         public int CountryId { get; set; }
         public virtual Country Country { get; set; }
