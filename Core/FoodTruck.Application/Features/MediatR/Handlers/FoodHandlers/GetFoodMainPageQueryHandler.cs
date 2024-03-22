@@ -22,6 +22,7 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
             {
                 ImageUrl = x.ImageUrl,
                 Name = x.Name,
+                FoodId = x.FoodId,
                 Price = x.Price
             }).ToList();
         }
