@@ -35,7 +35,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("GoodAtFoodId");
 
-                    b.ToTable("ChefFood");
+                    b.ToTable("ChefFood", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck", b =>
@@ -50,7 +50,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("TrucksTruckId");
 
-                    b.ToTable("FoodTruck");
+                    b.ToTable("FoodTruck", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.CartDetail", b =>
@@ -76,7 +76,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("FoodId");
 
-                    b.ToTable("CartDetails");
+                    b.ToTable("CartDetails", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.CartHeader", b =>
@@ -95,7 +95,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("CartHeaderId");
 
-                    b.ToTable("CartHeaders");
+                    b.ToTable("CartHeaders", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Category", b =>
@@ -115,7 +115,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Chef", b =>
@@ -140,7 +140,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("TruckId");
 
-                    b.ToTable("Chefs");
+                    b.ToTable("Chefs", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Country", b =>
@@ -157,7 +157,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("CountryId");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Coupon", b =>
@@ -180,7 +180,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("CouponId");
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Food", b =>
@@ -230,7 +230,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("TasteId");
 
-                    b.ToTable("Foods");
+                    b.ToTable("Foods", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.FoodChef", b =>
@@ -253,7 +253,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("FoodId");
 
-                    b.ToTable("FoodChefs");
+                    b.ToTable("FoodChefs", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.FoodMood", b =>
@@ -276,7 +276,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("MoodId");
 
-                    b.ToTable("FoodMood");
+                    b.ToTable("FoodMood", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.FoodTaste", b =>
@@ -299,7 +299,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("TasteId");
 
-                    b.ToTable("FoodTaste");
+                    b.ToTable("FoodTaste", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.FoodTruck", b =>
@@ -322,7 +322,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("TruckId");
 
-                    b.ToTable("FoodTrucks");
+                    b.ToTable("FoodTrucks", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Location", b =>
@@ -347,7 +347,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("LocationId");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Mood", b =>
@@ -364,7 +364,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("MoodId");
 
-                    b.ToTable("Moods");
+                    b.ToTable("Moods", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Order", b =>
@@ -403,7 +403,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("OrderStatusId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.OrderDetail", b =>
@@ -432,7 +432,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.OrderStatus", b =>
@@ -449,7 +449,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("OrderStatusId");
 
-                    b.ToTable("OrderStatuses");
+                    b.ToTable("OrderStatuses", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Taste", b =>
@@ -466,7 +466,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("TasteId");
 
-                    b.ToTable("Tastes");
+                    b.ToTable("Tastes", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Truck", b =>
@@ -483,7 +483,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasKey("TruckId");
 
-                    b.ToTable("Trucks");
+                    b.ToTable("Trucks", (string)null);
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.TruckReservation", b =>
@@ -515,7 +515,7 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("TruckId");
 
-                    b.ToTable("TruckReservations");
+                    b.ToTable("TruckReservations", (string)null);
                 });
 
             modelBuilder.Entity("ChefFood", b =>

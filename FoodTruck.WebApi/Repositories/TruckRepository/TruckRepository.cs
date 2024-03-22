@@ -22,7 +22,11 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
                 if (truck.TruckName != null)
                 {
                     var checkTruck = _context.Trucks.Any(x => x.TruckName.ToLower() == truck.TruckName.ToLower());
-                    if (!checkTruck)
+                    if (checkTruck)
+                    {
+                        return false;
+                    }
+                    else
                     {
                         Truck truckData = new Truck
                         {
@@ -31,15 +35,11 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
                         await _context.Trucks.AddAsync(truckData);
                         await _context.SaveChangesAsync();
                     }
-                    else
-                    {
-                        return false;
-                    }
                 }
 
                 var truckFromDb = _context.Trucks.First(x => x.TruckName.ToLower() == truck.TruckName.ToLower());
 
-                var list = _context.Chefs.Where(x => chefIds.Contains(x.ChefId)).ToList();
+                var list = _context.Chefs.Where(x => chefIds.Contains(x.ChefId) && x.TruckId == 1).ToList();
 
                 foreach (var chef in list)
                 {
@@ -51,11 +51,13 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
 
                 foreach (var item in foodIds)
                 {
-                    _context.FoodTrucks.Add(new Domain.Entities.FoodTruck
+                    var data = new Domain.Entities.FoodTruck
                     {
                         FoodId = item,
-                        TruckId = truckFromDb.TruckId,
-                    });
+                        TruckId = truckFromDb.TruckId
+                    };
+
+                    _context.FoodTrucks.Add(data);
                 }
 
                 await _context.SaveChangesAsync();
