@@ -9,6 +9,6 @@ namespace FoodTruck.Application.Interfaces
 {
     public interface ITruckRepository
     {
-        Task<bool> CreateTruck(Truck truck);
+        Task<bool> CreateTruck(Truck truck, List<int> foodIds, List<int> chefIds);
     }
 }

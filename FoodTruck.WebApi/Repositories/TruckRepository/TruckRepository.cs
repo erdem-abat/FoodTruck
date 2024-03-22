@@ -1,6 +1,8 @@
 ﻿using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.WebApi.Data;
+using System.Linq;
+using ZstdSharp.Unsafe;
 
 namespace FoodTruck.WebApi.Repositories.TruckRepository
 {
@@ -13,16 +15,20 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
             _context = context;
         }
 
-        public async Task<bool> CreateTruck(Truck truck)
+        public async Task<bool> CreateTruck(Truck truck, List<int> foodIds, List<int> chefIds)
         {
             try
             {
-                if (truck != null)
+                if (truck.TruckName != null)
                 {
                     var checkTruck = _context.Trucks.Any(x => x.TruckName.ToLower() == truck.TruckName.ToLower());
                     if (!checkTruck)
                     {
-                        await _context.Trucks.AddAsync(truck);
+                        Truck truckData = new Truck
+                        {
+                            TruckName = truck.TruckName
+                        };
+                        await _context.Trucks.AddAsync(truckData);
                         await _context.SaveChangesAsync();
                     }
                     else
@@ -33,11 +39,21 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
 
                 var truckFromDb = _context.Trucks.First(x => x.TruckName.ToLower() == truck.TruckName.ToLower());
 
-                foreach (var item in truck.Foods)
+                var list = _context.Chefs.Where(x => chefIds.Contains(x.ChefId)).ToList();
+
+                foreach (var chef in list)
+                {
+                    chef.TruckId = truckFromDb.TruckId;
+                    _context.Chefs.Update(chef);
+                }
+
+                await _context.SaveChangesAsync();
+
+                foreach (var item in foodIds)
                 {
                     _context.FoodTrucks.Add(new Domain.Entities.FoodTruck
                     {
-                        FoodId = item.FoodId,
+                        FoodId = item,
                         TruckId = truckFromDb.TruckId,
                     });
                 }
@@ -48,7 +64,7 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
             }
             catch (Exception)
             {
-                throw;          
+                throw;
             }
         }
     }
