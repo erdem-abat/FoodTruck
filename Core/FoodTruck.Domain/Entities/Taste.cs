@@ -8,6 +8,6 @@ namespace FoodTruck.Domain.Entities
         public int TasteId { get; set; }
         [Required]
         public string Name { get; set; }      
-        public IEnumerable<Food> Foods { get; set; }
+        public IEnumerable<FoodTaste> Foods { get; set; }
     }
 }

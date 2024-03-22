@@ -20,12 +20,14 @@ namespace FoodTruck.Domain.Entities
 
         public int CountryId { get; set; }
         public virtual Country Country { get; set; }
+
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
-        public virtual IEnumerable<FoodMood> FoodMoods { get; set; }
-        public virtual IEnumerable<FoodTaste> FoodTastes { get; set; }
-        public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
-        public virtual IEnumerable<Truck> Trucks { get; set; }
-        public virtual IEnumerable<Chef> Chefs { get; set; }
+
+        public IEnumerable<FoodMood> FoodMoods { get; set; }
+        public IEnumerable<FoodTaste> FoodTastes { get; set; }
+        public IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public IEnumerable<FoodTruck> Trucks { get; set; }
+        public IEnumerable<FoodChef> Chefs { get; set; }
     }
 }

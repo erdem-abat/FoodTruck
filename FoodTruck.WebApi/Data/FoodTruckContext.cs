@@ -25,7 +25,7 @@ namespace FoodTruck.WebApi.Data
                 .HasForeignKey(z => z.ToLocationId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         }
-        
+
         public DbSet<Food> Foods { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Country> Countries { get; set; }
