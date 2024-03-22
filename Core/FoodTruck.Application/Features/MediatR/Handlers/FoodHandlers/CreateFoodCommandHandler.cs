@@ -24,7 +24,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.FoodHandlers
                 Image = request.Image,
                 Name = request.Name,
                 Price = request.Price
-            });
+            }, request.FoodMoodIds, request.FoodTasteIds);
         }
     }
 }

@@ -5,6 +5,7 @@ using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using ZstdSharp.Unsafe;
 
 
 namespace FoodTruck.WebApi.Repositories.FoodRepository
@@ -171,7 +172,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             return values.Select(x => (x.Name, x.Price, x.ImageUrl)).ToList();
         }
 
-        public async Task<Food> CreateFood(Food food)
+        public async Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds)
         {
             try
             {
@@ -197,6 +198,35 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                 }
                 _context.Foods.Update(food);
                 await _context.SaveChangesAsync();
+
+                Food foodFromDb = _context.Foods.First(x => x.Name.ToLower() == food.Name.ToLower());
+
+                foreach (var item in foodMoodIds)
+                {
+                    var mood = new FoodMood
+                    {
+                        MoodId = item,
+                        FoodId = foodFromDb.FoodId
+                    };
+
+                    _context.FoodMood.Add(mood);
+                }
+
+                await _context.SaveChangesAsync();
+
+                foreach (var item in foodTasteIds)
+                {
+                    var taste = new FoodTaste
+                    {
+                        TasteId = item,
+                        FoodId = foodFromDb.FoodId
+                    };
+
+                    _context.FoodTaste.Add(taste);
+                }
+
+                await _context.SaveChangesAsync();
+
                 return food;
             }
             catch (Exception)
