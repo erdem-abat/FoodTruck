@@ -27,7 +27,7 @@ namespace FoodTruck.WebApi.Controllers
             try
             {
                 var values = await _mediator.Send(new GetCartQuery(userId));
-                _response.Result = values;
+                _response.Result = values.CartsDto;
             }
             catch (Exception ex)
             {

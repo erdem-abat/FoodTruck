@@ -86,7 +86,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
 
                 foreach (var item in cartDto.CartDetails)
                 {
-                    item.Food = _mapper.Map<Food>(foodDto.FirstOrDefault(x => x.FoodId == item.FoodId));
+                    item.Food = foodDto.FirstOrDefault(x => x.FoodId == item.FoodId);
                     cartDto.CartHeader.CartTotal += (item.Count * item.Food.Price);
                 }
 

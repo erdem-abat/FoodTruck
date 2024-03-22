@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FoodTruck.Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +17,6 @@ namespace FoodTruck.Dto.FoodDtos
         public string Description { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageLocalPath { get; set; }
+
     }
 }
