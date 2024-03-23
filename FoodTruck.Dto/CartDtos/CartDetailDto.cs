@@ -11,6 +11,6 @@ namespace FoodTruck.Dto.CartDtos
         public int CartHeaderId { get; set; }
         public CartHeaderDto? CartHeader { get; set; }
         public int FoodId { get; set; }
-        public FoodDto Food { get; set; }
+        public FoodDto? Food { get; set; }
     }
 }

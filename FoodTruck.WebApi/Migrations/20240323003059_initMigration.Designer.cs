@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodTruck.WebApi.Migrations
 {
     [DbContext(typeof(FoodTruckContext))]
-    [Migration("20240322230036_initMigration")]
+    [Migration("20240323003059_initMigration")]
     partial class initMigration
     {
         /// <inheritdoc />
@@ -46,8 +46,6 @@ namespace FoodTruck.WebApi.Migrations
                     b.HasKey("CartDetailId");
 
                     b.HasIndex("CartHeaderId");
-
-                    b.HasIndex("FoodId");
 
                     b.ToTable("CartDetails");
                 });
@@ -489,15 +487,7 @@ namespace FoodTruck.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FoodTruck.Domain.Entities.Food", "Food")
-                        .WithMany()
-                        .HasForeignKey("FoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CartHeader");
-
-                    b.Navigation("Food");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Chef", b =>

@@ -44,8 +44,6 @@ namespace FoodTruck.WebApi.Migrations
 
                     b.HasIndex("CartHeaderId");
 
-                    b.HasIndex("FoodId");
-
                     b.ToTable("CartDetails");
                 });
 
@@ -486,15 +484,7 @@ namespace FoodTruck.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FoodTruck.Domain.Entities.Food", "Food")
-                        .WithMany()
-                        .HasForeignKey("FoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CartHeader");
-
-                    b.Navigation("Food");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Chef", b =>

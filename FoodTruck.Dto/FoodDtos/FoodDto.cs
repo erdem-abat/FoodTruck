@@ -18,5 +18,7 @@ namespace FoodTruck.Dto.FoodDtos
         public string? ImageUrl { get; set; }
         public string? ImageLocalPath { get; set; }
 
+        public int CountryId { get; set; }
+        public int CategoryId { get; set; }
     }
 }
