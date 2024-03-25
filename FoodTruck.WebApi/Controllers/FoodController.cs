@@ -1,5 +1,8 @@
 ﻿using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
+using FoodTruck.Application.Features.MediatR.Queries.ChefQueries;
+using FoodTruck.Application.Features.MediatR.Queries.MoodQueries;
+using FoodTruck.Application.Features.MediatR.Queries.TasteQueries;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
@@ -49,6 +52,38 @@ namespace FoodTruck.WebApi.Controllers
                 _response.IsSuccess = false;
                 _response.Message = ex.Message;
             }
+            return Ok(_response);
+        }
+        [HttpGet("GetMood")]
+        public async Task<IActionResult> GetMood()
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetMoodQuery());
+                _response.Result = values;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return Ok(_response);
+        }
+        [HttpGet("GetTaste")]
+        public async Task<IActionResult> GetTaste()
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetTasteQuery());
+                _response.Result = values;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
             return Ok(_response);
         }
         [HttpGet]
