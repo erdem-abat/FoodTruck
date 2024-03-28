@@ -20,7 +20,7 @@ namespace FoodTruck.WebApi.Controllers
             _response = new ResponseDto();
         }
 
-        [HttpPost]
+        [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder(CreateOrderCommand createOrderCommand)
         {
             try
@@ -35,5 +35,22 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
+
+        [HttpPost("CreateStripeSession")]
+        public async Task<IActionResult> CreateStripeSession(CreateStripeCommand createStripeCommand)
+        {
+            try
+            {
+                await _mediator.Send(createStripeCommand);
+                _response.Result = "Stripe successfully created.";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
+
     }
 }

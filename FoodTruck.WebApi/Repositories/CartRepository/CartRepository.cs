@@ -56,8 +56,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                         await _dbContext.SaveChangesAsync();
                     }
                     else
-                    {
-                        cartsDto.CartDetails.First().Count += cartDetailsFromDb.Count;
+                    {                      
                         cartsDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
                         cartsDto.CartDetails.First().CartDetailId = cartDetailsFromDb.CartDetailId;
                         _dbContext.CartDetails.Update(_mapper.Map<CartDetail>(cartsDto.CartDetails.First()));
