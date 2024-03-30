@@ -1,6 +1,8 @@
-﻿namespace FoodTruck.Domain.Entities
+﻿using FoodTruck.Domain.Entities;
+
+namespace FoodTruck.Dto.TruckReservationDtos
 {
-    public class TruckReservation
+    public class TruckReservationResponseDto
     {
         public int TruckReservationId { get; set; }
         public int TruckId { get; set; }

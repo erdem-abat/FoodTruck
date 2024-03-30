@@ -1,5 +1,7 @@
 ﻿using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.FoodDtos;
+using Microsoft.AspNetCore.Http;
+using System.Data;
 
 namespace FoodTruck.Application.Interfaces
 {
@@ -10,5 +12,8 @@ namespace FoodTruck.Application.Interfaces
         Task<List<FoodDto>> GetFoods();
         Task<List<FoodWithAllDto>> GetFoodsWithAll();
         Task<List<FoodWithAllDto>> GetFoodsByFilter(GetFoodsByFilterParameters getFoodsByFilterParameters);
+        Task<string> DocumentUpload(IFormFile formFile);
+        Task<DataTable> FoodDataTable(string path);
+        Task<bool> ImportFood(DataTable food);
     }
 }

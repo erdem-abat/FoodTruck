@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
@@ -96,6 +97,43 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 orderHeader.StripeSessionId = session.Id;
                 await _context.SaveChangesAsync();
                 return stripeRequestDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<OrderHeaderDto> ValidateStripe(int orderId)
+        {
+            try
+            {
+                Order order = _context.Orders.First(x => x.OrderId == orderId);
+
+                var service = new SessionService();
+                Session session = service.Get(order.StripeSessionId);
+
+                var paymentIntentService = new PaymentIntentService();
+                PaymentIntent paymentIntent = paymentIntentService.Get(session.PaymentIntentId);
+
+                if (paymentIntent.Status == "succeeded")
+                {
+                    order.PaymentIntentId = paymentIntent.Id;
+                    order.OrderStatus = _context.OrderStatuses.First(x => x.StatusName == "approved");
+                    await _context.SaveChangesAsync();
+
+                    //RewardsDto rewardsDto = new() //141. video topic ve sub oluşturma
+                    //{
+                    //    OrderId = order.OrderId,
+                    //    RewardsActivity = Convert.ToInt32(order.OrderTotal),
+                    //    UserId = order.UserId
+                    //};
+
+                    //string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+                    //_messageBus.SendMessage(rewardsDto, topicName);
+
+                }
+
+                return _mapper.Map<OrderHeaderDto>(order);
             }
             catch (Exception)
             {

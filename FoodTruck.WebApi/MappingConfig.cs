@@ -4,6 +4,7 @@ using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.CouponDtos;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.Dto.OrderDtos;
+using FoodTruck.Dto.TruckReservationDtos;
 using FoodTruck.WebApi.Controllers;
 
 namespace FoodTruck.WebApi
@@ -20,6 +21,8 @@ namespace FoodTruck.WebApi
                 config.CreateMap<OrderDetail, OrderDetailDto>().ReverseMap();
                 config.CreateMap<CartHeaderDto, OrderHeaderDto>().ReverseMap();
                 config.CreateMap<CartDetailDto, OrderDetailDto>().ReverseMap();
+                config.CreateMap<TruckReservationRequestDto, TruckReservation>().ReverseMap();
+                config.CreateMap<TruckReservationResponseDto, TruckReservation>().ReverseMap();
                 config.CreateMap<Coupon, CouponDto>().ReverseMap();
                 config.CreateMap<Food, FoodDto>().ReverseMap();
             });

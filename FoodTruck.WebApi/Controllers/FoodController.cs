@@ -1,5 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
+using FoodTruck.Application.Features.MediatR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediatR.Queries.ChefQueries;
 using FoodTruck.Application.Features.MediatR.Queries.MoodQueries;
 using FoodTruck.Application.Features.MediatR.Queries.TasteQueries;
@@ -103,7 +104,7 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
-        [HttpPost]
+        [HttpPost("CreateFood")]
         public async Task<IActionResult> CreateFood(CreateFoodCommand createFoodCommand)
         {
             try
@@ -118,6 +119,22 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
+
+        [HttpPost("CreateFoodWithExcel")]
+        public async Task<IActionResult> CreateFoodWithExcel(CreateFoodWithExcelCommand createFoodWithExcelCommand)
+        {
+            try
+            {
+                _response.Result = await _mediator.Send(createFoodWithExcelCommand);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateFood(UpdateFoodCommand updateFoodCommand)
         {

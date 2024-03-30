@@ -2,10 +2,13 @@
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using ZstdSharp.Unsafe;
+using Npgsql;
+using System.Data;
+using System.Data.OleDb;
 
 
 namespace FoodTruck.WebApi.Repositories.FoodRepository
@@ -14,10 +17,14 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
     {
         private readonly FoodTruckContext _context;
         private IDistributedCache _distributedCache;
-        public FoodRepository(FoodTruckContext context, IDistributedCache distributedCache)
+        private IConfiguration _configuration;
+        private IWebHostEnvironment _webHostEnvironment;
+        public FoodRepository(FoodTruckContext context, IDistributedCache distributedCache, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _distributedCache = distributedCache;
+            _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<List<FoodDto>> GetFoods()
         {
@@ -232,6 +239,111 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        public async Task<string> DocumentUpload(IFormFile formFile)
+        {
+            string uploadPath = _webHostEnvironment.WebRootPath;
+            string dest_path = Path.Combine(uploadPath, "uploaded_doc");
+            if(!Directory.Exists(dest_path))
+            {
+                Directory.CreateDirectory(dest_path);
+            }
+
+            string sourceFile = Path.GetFileName(formFile.FileName);
+            string path = Path.Combine(dest_path, sourceFile);
+
+            using (FileStream fileStream = new FileStream(path, FileMode.Create))
+            {
+                formFile.CopyTo(fileStream);
+            }
+
+            return path;
+        }
+
+        public async Task<DataTable> FoodDataTable(string path)
+        {
+            var conStr = _configuration.GetConnectionString("ExcelConnectionString");
+            DataTable dataTable = new DataTable();
+            conStr = string.Format(conStr, path);
+            using (OleDbConnection excelconn = new OleDbConnection(conStr))
+            {
+                using (OleDbCommand cmd = new OleDbCommand())
+                {
+                    using (OleDbDataAdapter adapterexcel = new OleDbDataAdapter())
+                    {
+                        excelconn.Open();
+                        cmd.Connection = excelconn;
+                        DataTable excelshema;
+                        excelshema = excelconn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                        var sheetname = excelshema.Rows[0]["Table_Name"].ToString();
+                        excelconn.Close();
+
+                        excelconn.Open();
+                        cmd.CommandText = "Select * from [" + sheetname + "]";
+                        adapterexcel.SelectCommand= cmd;
+                        adapterexcel.Fill(dataTable);
+                        excelconn.Close();
+
+                    }
+                }
+            }
+            return dataTable;
+        }
+
+        public async Task<bool> ImportFood(DataTable food)
+        {
+            var sqlconn = _configuration.GetConnectionString("AppDbConnectionString");
+
+            //using (SqlConnection scon = new SqlConnection(sqlconn))
+            //{
+            //    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(scon))
+            //    {
+            //        sqlBulkCopy.DestinationTableName = "Foods";
+            //        sqlBulkCopy.ColumnMappings.Add("Name", "Name");
+            //        sqlBulkCopy.ColumnMappings.Add("Price", "Price");
+            //        sqlBulkCopy.ColumnMappings.Add("Description", "Description");
+            //        sqlBulkCopy.ColumnMappings.Add("CountryId", "CountryId");
+            //        sqlBulkCopy.ColumnMappings.Add("CategoryId", "CategoryId");
+
+            //        scon.Open();
+            //        sqlBulkCopy.WriteToServer(food);
+            //        scon.Close();
+            //    }
+            //}
+
+            try
+            {
+                using (NpgsqlConnection conn = new NpgsqlConnection(sqlconn))
+                {
+                    conn.Open();
+
+                    using (var writer = conn.BeginBinaryImport("COPY \"Foods\" (\"Name\", \"Price\", \"Description\", \"ImageUrl\", \"ImageLocalPath\", \"CountryId\", \"CategoryId\") FROM STDIN (FORMAT BINARY)"))
+                    {
+                        foreach (DataRow row in food.Rows)
+                        {
+                            writer.StartRow();
+
+                            writer.Write(row["Name"], NpgsqlTypes.NpgsqlDbType.Text);
+                            writer.Write(row["Price"], NpgsqlTypes.NpgsqlDbType.Double);
+                            writer.Write(row["Description"], NpgsqlTypes.NpgsqlDbType.Text);
+                            writer.Write(row["ImageUrl"], NpgsqlTypes.NpgsqlDbType.Text);
+                            writer.Write(row["ImageLocalPath"], NpgsqlTypes.NpgsqlDbType.Text);
+                            writer.Write(row["CountryId"], NpgsqlTypes.NpgsqlDbType.Bigint);
+                            writer.Write(row["CategoryId"], NpgsqlTypes.NpgsqlDbType.Bigint);
+                            
+                        }
+                        writer.Complete();
+                        conn.Close();
+
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }

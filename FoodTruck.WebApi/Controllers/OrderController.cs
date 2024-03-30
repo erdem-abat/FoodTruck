@@ -52,5 +52,21 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
+        [HttpPost("ValidateStripeSession")]
+        public async Task<IActionResult> ValidateStripeSession(ValidateStripeCommand validateStripeCommand)
+        {
+            try
+            {
+                await _mediator.Send(validateStripeCommand);
+                _response.Result = "Stripe successfull.";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
+
     }
 }

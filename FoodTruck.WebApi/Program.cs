@@ -11,6 +11,7 @@ using FoodTruck.WebApi.Repositories.CartRepository;
 using FoodTruck.WebApi.Repositories.CouponRepository;
 using FoodTruck.WebApi.Repositories.FoodRepository;
 using FoodTruck.WebApi.Repositories.OrderRepository;
+using FoodTruck.WebApi.Repositories.ReservationRepository;
 using FoodTruck.WebApi.Repositories.TruckRepository;
 using FoodTruck.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -43,6 +44,7 @@ builder.Services.AddScoped(typeof(ICartRepository), typeof(CartRepository));
 builder.Services.AddScoped(typeof(ICouponRepository), typeof(CouponRepository));
 builder.Services.AddScoped(typeof(ITruckRepository), typeof(TruckRepository));
 builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+builder.Services.AddScoped(typeof(IReservationRepository), typeof(ReservationRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddApplicationServices(builder.Configuration);
@@ -51,7 +53,7 @@ IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddStackExchangeRedisCache(redisOptions=>
+builder.Services.AddStackExchangeRedisCache(redisOptions =>
 {
     string connection = builder.Configuration
     .GetConnectionString("Redis");
