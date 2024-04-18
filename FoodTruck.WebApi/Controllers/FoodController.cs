@@ -2,6 +2,7 @@
 using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
 using FoodTruck.Application.Features.MediatR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediatR.Queries.ChefQueries;
+using FoodTruck.Application.Features.MediatR.Queries.FoodQueries;
 using FoodTruck.Application.Features.MediatR.Queries.MoodQueries;
 using FoodTruck.Application.Features.MediatR.Queries.TasteQueries;
 using FoodTruck.Dto.FoodDtos;
@@ -31,6 +32,21 @@ namespace FoodTruck.WebApi.Controllers
             try
             {
                 var values = await _mediator.Send(new GetFoodQuery());
+                _response.Result = values;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
+        [HttpGet("GetFoodsWithPaging")]
+        public async Task<IActionResult> GetFoodsWithPaging(int page, int pageSize)
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetFoodsWithPagingQuery(page,pageSize));
                 _response.Result = values;
             }
             catch (Exception ex)

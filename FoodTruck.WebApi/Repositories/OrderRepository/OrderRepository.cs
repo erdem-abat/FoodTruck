@@ -80,7 +80,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                                 Name = item.Food.Name
                             }
                         },
-                        Quantity = item.Quantity
+                        Quantity = item.Count
                     };
 
                     options.LineItems.Add(sessionLineItem);

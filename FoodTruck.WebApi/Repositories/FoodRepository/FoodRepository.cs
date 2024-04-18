@@ -40,6 +40,20 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
 
             return foods;
         }
+        public async Task<List<FoodDto>> GetFoodsWithPaging(int page, int pageSize)
+        {
+            var foods = await _context.Foods.Select(x => new FoodDto
+            {
+                Description = x.Description,
+                FoodId = x.FoodId,
+                ImageLocalPath = x.ImageLocalPath,
+                Name = x.Name,
+                ImageUrl = x.ImageUrl,
+                Price = x.Price
+            }).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return foods;
+        }
         public async Task<List<Food>> GetFoodsWithCategory()
         {
             return await _context.Foods.Include(x => x.Category).ToListAsync();
@@ -246,7 +260,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         {
             string uploadPath = _webHostEnvironment.WebRootPath;
             string dest_path = Path.Combine(uploadPath, "uploaded_doc");
-            if(!Directory.Exists(dest_path))
+            if (!Directory.Exists(dest_path))
             {
                 Directory.CreateDirectory(dest_path);
             }
@@ -282,7 +296,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
 
                         excelconn.Open();
                         cmd.CommandText = "Select * from [" + sheetname + "]";
-                        adapterexcel.SelectCommand= cmd;
+                        adapterexcel.SelectCommand = cmd;
                         adapterexcel.Fill(dataTable);
                         excelconn.Close();
 
@@ -332,7 +346,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                             writer.Write(row["ImageLocalPath"], NpgsqlTypes.NpgsqlDbType.Text);
                             writer.Write(row["CountryId"], NpgsqlTypes.NpgsqlDbType.Bigint);
                             writer.Write(row["CategoryId"], NpgsqlTypes.NpgsqlDbType.Bigint);
-                            
+
                         }
                         writer.Complete();
                         conn.Close();
