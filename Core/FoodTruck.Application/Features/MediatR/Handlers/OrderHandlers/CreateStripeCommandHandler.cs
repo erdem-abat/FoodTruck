@@ -1,15 +1,11 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.OrderCommands;
+using FoodTruck.Application.Features.MediatR.Results.OrderResults;
 using FoodTruck.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
 {
-    public class CreateStripeCommandHandler : IRequestHandler<CreateStripeCommand>
+    public class CreateStripeCommandHandler : IRequestHandler<CreateStripeCommand, CreateStripeCommandResult>
     {
         private readonly IOrderRepository _repository;
 
@@ -18,9 +14,14 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
             _repository = repository;
         }
 
-        public async Task Handle(CreateStripeCommand request, CancellationToken cancellationToken)
+        public async Task<CreateStripeCommandResult> Handle(CreateStripeCommand request, CancellationToken cancellationToken)
         {
-            await _repository.CreateStripe(request.stripeRequestDto);
+            var value = await _repository.CreateStripe(request.stripeRequestDto);
+
+            return new CreateStripeCommandResult
+            {
+                stripeRequestDto = value
+            };
         }
     }
 }

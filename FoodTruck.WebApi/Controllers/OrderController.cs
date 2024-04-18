@@ -25,8 +25,8 @@ namespace FoodTruck.WebApi.Controllers
         {
             try
             {
-                await _mediator.Send(createOrderCommand);
-                _response.Result = "Order successfully created.";
+                var value = await _mediator.Send(createOrderCommand);
+                _response.Result = value;
             }
             catch (Exception ex)
             {
@@ -41,8 +41,8 @@ namespace FoodTruck.WebApi.Controllers
         {
             try
             {
-                await _mediator.Send(createStripeCommand);
-                _response.Result = "Stripe successfully created.";
+                var value = await _mediator.Send(createStripeCommand);
+                _response.Result = value;
             }
             catch (Exception ex)
             {

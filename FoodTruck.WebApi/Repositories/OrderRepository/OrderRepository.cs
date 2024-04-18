@@ -77,7 +77,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                             Currency = "usd",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
-                                Name = item.Food.Name
+                                Name = _context.Foods.First(x=>x.FoodId == item.FoodId).Name,
                             }
                         },
                         Quantity = item.Count

@@ -1,16 +1,11 @@
-﻿using Amazon.Runtime.Internal;
-using FoodTruck.Application.Features.MediatR.Commands.OrderCommands;
+﻿using FoodTruck.Application.Features.MediatR.Commands.OrderCommands;
+using FoodTruck.Application.Features.MediatR.Results.OrderResults;
 using FoodTruck.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
 {
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand>
+    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, CreateOrderCommandResult>
     {
         private readonly IOrderRepository _repository;
 
@@ -19,9 +14,13 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
             _repository = repository;
         }
 
-        public async Task Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<CreateOrderCommandResult> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            await _repository.CreateOrder(request.CartsDto);
+            var value = _repository.CreateOrder(request.CartsDto);
+            return new CreateOrderCommandResult
+            {
+                orderHeaderDto = value.Result
+            };
         }
     }
 }
