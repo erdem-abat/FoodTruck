@@ -1,13 +1,4 @@
-﻿using FoodTruck.Domain.Entities;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FoodTruck.Dto.FoodDtos
+﻿namespace FoodTruck.Dto.FoodDtos
 {
     public class FoodDto
     {
