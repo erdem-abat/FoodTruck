@@ -63,11 +63,11 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 {
                     new SessionDiscountOptions
                     {
-                        Coupon = stripeRequestDto.orderHeader.CouponCode
+                        Coupon = stripeRequestDto.orderHeaderDto.CouponCode
                     }
                 };
 
-                foreach (var item in stripeRequestDto.orderHeader.OrderDetails)
+                foreach (var item in stripeRequestDto.orderHeaderDto.OrderDetails)
                 {
                     var sessionLineItem = new SessionLineItemOptions
                     {
@@ -86,14 +86,14 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                     options.LineItems.Add(sessionLineItem);
                 }
 
-                if (stripeRequestDto.orderHeader.Discount > 0)
+                if (stripeRequestDto.orderHeaderDto.Discount > 0)
                 {
                     options.Discounts = discountsObj;
                 }
                 var service = new SessionService();
                 Session session = service.Create(options);
                 stripeRequestDto.StripeSessionUrl = session.Url;
-                Order orderHeader = _context.Orders.First(x => x.OrderId == stripeRequestDto.orderHeader.OrderId);
+                Order orderHeader = _context.Orders.First(x => x.OrderId == stripeRequestDto.orderHeaderDto.OrderId);
                 orderHeader.StripeSessionId = session.Id;
                 await _context.SaveChangesAsync();
                 return stripeRequestDto;
