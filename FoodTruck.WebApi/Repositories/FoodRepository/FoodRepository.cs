@@ -30,12 +30,13 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         {
             var foods = await _context.Foods.Select(x => new FoodDto
             {
-                Description = x.Description,
                 FoodId = x.FoodId,
-                ImageLocalPath = x.ImageLocalPath,
                 Name = x.Name,
                 ImageUrl = x.ImageUrl,
-                Price = x.Price
+                Price = x.Price,
+                CategoryId = x.CategoryId,
+                CountryId = x.CountryId,
+                Description = x.Description
             }).ToListAsync();
 
             return foods;
