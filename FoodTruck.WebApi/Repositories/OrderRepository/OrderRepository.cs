@@ -6,6 +6,7 @@ using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.OrderDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Stripe;
 using Stripe.Checkout;
 
@@ -34,7 +35,10 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 orderHeaderDto.CreatedDate = dateTime.ToUniversalTime();
                 orderHeaderDto.OrderStatusId = orderStatus.OrderStatusId;
                 orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailDto>>(cartsDto.CartDetails);
-
+                foreach (var item in orderHeaderDto.OrderDetails)
+                {
+                    item.Price = cartsDto.CartDetails.First(x => x.FoodId == item.FoodId).Food.Price;
+                }
                 Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
                 await _context.SaveChangesAsync();
 
@@ -77,7 +81,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                             Currency = "usd",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
-                                Name = _context.Foods.First(x=>x.FoodId == item.FoodId).Name,
+                                Name = _context.Foods.First(x => x.FoodId == item.FoodId).Name,
                             }
                         },
                         Quantity = item.Count
