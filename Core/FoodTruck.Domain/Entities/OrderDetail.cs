@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FoodTruck.Domain.Entities
 {
@@ -13,6 +9,7 @@ namespace FoodTruck.Domain.Entities
         public Order Order { get; set; }
         public int Count { get; set; }
         public int FoodId { get; set; }
+        [NotMapped]
         public Food Food { get; set; }
         public double Price { get; set; }
     }
