@@ -108,12 +108,12 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<bool> ApplyCoupon(CartsDto cartsDto)
+        public async Task<bool> ApplyCoupon(string UserId, string couponCode)
         {
             try
             {
-                var cartFromDb = await _dbContext.CartHeaders.FirstAsync(x => x.UserId == cartsDto.CartHeader.UserId);
-                cartFromDb.CouponCode = cartsDto.CartHeader.CouponCode;
+                var cartFromDb = await _dbContext.CartHeaders.FirstAsync(x => x.UserId == UserId);
+                cartFromDb.CouponCode = couponCode;
                 _dbContext.CartHeaders.Update(cartFromDb);
                 await _dbContext.SaveChangesAsync();
                 return true;

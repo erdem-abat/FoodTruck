@@ -57,11 +57,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("ApplyCoupon")]
-        public async Task<object> ApplyCoupon(CartsDto cartsDto)
+        public async Task<object> ApplyCoupon(string UserId, string couponCode)
         {
             try
             {
-                var value = await _mediator.Send(new GetCartCouponApplyQuery(cartsDto));
+                var value = await _mediator.Send(new GetCartCouponApplyQuery(UserId, couponCode));
                 _response.Result = value.IsApply == true ? "Coupon applied!" : "Check coupon code!";
             }
             catch (Exception ex)

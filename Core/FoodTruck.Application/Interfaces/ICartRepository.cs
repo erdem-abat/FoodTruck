@@ -8,6 +8,6 @@ namespace FoodTruck.Application.Interfaces
         Task<CartsDto> CartUpsert(CartsDto cartsDto);
         Task<CartsDto> GetCart(string userId);
         Task<bool> CartRemove(int cartDetailId);
-        Task<bool> ApplyCoupon(CartsDto cartsDto);
+        Task<bool> ApplyCoupon(string UserId, string couponCode);
     }
 }

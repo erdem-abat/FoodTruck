@@ -6,11 +6,12 @@ namespace FoodTruck.Application.Features.MediatR.Queries.CartQueries
 {
     public class GetCartCouponApplyQuery : IRequest<GetCartCouponApplyQueryResult>
     {
-        public CartsDto cartsDto { get; set; }
-
-        public GetCartCouponApplyQuery(CartsDto cartsDto)
+        public GetCartCouponApplyQuery(string userId, string couponCode)
         {
-            this.cartsDto = cartsDto;
+            UserId = userId;
+            this.couponCode = couponCode;
         }
+        public string UserId { get; set; }
+        public string couponCode { get; set; }
     }
 }

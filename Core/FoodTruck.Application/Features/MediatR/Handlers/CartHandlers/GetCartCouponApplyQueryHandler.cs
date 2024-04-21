@@ -16,7 +16,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
 
         public async Task<GetCartCouponApplyQueryResult> Handle(GetCartCouponApplyQuery request, CancellationToken cancellationToken)
         {
-            var value = await _cartRepository.ApplyCoupon(request.cartsDto);
+            var value = await _cartRepository.ApplyCoupon(request.UserId, request.UserId);
 
             return new GetCartCouponApplyQueryResult
             {
