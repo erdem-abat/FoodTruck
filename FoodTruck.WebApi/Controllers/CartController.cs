@@ -57,7 +57,7 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("ApplyCoupon")]
-        public async Task<object> ApplyCoupon([FromQuery] CartsDto cartsDto)
+        public async Task<object> ApplyCoupon(CartsDto cartsDto)
         {
             try
             {
