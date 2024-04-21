@@ -122,7 +122,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 if (paymentIntent.Status == "succeeded")
                 {
                     order.PaymentIntentId = paymentIntent.Id;
-                    order.OrderStatus = _context.OrderStatuses.First(x => x.StatusName == "approved");
+                    order.OrderStatus = _context.OrderStatuses.First(x => x.StatusName == "Approved");
                     await _context.SaveChangesAsync();
 
                     //RewardsDto rewardsDto = new() //141. video topic ve sub oluşturma
@@ -135,6 +135,9 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                     //string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
                     //_messageBus.SendMessage(rewardsDto, topicName);
 
+                    var getCart = _context.CartHeaders.First(x => x.UserId == order.UserId);
+                    _context.CartHeaders.Remove(getCart);
+                    await _context.SaveChangesAsync();
                 }
 
                 return _mapper.Map<OrderHeaderDto>(order);
