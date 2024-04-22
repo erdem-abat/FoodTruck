@@ -15,7 +15,7 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
             _context = context;
         }
 
-        public async Task<bool> CreateTruck(Truck truck, List<int> foodIds, List<int> chefIds)
+        public async Task<bool> CreateTruck(Truck truck, List<int[][]> foodIdsWithStocks, List<int> chefIds)
         {
             try
             {
@@ -49,15 +49,20 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
 
                 await _context.SaveChangesAsync();
 
-                foreach (var item in foodIds)
+                foreach (var item in foodIdsWithStocks)
                 {
-                    var data = new Domain.Entities.FoodTruck
-                    {
-                        FoodId = item,
-                        TruckId = truckFromDb.TruckId
-                    };
 
-                    _context.FoodTrucks.Add(data);
+                    for (int i = 0; i < item.Length; ++i)
+                    {
+                        var data = new Domain.Entities.FoodTruck
+                        {
+                            FoodId = item[i][0],
+                            TruckId = truckFromDb.TruckId,
+                            Stock = item[i][1]
+                        };
+
+                        _context.FoodTrucks.Add(data);
+                    }
                 }
 
                 await _context.SaveChangesAsync();

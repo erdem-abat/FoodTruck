@@ -3,6 +3,7 @@ using System;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodTruck.WebApi.Migrations
 {
     [DbContext(typeof(FoodTruckContext))]
-    partial class FoodTruckContextModelSnapshot : ModelSnapshot
+    [Migration("20240422162501_AddFoodTruckStock")]
+    partial class AddFoodTruckStock
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,33 +287,6 @@ namespace FoodTruck.WebApi.Migrations
                     b.HasIndex("TruckId");
 
                     b.ToTable("FoodTrucks");
-                });
-
-            modelBuilder.Entity("FoodTruck.Domain.Entities.FoodTruckCartDetail", b =>
-                {
-                    b.Property<int>("FoodTruckCartDetailId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FoodTruckCartDetailId"));
-
-                    b.Property<int>("CartHeaderId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FoodId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TruckId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("FoodTruckCartDetailId");
-
-                    b.HasIndex("CartHeaderId");
-
-                    b.ToTable("FoodTruckCartDetails");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Location", b =>
@@ -621,17 +597,6 @@ namespace FoodTruck.WebApi.Migrations
                     b.Navigation("Food");
 
                     b.Navigation("Truck");
-                });
-
-            modelBuilder.Entity("FoodTruck.Domain.Entities.FoodTruckCartDetail", b =>
-                {
-                    b.HasOne("FoodTruck.Domain.Entities.CartHeader", "CartHeader")
-                        .WithMany()
-                        .HasForeignKey("CartHeaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartHeader");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Order", b =>

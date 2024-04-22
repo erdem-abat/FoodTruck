@@ -26,6 +26,52 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             _couponRepository = couponRepository;
         }
 
+        public async Task<FoodTruckCartsDto> FoodTruckCartUpsert(FoodTruckCartsDto foodTruckCartsDto)
+        {
+            try
+            {
+                var cartHeaderFromDb = await _dbContext.CartHeaders
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.UserId == foodTruckCartsDto.CartHeader.UserId);
+
+                if (cartHeaderFromDb == null)
+                {
+                    CartHeader cartHeader = _mapper.Map<CartHeader>(foodTruckCartsDto.CartHeader);
+                    _dbContext.CartHeaders.Add(cartHeader);
+                    await _dbContext.SaveChangesAsync();
+                    foodTruckCartsDto.FoodTruckCartDetail.First().CartHeaderId = cartHeader.CartHeaderId;
+                    _dbContext.FoodTruckCartDetails.Add(_mapper.Map<FoodTruckCartDetail>(foodTruckCartsDto.FoodTruckCartDetail.First()));
+                    await _dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    var cartDetailsFromDb = await _dbContext.FoodTruckCartDetails.AsNoTracking().FirstOrDefaultAsync(
+                        x => x.FoodId == foodTruckCartsDto.FoodTruckCartDetail.First().FoodId &&
+                        x.CartHeaderId == cartHeaderFromDb.CartHeaderId);
+                    if (cartDetailsFromDb == null)
+                    {
+                        foodTruckCartsDto.FoodTruckCartDetail.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
+                        var value = foodTruckCartsDto.FoodTruckCartDetail.First();
+                        var data = _mapper.Map<FoodTruckCartDetail>(value);
+                        _dbContext.FoodTruckCartDetails.Add(data);
+                        await _dbContext.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        foodTruckCartsDto.FoodTruckCartDetail.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
+                        foodTruckCartsDto.FoodTruckCartDetail.First().FoodTruckCartDetailId = cartDetailsFromDb.FoodTruckCartDetailId;
+                        _dbContext.FoodTruckCartDetails.Update(_mapper.Map<FoodTruckCartDetail>(foodTruckCartsDto.FoodTruckCartDetail.First()));
+                        await _dbContext.SaveChangesAsync();
+                    }
+                }
+                return foodTruckCartsDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<CartsDto> CartUpsert(CartsDto cartsDto)
         {
             try
@@ -56,7 +102,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                         await _dbContext.SaveChangesAsync();
                     }
                     else
-                    {                      
+                    {
                         cartsDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
                         cartsDto.CartDetails.First().CartDetailId = cartDetailsFromDb.CartDetailId;
                         _dbContext.CartDetails.Update(_mapper.Map<CartDetail>(cartsDto.CartDetails.First()));

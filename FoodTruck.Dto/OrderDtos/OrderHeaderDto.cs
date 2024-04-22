@@ -1,6 +1,7 @@
 ﻿using FoodTruck.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace FoodTruck.Dto.OrderDtos
         public string? PaymentIntentId { get; set; }
         public string? StripeSessionId { get; set; }
         public DateTime CreatedDate { get; set; }
+        [NotMapped]
+        public int? truckId { get; set; }
 
         public int OrderStatusId { get; set; }
         public IEnumerable<OrderDetailDto> OrderDetails { get; set; }

@@ -45,5 +45,6 @@ namespace FoodTruck.WebApi.Data
         public DbSet<FoodTruck.Domain.Entities.FoodTruck> FoodTrucks { get; set; }
         public DbSet<Chef> Chefs { get; set; }
         public DbSet<FoodChef> FoodChefs { get; set; }
+        public DbSet<FoodTruckCartDetail> FoodTruckCartDetails { get; set; }
     }
 }

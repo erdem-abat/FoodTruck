@@ -7,7 +7,7 @@ namespace FoodTruck.Application.Features.MediatR.Commands.TruckCommands
     public class CreateTruckCommand : IRequest<GetTruckCreateCommandResult>
     {
         public string TruckName { get; set; }
-        public List<int> FoodIds { get; set; }
+        public List<int[][]> foodIdsWithStocks { get; set; }
         public List<int> ChefIds { get; set; }
     }
 }

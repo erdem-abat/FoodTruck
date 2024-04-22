@@ -26,7 +26,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.TruckHandlers
             var value = await _repository.CreateTruck(new Truck
             {
                 TruckName = request.TruckName
-            }, request.FoodIds, request.ChefIds);
+            }, request.foodIdsWithStocks, request.ChefIds);
 
             return new GetTruckCreateCommandResult
             {

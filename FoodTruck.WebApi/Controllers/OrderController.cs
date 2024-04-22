@@ -36,6 +36,23 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
+
+        [HttpPost("CreateOrderFoodTruck")]
+        public async Task<IActionResult> CreateOrderFoodTruck(CreateOrderFoodTruckCommand createOrderFoodTruckCommand)
+        {
+            try
+            {
+                var value = await _mediator.Send(createOrderFoodTruckCommand);
+                _response.Result = value;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
+
         [HttpPost("CreateStripeSession")]
         public async Task<IActionResult> CreateStripeSession(CreateStripeCommand createStripeCommand)
         {

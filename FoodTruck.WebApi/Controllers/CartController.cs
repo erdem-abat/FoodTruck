@@ -38,6 +38,22 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
+        [HttpPost("FoodTruckCartUpsert")]
+        public async Task<IActionResult> FoodTruckCartUpsert(FoodTruckCartUpsertCommand foodTruckCartUpsertCommand)
+        {
+            try
+            {
+                await _mediator.Send(foodTruckCartUpsertCommand);
+                _response.Result = "Cart operation has been completed.";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return Ok(_response);
+        }
 
         [HttpPost("CartUpsert")]
         public async Task<IActionResult> CartUpsert(CartUpsertCommand cartUpsertCommand)

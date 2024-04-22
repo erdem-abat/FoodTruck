@@ -7,5 +7,6 @@
         public Food Food { get; set; }
         public int TruckId { get; set; }
         public Truck Truck { get; set; }
+        public int Stock { get; set; }
     }
 }

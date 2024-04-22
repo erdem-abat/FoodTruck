@@ -5,6 +5,7 @@ using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.OrderDtos;
 using FoodTruck.WebApi.Data;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Stripe;
@@ -39,10 +40,65 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 {
                     item.Price = cartsDto.CartDetails.First(x => x.FoodId == item.FoodId).Food.Price;
                 }
+
                 Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
                 await _context.SaveChangesAsync();
 
                 orderHeaderDto.OrderId = order.OrderId;
+
+                return orderHeaderDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<OrderHeaderDto> CreateOrderFoodTruck(FoodTruckCartsDto foodTruckCartsDto)
+        {
+            try
+            {
+                OrderHeaderDto orderHeaderDto = _mapper.Map<OrderHeaderDto>(foodTruckCartsDto.CartHeader);
+
+                var orderStatus = await _context.OrderStatuses.FirstAsync(x => x.StatusName == "Pending");
+                var dateTime = DateTime.Now;
+
+                orderHeaderDto.CreatedDate = dateTime.ToUniversalTime();
+                orderHeaderDto.OrderStatusId = orderStatus.OrderStatusId;
+                orderHeaderDto.truckId = foodTruckCartsDto.FoodTruckCartDetail.First().TruckId;
+                orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailDto>>(foodTruckCartsDto.FoodTruckCartDetail);
+                foreach (var item in orderHeaderDto.OrderDetails)
+                {
+                    item.Price = foodTruckCartsDto.FoodTruckCartDetail.First(x => x.FoodId == item.FoodId).Food.Price;
+                }
+                if (orderHeaderDto.truckId != 0)
+                {
+                    foreach (var item in foodTruckCartsDto.FoodTruckCartDetail)
+                    {
+                        var truck = _context.FoodTrucks.First(x => x.FoodId == item.FoodId && x.TruckId == orderHeaderDto.truckId);
+                        truck.Stock -= item.Count;
+                        if (truck.Stock >= 0)
+                        {
+                            Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
+                            await _context.SaveChangesAsync();
+
+                            orderHeaderDto.OrderId = order.OrderId;
+                        }
+                        else
+                        {
+                            return orderHeaderDto;
+                        }
+                    }
+                }
+
+                else
+                {
+                    Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
+                    await _context.SaveChangesAsync();
+
+                    orderHeaderDto.OrderId = order.OrderId;
+                }
+
                 return orderHeaderDto;
             }
             catch (Exception)
@@ -107,7 +163,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 throw;
             }
         }
-        public async Task<OrderHeaderDto> ValidateStripe(int orderId)
+        public async Task<OrderHeaderDto> ValidateStripe(int orderId, int? truckId)
         {
             try
             {
@@ -124,6 +180,17 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                     order.PaymentIntentId = paymentIntent.Id;
                     order.OrderStatus = _context.OrderStatuses.First(x => x.StatusName == "Approved");
                     await _context.SaveChangesAsync();
+
+                    if (truckId != 0)
+                    {
+                        foreach (var item in order.OrderDetails)
+                        {
+                            var truck = _context.FoodTrucks.First(x => x.FoodId == item.FoodId && x.TruckId == truckId);
+                            truck.Stock -= item.Count;
+                            _context.FoodTrucks.Update(truck);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
 
                     //RewardsDto rewardsDto = new() //141. video topic ve sub oluşturma
                     //{
