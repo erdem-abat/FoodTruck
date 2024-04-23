@@ -38,6 +38,23 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
+        [HttpGet("GetFoodTruckCart")]
+        public async Task<IActionResult> GetFoodTruckCart([FromQuery] string userId)
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetFoodTruckCartQuery(userId));
+                _response.Result = values.foodTruckCartsDto;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return Ok(_response);
+        }
+
         [HttpPost("FoodTruckCartUpsert")]
         public async Task<IActionResult> FoodTruckCartUpsert(FoodTruckCartUpsertCommand foodTruckCartUpsertCommand)
         {

@@ -154,6 +154,43 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
+        public async Task<FoodTruckCartsDto> GetFoodTruckCart(string userId)
+        {
+            try
+            {
+                FoodTruckCartsDto foodTruckCartsDto = new()
+                {
+                    CartHeader = _mapper.Map<CartHeaderDto>(_dbContext.CartHeaders.First(x => x.UserId == userId))
+                };
+                foodTruckCartsDto.FoodTruckCartDetail = _mapper.Map<IEnumerable<FoodTruckCartDetailDto>>(_dbContext.FoodTruckCartDetails
+                    .Where(x => x.CartHeaderId == foodTruckCartsDto.CartHeader.CartHeaderId));
+
+                IEnumerable<FoodDto> foodDto = await _foodRepository.GetFoods();
+
+                foreach (var item in foodTruckCartsDto.FoodTruckCartDetail)
+                {
+                    item.Food = foodDto.FirstOrDefault(x => x.FoodId == item.FoodId);
+                    foodTruckCartsDto.CartHeader.CartTotal += (item.Count * item.Food.Price);
+                }
+
+                if (!string.IsNullOrEmpty(foodTruckCartsDto.CartHeader.CouponCode))
+                {
+                    Coupon? coupon = await _couponRepository.GetByFilterAsync(x => x.CouponCode == foodTruckCartsDto.CartHeader.CouponCode);
+                    if (coupon != null && foodTruckCartsDto.CartHeader.CartTotal > coupon.minAmount)
+                    {
+                        foodTruckCartsDto.CartHeader.CartTotal -= coupon.DiscountAmount;
+                        foodTruckCartsDto.CartHeader.Discount = coupon.DiscountAmount;
+                    }
+                }
+
+                return foodTruckCartsDto;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> ApplyCoupon(string UserId, string couponCode)
         {
             try
