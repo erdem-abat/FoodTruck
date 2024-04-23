@@ -1,4 +1,5 @@
 ﻿using FoodTruck.Domain.Entities;
+using FoodTruck.Dto.TruckDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace FoodTruck.Application.Interfaces
     public interface ITruckRepository
     {
         Task<bool> CreateTruck(Truck truck, List<int[][]> foodIdsWithStocks, List<int> chefIds);
+        Task<List<FoodTruckDto>> GetFoodTrucks();
     }
 }

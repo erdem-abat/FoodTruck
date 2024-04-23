@@ -1,6 +1,11 @@
-﻿using FoodTruck.Application.Interfaces;
+﻿using AutoMapper;
+using FoodTruck.Application.Features.MediatR.Results.TruckResults;
+using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
+using FoodTruck.Dto.FoodDtos;
+using FoodTruck.Dto.TruckDtos;
 using FoodTruck.WebApi.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ZstdSharp.Unsafe;
 
@@ -9,9 +14,11 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
     public class TruckRepository : ITruckRepository
     {
         private readonly FoodTruckContext _context;
+        private IMapper _mapper;
 
-        public TruckRepository(FoodTruckContext context)
+        public TruckRepository(FoodTruckContext context, IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
         }
 
@@ -68,6 +75,39 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
                 await _context.SaveChangesAsync();
 
                 return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<FoodTruckDto>> GetFoodTrucks()
+        {
+            try
+            {
+                //return _context.FoodTrucks.Select(x => new FoodTruckDto
+                //{
+                //    FoodId = x.FoodId,
+                //    Food = _mapper.Map<FoodDto>(_context.Foods.First(y => y.FoodId == x.FoodId)),
+                //    Stock = x.Stock,
+                //    Truck = _mapper.Map<TruckDto>(_context.Trucks.First(y => y.TruckId == x.TruckId)),
+                //    TruckId = x.TruckId,
+                //    FoodTruckId = x.FoodTruckId
+                //}).ToList();
+
+                return await(from foodtruck in _context.FoodTrucks
+                            join truck in _context.Trucks on foodtruck.TruckId equals truck.TruckId
+                            join food in _context.Foods on foodtruck.FoodId equals food.FoodId
+                            select new FoodTruckDto
+                            {
+                                Food = _mapper.Map<FoodDto>(food),
+                                Truck = _mapper.Map<TruckDto>(truck),
+                                FoodId = foodtruck.FoodId,
+                                Stock = foodtruck.Stock,
+                                FoodTruckId = foodtruck.FoodTruckId,
+                                TruckId = foodtruck.TruckId
+                            }).ToListAsync();
             }
             catch (Exception)
             {
