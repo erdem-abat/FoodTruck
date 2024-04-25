@@ -4,9 +4,11 @@ using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.CouponDtos;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.Dto.OrderDtos;
+using FoodTruck.Dto.RestaurantDtos;
+using FoodTruck.Dto.SeatDtos;
+using FoodTruck.Dto.TableDtos;
 using FoodTruck.Dto.TruckDtos;
 using FoodTruck.Dto.TruckReservationDtos;
-using FoodTruck.WebApi.Controllers;
 
 namespace FoodTruck.WebApi
 {
@@ -29,6 +31,10 @@ namespace FoodTruck.WebApi
                 config.CreateMap<Coupon, CouponDto>().ReverseMap();
                 config.CreateMap<Food, FoodDto>().ReverseMap();
                 config.CreateMap<Truck, TruckDto>().ReverseMap();
+                config.CreateMap<Restaurant, RestaurantHeaderDto>().ReverseMap();
+                config.CreateMap<RestaurantDetail, RestaurantDetailDto>().ReverseMap();
+                config.CreateMap<Table, TableDto>().ReverseMap();
+                config.CreateMap<Seat, SeatDto>().ReverseMap();
             });
             return mappingConfig;
         }

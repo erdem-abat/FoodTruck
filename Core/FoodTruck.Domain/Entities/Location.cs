@@ -6,7 +6,8 @@
         public string Name { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
-        public List<TruckReservation> FromReservation { get; set; }
-        public List<TruckReservation> ToReservation { get; set; }
+        public IEnumerable<TruckReservation> FromReservation { get; set; }
+        public IEnumerable<TruckReservation> ToReservation { get; set; }
+        public IEnumerable<Restaurant> Restaurants { get; set; }
     }
 }

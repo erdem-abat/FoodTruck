@@ -14,5 +14,8 @@ namespace FoodTruck.Domain.Entities
         public IEnumerable<FoodChef> GoodAt { get; set; }
         public int TruckId { get; set; }
         public Truck Truck { get; set; }
+
+        public int RestaurantId { get; set; }
+        public virtual Restaurant Restaurant { get; set; }
     }
 }

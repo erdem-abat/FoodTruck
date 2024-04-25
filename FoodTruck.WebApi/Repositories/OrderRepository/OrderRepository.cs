@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using Azure;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.OrderDtos;
 using FoodTruck.WebApi.Data;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Stripe;
 using Stripe.Checkout;
 

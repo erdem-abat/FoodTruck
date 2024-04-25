@@ -29,5 +29,6 @@ namespace FoodTruck.Domain.Entities
         public IEnumerable<OrderDetail> OrderDetails { get; set; }
         public IEnumerable<FoodTruck> Trucks { get; set; }
         public IEnumerable<FoodChef> Chefs { get; set; }
+        public IEnumerable<FoodRestaurant> FoodRestaurants { get; set; }
     }
 }
