@@ -9,5 +9,6 @@ public class Restaurant
     public IEnumerable<Table> Tables { get; set; }
     public IEnumerable<RestaurantDetail> RestaurantDetails { get; set; }
     public IEnumerable<FoodRestaurant> FoodRestaurants { get; set; }
+    public IEnumerable<Chef> Chefs { get; set; }
     public bool IsAlcohol { get; set; }
 }

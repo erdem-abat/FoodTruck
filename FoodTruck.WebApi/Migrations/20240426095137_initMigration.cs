@@ -369,6 +369,34 @@ namespace FoodTruck.WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Chefs",
+                columns: table => new
+                {
+                    ChefId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Popularity = table.Column<int>(type: "integer", nullable: false),
+                    TruckId = table.Column<int>(type: "integer", nullable: false),
+                    RestaurantId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chefs", x => x.ChefId);
+                    table.ForeignKey(
+                        name: "FK_Chefs_Restaurant_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurant",
+                        principalColumn: "RestaurantId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Chefs_Trucks_TruckId",
+                        column: x => x.TruckId,
+                        principalTable: "Trucks",
+                        principalColumn: "TruckId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FoodRestaurant",
                 columns: table => new
                 {
@@ -464,60 +492,6 @@ namespace FoodTruck.WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Chefs",
-                columns: table => new
-                {
-                    ChefId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Popularity = table.Column<int>(type: "integer", nullable: false),
-                    TruckId = table.Column<int>(type: "integer", nullable: false),
-                    RestaurantId = table.Column<int>(type: "integer", nullable: false),
-                    RestaurantDetailId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Chefs", x => x.ChefId);
-                    table.ForeignKey(
-                        name: "FK_Chefs_RestaurantDetails_RestaurantDetailId",
-                        column: x => x.RestaurantDetailId,
-                        principalTable: "RestaurantDetails",
-                        principalColumn: "RestaurantDetailId");
-                    table.ForeignKey(
-                        name: "FK_Chefs_Restaurant_RestaurantId",
-                        column: x => x.RestaurantId,
-                        principalTable: "Restaurant",
-                        principalColumn: "RestaurantId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Chefs_Trucks_TruckId",
-                        column: x => x.TruckId,
-                        principalTable: "Trucks",
-                        principalColumn: "TruckId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Seat",
-                columns: table => new
-                {
-                    SeatId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TableId = table.Column<int>(type: "integer", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Seat", x => x.SeatId);
-                    table.ForeignKey(
-                        name: "FK_Seat_Table_TableId",
-                        column: x => x.TableId,
-                        principalTable: "Table",
-                        principalColumn: "TableId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FoodChefs",
                 columns: table => new
                 {
@@ -543,15 +517,30 @@ namespace FoodTruck.WebApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Seat",
+                columns: table => new
+                {
+                    SeatId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TableId = table.Column<int>(type: "integer", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Seat", x => x.SeatId);
+                    table.ForeignKey(
+                        name: "FK_Seat_Table_TableId",
+                        column: x => x.TableId,
+                        principalTable: "Table",
+                        principalColumn: "TableId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CartDetails_CartHeaderId",
                 table: "CartDetails",
                 column: "CartHeaderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Chefs_RestaurantDetailId",
-                table: "Chefs",
-                column: "RestaurantDetailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Chefs_RestaurantId",
@@ -710,6 +699,9 @@ namespace FoodTruck.WebApi.Migrations
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
+                name: "RestaurantDetails");
+
+            migrationBuilder.DropTable(
                 name: "Seat");
 
             migrationBuilder.DropTable(
@@ -735,9 +727,6 @@ namespace FoodTruck.WebApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Table");
-
-            migrationBuilder.DropTable(
-                name: "RestaurantDetails");
 
             migrationBuilder.DropTable(
                 name: "Trucks");
