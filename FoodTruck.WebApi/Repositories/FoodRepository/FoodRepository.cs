@@ -1,4 +1,5 @@
-﻿using FoodTruck.Application.Interfaces;
+﻿using AutoMapper;
+using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Data;
@@ -19,12 +20,15 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         private IDistributedCache _distributedCache;
         private IConfiguration _configuration;
         private IWebHostEnvironment _webHostEnvironment;
-        public FoodRepository(FoodTruckContext context, IDistributedCache distributedCache, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        private IMapper _mapper;
+
+        public FoodRepository(FoodTruckContext context, IDistributedCache distributedCache, IConfiguration configuration, IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             _context = context;
             _distributedCache = distributedCache;
             _configuration = configuration;
             _webHostEnvironment = webHostEnvironment;
+            _mapper = mapper;
         }
         public async Task<List<FoodDto>> GetFoods()
         {
@@ -360,6 +364,35 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             {
                 throw ex;
             }
+        }
+
+        public async Task<FoodWithAllDto> GetFoodById(int foodId)
+        {
+
+            var data = (from food in _context.Foods
+                        join country in _context.Countries on food.CountryId equals country.CountryId
+                        join category in _context.Categories on food.CategoryId equals category.CategoryId
+                        join foodMood in _context.FoodMood on food.FoodId equals foodMood.FoodId into foodMoodGroup
+                        from foodMood in foodMoodGroup.DefaultIfEmpty()
+                        join mood in _context.Moods on foodMood.MoodId equals mood.MoodId into moodGroup
+                        from mood in moodGroup.DefaultIfEmpty()
+                        join foodTaste in _context.FoodTaste on food.FoodId equals foodTaste.FoodId into foodTasteGroup
+                        from foodTaste in foodTasteGroup.DefaultIfEmpty()
+                        join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
+                        from taste in tasteGroup.DefaultIfEmpty()
+                        where food.FoodId == foodId
+                        select new FoodWithAllDto
+                        {
+                            Food = food,
+                            Country = country,
+                            Category = category,
+                            FoodMood = foodMood,
+                            FoodTaste = foodTaste,
+                            Mood = mood,
+                            Taste = taste
+                        }).AsNoTracking();
+
+            return data.FirstOrDefault();
         }
     }
 }

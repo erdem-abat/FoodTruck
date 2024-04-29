@@ -11,6 +11,7 @@ namespace FoodTruck.Application.Interfaces
         Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds);
         Task<List<FoodDto>> GetFoods();
         Task<List<FoodDto>> GetFoodsWithPaging(int page, int pageSize);
+        Task<FoodWithAllDto> GetFoodById(int foodId);
         Task<List<FoodWithAllDto>> GetFoodsWithAll();
         Task<List<FoodWithAllDto>> GetFoodsByFilter(GetFoodsByFilterParameters getFoodsByFilterParameters);
         Task<string> DocumentUpload(IFormFile formFile);
