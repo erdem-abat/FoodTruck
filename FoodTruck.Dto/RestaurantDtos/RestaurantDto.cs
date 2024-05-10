@@ -4,5 +4,6 @@
     {
         public RestaurantHeaderDto RestaurantHeaderDto { get; set; }
         public IEnumerable<RestaurantDetailDto> RestaurantDetailDto { get; set; }
+        public string? locationName { get; set; }
     }
 }

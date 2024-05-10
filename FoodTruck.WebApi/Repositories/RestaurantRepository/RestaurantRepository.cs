@@ -2,12 +2,14 @@
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
+using FoodTruck.Dto.LocationDtos;
 using FoodTruck.Dto.RestaurantDtos;
 using FoodTruck.Dto.SeatDtos;
 using FoodTruck.Dto.TruckReservationDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
+using Location = Stripe.Terminal.Location;
 
 namespace FoodTruck.WebApi.Repositories.RestaurantRepository
 {
@@ -50,6 +52,82 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
             }
         }
 
+        public async Task<List<RestaurantInfoDto>> GetRestaurants()
+        {
+            try
+            {
+                var values = await (from rest in _context.Restaurant
+                    join restDet in _context.RestaurantDetails on rest.RestaurantId equals restDet.RestaurantId
+                    join loc in _context.Locations on restDet.LocationId equals loc.LocationId
+                    select new RestaurantInfoDto()
+                    {
+                        RestaurantId = rest.RestaurantId,
+                        LocationId = restDet.LocationId,
+                        RestaurantDetailId = restDet.RestaurantDetailId,
+                        CloseTime = rest.CloseTime,
+                        IsAlcohol = rest.IsAlcohol,
+                        OpenTime = rest.OpenTime,
+                        RestaurantName = rest.RestaurantName,
+                        locationName = loc.Name
+                    }).ToListAsync();
+
+                return values;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+        public async Task<RestaurantInfoDto> GetRestaurantById(int restaurantId)
+        {
+            try
+            {
+                var values = await (from rest in _context.Restaurant
+                    join restDet in _context.RestaurantDetails on rest.RestaurantId equals restDet.RestaurantId
+                    join loc in _context.Locations on restDet.LocationId equals loc.LocationId
+                    join tbl in _context.Table on rest.RestaurantId equals tbl.RestaurantId
+                    join st in _context.Seat on tbl.TableId equals st.TableId
+                    where rest.RestaurantId == restaurantId
+                    select new RestaurantInfoDto()
+                    {
+                        RestaurantId = rest.RestaurantId,
+                        LocationId = restDet.LocationId,
+                        RestaurantDetailId = restDet.RestaurantDetailId,
+                        CloseTime = rest.CloseTime,
+                        IsAlcohol = rest.IsAlcohol,
+                        OpenTime = rest.OpenTime,
+                        RestaurantName = rest.RestaurantName,
+                        locationName = loc.Name,
+                        TableId = tbl.TableId,
+                        IsAvailable = st.IsAvailable,
+                        IsSmoking = tbl.IsSmoking,
+                        SeatId = st.SeatId
+                    }).FirstOrDefaultAsync();
+
+                return values;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<LocationDto>> GetLocations()
+        {
+            try
+            {
+                var values = await _context.Locations.ToListAsync();
+                return _mapper.Map<List<LocationDto>>(values);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<SeatPlanDto> CreateSeatPlan(SeatPlanDto seatPlanDto)
         {
             try
@@ -78,6 +156,7 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                 throw;
             }
         }
+
         public async Task<string> AddFoodToRestaurant(int foodId, int restaurantId, double price)
         {
             try
@@ -85,16 +164,17 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                 Food food = _context.Foods.First(x => x.FoodId == foodId);
 
                 Restaurant restaurant = _context.Restaurant.First(x => x.RestaurantId == restaurantId);
-                
-               
 
-                if(food != null && restaurant != null)
+
+                if (food != null && restaurant != null)
                 {
-                    FoodRestaurant foodRestaurant = await _context.FoodRestaurant.FirstOrDefaultAsync(x => x.FoodId == foodId && x.RestaurantId == restaurantId);
+                    FoodRestaurant foodRestaurant =
+                        await _context.FoodRestaurant.FirstOrDefaultAsync(x =>
+                            x.FoodId == foodId && x.RestaurantId == restaurantId);
 
-                    if(foodRestaurant!= null)
+                    if (foodRestaurant != null)
                     {
-                        foodRestaurant.Price = price != 0 ? price: food.Price;
+                        foodRestaurant.Price = price != 0 ? price : food.Price;
                         _context.FoodRestaurant.Update(foodRestaurant);
 
                         await _context.SaveChangesAsync();
