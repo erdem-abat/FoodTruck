@@ -17,9 +17,11 @@ public class GetRestaurantQueryHandler : IRequestHandler<GetRestaurantQuery, Lis
     {
         var values = await _repository.GetRestaurants();
         
-        return values.Select(x => new GetRestaurantQueryResult
+        return values.Restaurants.Select(x => new GetRestaurantQueryResult
         {
-            RestaurantInfoDto = x
+            RestaurantInfoDto = x,
+            totalTableCount  = values.totalTableCount,
+            availableTableCount = values.availableTableCount
         }).ToList();
     }
 }

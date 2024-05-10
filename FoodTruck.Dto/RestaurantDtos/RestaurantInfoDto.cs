@@ -1,4 +1,8 @@
-﻿namespace FoodTruck.Dto.RestaurantDtos;
+﻿using System.Text.Json.Serialization;
+using FoodTruck.Dto.SeatDtos;
+using FoodTruck.Dto.TableDtos;
+
+namespace FoodTruck.Dto.RestaurantDtos;
 
 public class RestaurantInfoDto
 {
@@ -10,8 +14,6 @@ public class RestaurantInfoDto
     public int RestaurantDetailId { get; set; }
     public int LocationId { get; set; }
     public string locationName { get; set; }
-    public int? SeatId { get; set; }
-    public int? TableId { get; set; }
-    public bool? IsAvailable { get; set; }
-    public bool? IsSmoking { get; set; }
+    [JsonIgnore]
+    public List<TableInfoDto>? TableInfoDtos { get; set; }
 }

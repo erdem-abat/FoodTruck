@@ -5,6 +5,7 @@ using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.LocationDtos;
 using FoodTruck.Dto.RestaurantDtos;
 using FoodTruck.Dto.SeatDtos;
+using FoodTruck.Dto.TableDtos;
 using FoodTruck.Dto.TruckReservationDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
@@ -52,16 +53,16 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
             }
         }
 
-        public async Task<List<RestaurantInfoDto>> GetRestaurants()
+        public async Task<(List<RestaurantInfoDto> Restaurants, int totalTableCount, int availableTableCount)>
+            GetRestaurants()
         {
             try
             {
                 var values = await (from rest in _context.Restaurant
                     join restDet in _context.RestaurantDetails on rest.RestaurantId equals restDet.RestaurantId
                     join loc in _context.Locations on restDet.LocationId equals loc.LocationId
-                    join tbl in _context.Table on rest.RestaurantId equals tbl.RestaurantId
-                    join st in _context.Seat on tbl.TableId equals st.TableId
-                    select new RestaurantInfoDto()
+                    join tbl in _context.Table on rest.RestaurantId equals tbl.RestaurantId into tableGroup
+                    select new RestaurantInfoDto
                     {
                         RestaurantId = rest.RestaurantId,
                         LocationId = restDet.LocationId,
@@ -71,21 +72,46 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                         OpenTime = rest.OpenTime,
                         RestaurantName = rest.RestaurantName,
                         locationName = loc.Name,
-                        TableId = tbl.TableId,
-                        IsAvailable = st.IsAvailable,
-                        IsSmoking = tbl.IsSmoking,
-                        SeatId = st.SeatId
+                        TableInfoDtos = tableGroup.Select(t => new TableInfoDto
+                        {
+                            TableId = t.TableId,
+                            IsSmoking = t.IsSmoking,
+                            RestaurantId = t.RestaurantId,
+                            SeatInfoDtos = (from st in _context.Seat
+                                where st.TableId == t.TableId
+                                select new SeatInfoDto
+                                {
+                                    SeatId = st.SeatId,
+                                    IsAvailable = st.IsAvailable,
+                                    TableId = st.TableId
+                                }).ToList()
+                        }).ToList()
                     }).ToListAsync();
 
-                return values;
+                List<(int RestaurantId, double SolidityRatio)> solidityRatios =
+                    new List<(int RestaurantId, double SolidityRatio)>();
+
+                int totalTables = 0;
+                int availableTables = 0;
+                foreach (var restaurant in values)
+                {
+                    bool availableSeat = false;
+
+                    foreach (var table in restaurant.TableInfoDtos)
+                    {
+                        availableSeat = table.SeatInfoDtos.Any(seat => seat.IsAvailable == false);
+                        totalTables += 1;
+                        availableTables += availableSeat == true ? 0 : 1;
+                    }
+                }
+
+                return (values, totalTables, availableTables);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
-
 
         public async Task<RestaurantInfoDto> GetRestaurantById(int restaurantId)
         {
@@ -94,10 +120,9 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                 var values = await (from rest in _context.Restaurant
                     join restDet in _context.RestaurantDetails on rest.RestaurantId equals restDet.RestaurantId
                     join loc in _context.Locations on restDet.LocationId equals loc.LocationId
-                    join tbl in _context.Table on rest.RestaurantId equals tbl.RestaurantId
-                    join st in _context.Seat on tbl.TableId equals st.TableId
+                    join tbl in _context.Table on rest.RestaurantId equals tbl.RestaurantId into tableGroup
                     where rest.RestaurantId == restaurantId
-                    select new RestaurantInfoDto()
+                    select new RestaurantInfoDto
                     {
                         RestaurantId = rest.RestaurantId,
                         LocationId = restDet.LocationId,
@@ -107,10 +132,20 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                         OpenTime = rest.OpenTime,
                         RestaurantName = rest.RestaurantName,
                         locationName = loc.Name,
-                        TableId = tbl.TableId,
-                        IsAvailable = st.IsAvailable,
-                        IsSmoking = tbl.IsSmoking,
-                        SeatId = st.SeatId
+                        TableInfoDtos = tableGroup.Select(t => new TableInfoDto
+                        {
+                            TableId = t.TableId,
+                            IsSmoking = t.IsSmoking,
+                            RestaurantId = t.RestaurantId,
+                            SeatInfoDtos = (from st in _context.Seat
+                                where st.TableId == t.TableId
+                                select new SeatInfoDto
+                                {
+                                    SeatId = st.SeatId,
+                                    IsAvailable = st.IsAvailable,
+                                    TableId = st.TableId
+                                }).ToList()
+                        }).ToList()
                     }).FirstOrDefaultAsync();
 
                 return values;
