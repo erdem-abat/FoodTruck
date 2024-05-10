@@ -1,4 +1,5 @@
-﻿using FoodTruck.Domain.Entities;
+﻿using System.Text.Json.Serialization;
+using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.TableDtos;
 
 namespace FoodTruck.Dto.RestaurantDtos
@@ -10,6 +11,7 @@ namespace FoodTruck.Dto.RestaurantDtos
         public string OpenTime { get; set; }
         public string CloseTime { get; set; }
         public bool IsAlcohol { get; set; }
+        [JsonIgnore]
         public IEnumerable<RestaurantDetailDto> RestaurantDetailDto { get; set; }
     }
 }
