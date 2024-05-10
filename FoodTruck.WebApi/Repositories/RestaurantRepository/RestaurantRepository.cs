@@ -59,6 +59,8 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                 var values = await (from rest in _context.Restaurant
                     join restDet in _context.RestaurantDetails on rest.RestaurantId equals restDet.RestaurantId
                     join loc in _context.Locations on restDet.LocationId equals loc.LocationId
+                    join tbl in _context.Table on rest.RestaurantId equals tbl.RestaurantId
+                    join st in _context.Seat on tbl.TableId equals st.TableId
                     select new RestaurantInfoDto()
                     {
                         RestaurantId = rest.RestaurantId,
@@ -68,7 +70,11 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                         IsAlcohol = rest.IsAlcohol,
                         OpenTime = rest.OpenTime,
                         RestaurantName = rest.RestaurantName,
-                        locationName = loc.Name
+                        locationName = loc.Name,
+                        TableId = tbl.TableId,
+                        IsAvailable = st.IsAvailable,
+                        IsSmoking = tbl.IsSmoking,
+                        SeatId = st.SeatId
                     }).ToListAsync();
 
                 return values;

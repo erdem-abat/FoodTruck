@@ -1,4 +1,5 @@
-﻿using FoodTruck.Dto.SeatDtos;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using FoodTruck.Dto.SeatDtos;
 
 namespace FoodTruck.Dto.TableDtos
 {
@@ -6,7 +7,6 @@ namespace FoodTruck.Dto.TableDtos
     {
         public int TableId { get; set; }
         public int RestaurantId { get; set; }
-        public IEnumerable<SeatDto> SeatDtos { get; set; }
         public bool IsSmoking { get; set; }
     }
 }
