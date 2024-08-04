@@ -32,9 +32,10 @@ builder.Services.AddCors(opt =>
         .AllowCredentials();
     });
 });
-var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
-builder.Services.AddDbContext<FoodTruckContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddDbContext<UserIdentityDbContext>(options => options.UseNpgsql(connectionString));
+var connectionStringFoodTruck = builder.Configuration.GetConnectionString("AppDbConnectionStringFoodTruck");
+var connectionStringUser = builder.Configuration.GetConnectionString("AppDbConnectionStringUser");
+builder.Services.AddDbContext<FoodTruckContext>(options => options.UseNpgsql(connectionStringFoodTruck));
+builder.Services.AddDbContext<UserIdentityDbContext>(options => options.UseNpgsql(connectionStringUser));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<UserIdentityDbContext>()
     .AddDefaultTokenProviders();
