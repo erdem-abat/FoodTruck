@@ -1,6 +1,9 @@
-﻿using FoodTruck.Application.Interfaces;
+﻿using Azure;
+using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
+using FoodTruck.Dto;
 using FoodTruck.Dto.AuthDtos;
+using FoodTruck.Dto.OtpDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Linq;
@@ -13,13 +16,18 @@ namespace FoodTruck.WebApi.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly IOtpRepository _otprepository;
+        private ResponseDto _response;
 
-        public AuthService(UserIdentityDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator)
+
+        public AuthService(UserIdentityDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator, IOtpRepository otprepository)
         {
             _appDbContext = appDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _otprepository = otprepository;
+            _response = new ResponseDto();
         }
 
         public async Task<bool> AssignRole(string username, string roleName)
@@ -46,35 +54,24 @@ namespace FoodTruck.WebApi.Services
 
             if (user == null || !isValid)
             {
-                return (new LoginResponseDto()
-                {
-                    User = null,
-                    AppUser=null,
-                    Token = ""
-                });
+                return (new LoginResponseDto());
             }
 
             var roles = await _userManager.GetRolesAsync(user);
             var token = _jwtTokenGenerator.GenerateToken(user, roles);
 
-            UserDto userDTO = new()
-            {
-                Username = user.UserName,
-                ID = user.Id,
-                Name = user.Name,
-                PhoneNumber = user.PhoneNumber,
-                Roles = roles.ToList()
-            };
-
             return new LoginResponseDto
             {
-                User = userDTO,
-                AppUser = user,
+                ID = user.Id,
+                Roles = roles.ToList(),
+                PhoneNumber = user.PhoneNumber,
+                Name = user.Name,
+                Username = user.UserName,
                 Token = token
             };
         }
 
-        public async Task<string> Register(RegisterationRequestDto registerationRequestDto)
+        public async Task<ResponseDto> Register(RegisterationRequestDto registerationRequestDto)
         {
             ApplicationUser user = new()
             {
@@ -91,30 +88,66 @@ namespace FoodTruck.WebApi.Services
 
                 if (userValue == null)
                 {
-                    var result = await _userManager.CreateAsync(user, registerationRequestDto.Password);
+                    var emailSent = _otprepository.CheckOtp(registerationRequestDto.Email);
 
-                    if (result.Succeeded)
+                    if (emailSent.success)
                     {
-                        userValue = _appDbContext.applicationUsers.FirstOrDefault(x => x.UserName == registerationRequestDto.Username);
+                        _response.Message = "Email sent!";
+                        _response.IsSuccess = true;
 
-                        if (!_roleManager.RoleExistsAsync(registerationRequestDto.Role).GetAwaiter().GetResult())
-                        {
-                            _roleManager.CreateAsync(new IdentityRole(registerationRequestDto.Role)).GetAwaiter().GetResult();
-                        }
-                        await _userManager.AddToRoleAsync(userValue, registerationRequestDto.Role);
+                        return _response;
+                    }
+
+                    ValidateResponseDto res = _otprepository.ValidateOtp(registerationRequestDto.Email, registerationRequestDto.otpCode);
+
+                    if (!res.Response)
+                    {
+                        _response.Message = "Otp is not valid!";
+                        _response.IsSuccess = false;
+
+                        return _response;
                     }
                     else
                     {
-                        return result.Errors.FirstOrDefault().Description;
+                        var result = await _userManager.CreateAsync(user, registerationRequestDto.Password);
+
+                        if (result.Succeeded)
+                        {
+                            userValue = _appDbContext.applicationUsers.FirstOrDefault(x => x.UserName == registerationRequestDto.Username);
+
+                            if (!_roleManager.RoleExistsAsync("User").GetAwaiter().GetResult())
+                            {
+                                _roleManager.CreateAsync(new IdentityRole("User")).GetAwaiter().GetResult();
+                            }
+                            await _userManager.AddToRoleAsync(userValue, "User");
+                        }
+                        else
+                        {
+                            _response.Message = result.Errors.FirstOrDefault().Description;
+                            _response.IsSuccess = false;
+
+                            return _response;
+                        }
+
+                        _response.Message = "Registered!";
+                        _response.IsSuccess = true;
+
+                        return _response;
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw;
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+
+                return _response;
             }
 
-            return "Error Encountered";
+            _response.Message = "Error Encountered";
+            _response.IsSuccess = false;
+
+            return _response;
         }
     }
 }

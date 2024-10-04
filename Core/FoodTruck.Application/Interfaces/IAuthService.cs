@@ -1,4 +1,5 @@
-﻿using FoodTruck.Dto.AuthDtos;
+﻿using FoodTruck.Dto;
+using FoodTruck.Dto.AuthDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace FoodTruck.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> Register(RegisterationRequestDto registerationRequestDto);
+        Task<ResponseDto> Register(RegisterationRequestDto registerationRequestDto);
         Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
         Task<bool> AssignRole(string username, string roleName);
     }

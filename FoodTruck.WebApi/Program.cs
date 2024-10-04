@@ -11,6 +11,7 @@ using FoodTruck.WebApi.Repositories.CartRepository;
 using FoodTruck.WebApi.Repositories.CouponRepository;
 using FoodTruck.WebApi.Repositories.FoodRepository;
 using FoodTruck.WebApi.Repositories.OrderRepository;
+using FoodTruck.WebApi.Repositories.OtpRepository;
 using FoodTruck.WebApi.Repositories.ReservationRepository;
 using FoodTruck.WebApi.Repositories.RestaurantRepository;
 using FoodTruck.WebApi.Repositories.TruckRepository;
@@ -21,17 +22,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", builder =>
     {
-        builder.WithOrigins("http://localhost:5173");
+        builder.WithOrigins("exp://192.168.72.168:8081");
         builder.AllowAnyHeader()
         .AllowAnyMethod()
         .SetIsOriginAllowed((host) => true)
         .AllowCredentials();
     });
 });
+
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 builder.Services.AddDbContext<FoodTruckContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<UserIdentityDbContext>(options => options.UseNpgsql(connectionString));
@@ -41,6 +44,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 // Add services to the container.
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IFoodRepository), typeof(FoodRepository));
+builder.Services.AddScoped(typeof(IOtpRepository), typeof(OtpRepository));
 builder.Services.AddScoped(typeof(ICartRepository), typeof(CartRepository));
 builder.Services.AddScoped(typeof(ICouponRepository), typeof(CouponRepository));
 builder.Services.AddScoped(typeof(ITruckRepository), typeof(TruckRepository));
@@ -94,7 +98,7 @@ builder.Services.AddSwaggerGen(option =>
 
 Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
-builder.AddAppAuthentication();
+//builder.AddAppAuthentication();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

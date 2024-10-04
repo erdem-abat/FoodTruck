@@ -1,11 +1,12 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.AuthCommands;
 using FoodTruck.Application.Interfaces;
+using FoodTruck.Dto;
 using FoodTruck.Dto.AuthDtos;
 using MediatR;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
 {
-    public class RegisterUserCommandHandler: IRequestHandler<RegisterUserCommand>
+    public class RegisterUserCommandHandler: IRequestHandler<RegisterUserCommand, ResponseDto>
     {
         private readonly IAuthService _authService;
 
@@ -14,16 +15,16 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
             _authService = authService;
         }
 
-        public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            var errorMesage = await _authService.Register(new RegisterationRequestDto
+            return await _authService.Register(new RegisterationRequestDto
             {
                 Username = request.Username,
                 PhoneNumber = request.PhoneNumber,
                 Email = request.Email,
                 Password = request.Password,
                 Name = request.Name,
-                Role = "USER"
+                otpCode = request.OtpCode
             });
         }
     }

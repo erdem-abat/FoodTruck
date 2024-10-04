@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodTruck.WebApi.Migrations
 {
     [DbContext(typeof(FoodTruckContext))]
-    [Migration("20240426095137_initMigration")]
-    partial class initMigration
+    [Migration("20241004130544_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

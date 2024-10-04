@@ -27,17 +27,17 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
                 Password = request.Password
             });
 
-            if (userResponse.Result.User == null)
+            if (userResponse.Result == null)
             {
                 values.IsExist = false;
             }
             else
             {
                 values.IsExist = true;
-                values.Username = userResponse.Result.User.Username;
-                values.Roles = userResponse.Result.User.Roles;
-                values.UserId = userResponse.Result.User.ID;
-                values.AppUser = userResponse.Result.AppUser;
+                values.Username = userResponse.Result.Username;
+                values.Roles = userResponse.Result.Roles;
+                values.UserId = userResponse.Result.ID;
+                values.Name = userResponse.Result.Name;
                 values.Token = userResponse.Result.Token;
             }
             return values;

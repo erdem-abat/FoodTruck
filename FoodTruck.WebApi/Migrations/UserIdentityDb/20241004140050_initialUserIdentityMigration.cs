@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodTruck.WebApi.Migrations.UserIdentityDb
 {
     /// <inheritdoc />
-    public partial class initUser : Migration
+    public partial class initialUserIdentityMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

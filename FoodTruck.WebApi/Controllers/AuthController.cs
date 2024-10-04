@@ -6,6 +6,7 @@ using FoodTruck.Dto.AuthDtos;
 using FoodTruck.WebApi.Models.Dto;
 using FoodTruck.WebApi.Services;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTruck.WebApi.Controllers
@@ -30,8 +31,16 @@ namespace FoodTruck.WebApi.Controllers
         {
             try
             {
-                await _mediator.Send(registerUserCommand);
-                _response.Result = "Register successfully.";
+                var value = await _mediator.Send(registerUserCommand);
+
+                if (value.IsSuccess)
+                {
+                    return StatusCode(StatusCodes.Status200OK, value);
+                }
+                else
+                {
+                    return NotFound(value.Message);
+                }
             }
             catch (Exception ex)
             {

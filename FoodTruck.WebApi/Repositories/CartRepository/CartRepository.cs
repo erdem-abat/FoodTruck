@@ -30,6 +30,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
         {
             try
             {
+
                 var cartHeaderFromDb = await _dbContext.CartHeaders
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.UserId == foodTruckCartsDto.CartHeader.UserId);
