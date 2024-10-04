@@ -8,6 +8,10 @@ using FoodTruck.WebApi.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace FoodTruck.WebApi.Controllers
 {
@@ -17,13 +21,13 @@ namespace FoodTruck.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private ResponseDto _response;
-        private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        protected readonly IConfiguration _configuration;
 
-        public AuthController(IMediator mediator, IJwtTokenGenerator jwtTokenGenerator)
+        public AuthController(IMediator mediator, IConfiguration configuration)
         {
             _mediator = mediator;
             _response = new ResponseDto();
-            _jwtTokenGenerator = jwtTokenGenerator;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -39,7 +43,7 @@ namespace FoodTruck.WebApi.Controllers
                 }
                 else
                 {
-                    return NotFound(value.Message);
+                    return BadRequest(value.Message);
                 }
             }
             catch (Exception ex)
@@ -67,7 +71,7 @@ namespace FoodTruck.WebApi.Controllers
                     _response.Message = "Username or password invalid.";
                     _response.IsSuccess = false;
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -75,6 +79,25 @@ namespace FoodTruck.WebApi.Controllers
                 _response.Message = ex.Message;
             }
             return Ok(_response);
+        }
+
+        [HttpPost("googleLogin")]
+        public async Task<IActionResult> GoogleLogin(GoogleLoginUserCommand googleLoginUserCommand)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState.Values.SelectMany(it => it.Errors).Select(it => it.ErrorMessage));
+
+                return Ok(await _mediator.Send(googleLoginUserCommand));
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpPost("AssignRole")]

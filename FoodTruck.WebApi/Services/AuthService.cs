@@ -7,6 +7,7 @@ using FoodTruck.Dto.OtpDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Linq;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace FoodTruck.WebApi.Services
 {
@@ -18,9 +19,9 @@ namespace FoodTruck.WebApi.Services
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IOtpRepository _otprepository;
         private ResponseDto _response;
+        protected readonly IConfiguration _configuration;
 
-
-        public AuthService(UserIdentityDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator, IOtpRepository otprepository)
+        public AuthService(UserIdentityDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator, IOtpRepository otprepository, IConfiguration configuration)
         {
             _appDbContext = appDbContext;
             _userManager = userManager;
@@ -28,6 +29,7 @@ namespace FoodTruck.WebApi.Services
             _jwtTokenGenerator = jwtTokenGenerator;
             _otprepository = otprepository;
             _response = new ResponseDto();
+            _configuration = configuration;
         }
 
         public async Task<bool> AssignRole(string username, string roleName)
@@ -44,6 +46,79 @@ namespace FoodTruck.WebApi.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<UserTokenDto> AuthenticateGoogleUserAsync(GoogleRequestDto request)
+        {
+            Payload payload = await ValidateAsync(request.IdToken, new ValidationSettings
+            {
+                Audience = new[] { _configuration["ApiSettings:Google:ClientId"] }
+            });
+
+            return await GetOrCreateExternalLoginUser(GoogleRequestDto.PROVIDER, payload.Subject, payload.Email, payload.GivenName);
+        }
+
+        private async Task<UserTokenDto> GetOrCreateExternalLoginUser(string provider, string key, string email, string name)
+        {
+            var user = await _userManager.FindByLoginAsync(provider, key);
+            var expires = DateTime.UtcNow.AddDays(7);
+
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var token = _jwtTokenGenerator.GenerateToken(user, roles);
+
+                return new UserTokenDto
+                {
+                    UserId = user.Id,
+                    Token = token,
+                    Expires = expires,
+                    Email = email
+                };
+            }
+
+            user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    Email = email,
+                    UserName = email,
+                    Name = name,
+                    Id = key,
+                };
+                await _userManager.CreateAsync(user);
+                var info = new UserLoginInfo(provider, key, provider.ToUpperInvariant());
+                var result = await _userManager.AddLoginAsync(user, info);
+
+                if (result.Succeeded)
+                {
+                    var userValue = _appDbContext.Users.FirstOrDefault(x => x.UserName == email);
+
+                    if (!_roleManager.RoleExistsAsync("User").GetAwaiter().GetResult())
+                    {
+                        _roleManager.CreateAsync(new IdentityRole("User")).GetAwaiter().GetResult();
+                    }
+                    await _userManager.AddToRoleAsync(userValue, "User");
+                }
+
+                if (!result.Succeeded)
+                    throw new Exception(string.Join(",", result.Errors.Select(x => x.Description).ToList()));
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var token = _jwtTokenGenerator.GenerateToken(user, roles);
+
+                return new UserTokenDto
+                {
+                    UserId = user.Id,
+                    Token = token,
+                    Expires = expires,
+                    Email = email
+                };
+            }
+
+            return new UserTokenDto();
         }
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
