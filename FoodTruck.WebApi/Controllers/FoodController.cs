@@ -26,7 +26,7 @@ namespace FoodTruck.WebApi.Controllers
             _response = new ResponseDto();
         }
         [Authorize]
-        [HttpGet]
+        [HttpGet("GetFoods")]
         public async Task<IActionResult> GetFoods()
         {
             try

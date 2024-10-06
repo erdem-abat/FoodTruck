@@ -63,18 +63,17 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         {
             return await _context.Foods.Include(x => x.Category).ToListAsync();
         }
-        public async Task<List<FoodWithAllDto>> GetFoodsWithAll()
+        public async Task<List<FoodWithAllDto>> GetFoodsWithAll(CancellationToken cancellationToken)
         {
             //return await _context.Foods
             //    .Include(a => a.Country)
             //    .Include(b => b.Category)
             //    .Include(c => c.FoodMoods).ThenInclude(d => d.Mood)
-            //    .Include(e => e.FoodTastes).ThenInclude(f => f.Taste)
             //    .ToListAsync();
 
             string key = "food";
 
-            string? cachedMember = await _distributedCache.GetStringAsync(key);
+            string? cachedMember = await _distributedCache.GetStringAsync(key, cancellationToken);
 
             if (string.IsNullOrEmpty(cachedMember))
             {
@@ -109,7 +108,8 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                     {
                         PreserveReferencesHandling = PreserveReferencesHandling.Objects
                     }),
-                    option
+                    option,
+                    cancellationToken
                     );
 
                 return foods;

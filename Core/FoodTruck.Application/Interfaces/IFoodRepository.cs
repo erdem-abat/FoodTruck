@@ -12,7 +12,7 @@ namespace FoodTruck.Application.Interfaces
         Task<List<FoodDto>> GetFoods();
         Task<List<FoodDto>> GetFoodsWithPaging(int page, int pageSize);
         Task<FoodWithAllDto> GetFoodById(int foodId);
-        Task<List<FoodWithAllDto>> GetFoodsWithAll();
+        Task<List<FoodWithAllDto>> GetFoodsWithAll(CancellationToken cancellationToken);
         Task<List<FoodWithAllDto>> GetFoodsByFilter(GetFoodsByFilterParameters getFoodsByFilterParameters);
         Task<string> DocumentUpload(IFormFile formFile);
         Task<DataTable> FoodDataTable(string path);

@@ -69,7 +69,6 @@ builder.Services.AddStackExchangeRedisCache(redisOptions =>
 
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -98,7 +97,7 @@ builder.Services.AddSwaggerGen(option =>
 
 Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
-//builder.AddAppAuthentication();
+builder.AddAppAuthentication();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
