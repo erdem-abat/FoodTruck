@@ -20,10 +20,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
             return await _authService.Register(new RegisterationRequestDto
             {
                 Username = request.Username,
-                PhoneNumber = request.PhoneNumber,
-                Email = request.Email,
                 Password = request.Password,
-                Name = request.Name,
                 otpCode = request.OtpCode
             });
         }

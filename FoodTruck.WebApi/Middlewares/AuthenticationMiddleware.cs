@@ -24,7 +24,7 @@ namespace FoodTruck.WebApi.Middlewares
                 context.Request.Body.Position = 0;
 
                 dynamic bodyJson = JsonConvert.DeserializeObject(bodyAsText);
-                string email = bodyJson?.email;
+                string email = bodyJson?.username;
                 var ipAddress = context.Connection.RemoteIpAddress?.ToString();  // Get IP address
 
                 var loginLog = new LoginLog

@@ -43,7 +43,7 @@ namespace FoodTruck.WebApi.Controllers
                 }
                 else
                 {
-                    return BadRequest(value.Message);
+                    return Ok(value.Message);
                 }
             }
             catch (Exception ex)

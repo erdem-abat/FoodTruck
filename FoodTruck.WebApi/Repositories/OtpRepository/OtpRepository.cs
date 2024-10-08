@@ -10,6 +10,12 @@ public class OtpRepository : IOtpRepository
 {
     private static Random r = new Random();
     private static Dictionary<string, string> otpDictionary = new Dictionary<string, string>();
+    private readonly IConfiguration _configuration;
+
+    public OtpRepository(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
 
     public OtpResponseDto CheckOtp(string email)
     {
@@ -25,7 +31,7 @@ public class OtpRepository : IOtpRepository
                 SmtpClient client = new SmtpClient("smtp.ethereal.email", 587);
                 client.EnableSsl = true;
                 client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential("norma.rosenbaum94@ethereal.email", "KU15megf9Px5Z1gqNe");
+                client.Credentials = new NetworkCredential("norma.rosenbaum94@ethereal.email", _configuration["Email:Password"]);
 
                 // Create email message
                 MailMessage mailMessage = new MailMessage();
