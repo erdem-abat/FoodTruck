@@ -143,8 +143,6 @@ namespace FoodTruck.WebApi.Services
                 {
                     ID = user.Id,
                     Roles = roles.ToList(),
-                    PhoneNumber = user.PhoneNumber,
-                    Name = user.Name,
                     Username = user.UserName,
                     Token = token
                 };
