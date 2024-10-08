@@ -5,6 +5,7 @@ using FoodTruck.Domain.Entities;
 using FoodTruck.WebApi;
 using FoodTruck.WebApi.Data;
 using FoodTruck.WebApi.Extensions;
+using FoodTruck.WebApi.Middlewares;
 using FoodTruck.WebApi.Models;
 using FoodTruck.WebApi.Repositories;
 using FoodTruck.WebApi.Repositories.CartRepository;
@@ -115,5 +116,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseMiddleware<AuthenticationMiddleware>();
 app.Run();

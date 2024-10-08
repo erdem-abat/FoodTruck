@@ -24,6 +24,35 @@ namespace FoodTruck.WebApi.Data
                 .WithMany(y => y.ToReservation)
                 .HasForeignKey(z => z.ToLocationId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Food>()
+                .HasMany(f => f.Ingredients)
+                .WithMany(i => i.Foods)
+                .UsingEntity<Dictionary<string, object>>(
+                    "FoodIngredient",
+                    j => j.HasOne<Ingredient>().WithMany().HasForeignKey("IngredientId"),
+                    j => j.HasOne<Food>().WithMany().HasForeignKey("FoodId"));
+
+            modelBuilder.Entity<Food>()
+                .HasMany(f => f.Campaigns)
+                .WithMany(i => i.Foods)
+                .UsingEntity<Dictionary<string, object>>(
+                    "FoodCampaign",
+                    j => j.HasOne<Campaign>().WithMany().HasForeignKey("CampaignId"),
+                    j => j.HasOne<Food>().WithMany().HasForeignKey("FoodId"));
+
+            modelBuilder.Entity<Food>()
+               .HasMany(f => f.FoodRates)
+               .WithOne(fr => fr.Food)
+               .HasForeignKey(fr => fr.FoodId);
+
+            modelBuilder.Entity<Rate>()
+                .HasMany(r => r.FoodRates)
+                .WithOne(fr => fr.Rate)
+                .HasForeignKey(fr => fr.RateId);
+
+            modelBuilder.Entity<FoodRate>()
+                .HasKey(fr => new { fr.FoodId, fr.RateId });
         }
 
         public DbSet<Food> Foods { get; set; }
@@ -51,5 +80,11 @@ namespace FoodTruck.WebApi.Data
         public DbSet<Restaurant> Restaurant { get; set; }
         public DbSet<RestaurantDetail> RestaurantDetails { get; set; }
         public DbSet<FoodRestaurant> FoodRestaurant { get; set; }
+        public DbSet<LoginLog> LoginLogs { get; set; }
+        public DbSet<Campaign> Campaigns { get; set; }
+        public DbSet<Advertise> Advertises { get; set; }
+        public DbSet<Rate> Rates { get; set; }
+       //public DbSet<FoodRate> FoodRates { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
     }
 }

@@ -167,6 +167,16 @@ namespace FoodTruck.WebApi.Services
 
                     if (emailSent.success)
                     {
+                        _response.Result = new RegisterationResponseDto()
+                        {
+                            Email = registerationRequestDto.Email,
+                            Name = registerationRequestDto.Name,
+                            otpCode = registerationRequestDto.otpCode,
+                            Password = registerationRequestDto.Password,
+                            PhoneNumber = registerationRequestDto.PhoneNumber,
+                            Username = registerationRequestDto.Username
+                        };
+
                         _response.Message = "Email sent!";
                         _response.IsSuccess = true;
 
@@ -204,11 +214,26 @@ namespace FoodTruck.WebApi.Services
                             return _response;
                         }
 
+                        var data = await Login(new LoginRequestDto()
+                        {
+                            Username = registerationRequestDto.Username,
+                            Password = registerationRequestDto.Password
+                        });
+
+
+                        _response.Result = data;
                         _response.Message = "Registered!";
                         _response.IsSuccess = true;
 
                         return _response;
                     }
+                }
+                else
+                {
+                    _response.Message = "Account has already been created!";
+                    _response.IsSuccess = true;
+
+                    return _response;
                 }
             }
             catch (Exception ex)
@@ -218,11 +243,6 @@ namespace FoodTruck.WebApi.Services
 
                 return _response;
             }
-
-            _response.Message = "Error Encountered";
-            _response.IsSuccess = false;
-
-            return _response;
         }
     }
 }

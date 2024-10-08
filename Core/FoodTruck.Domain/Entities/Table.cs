@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace FoodTruck.Domain.Entities;
+﻿namespace FoodTruck.Domain.Entities;
 
 public class Table
 {
