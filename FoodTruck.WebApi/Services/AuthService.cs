@@ -190,28 +190,6 @@ namespace FoodTruck.WebApi.Services
                             return _response;
                         }
 
-                        if (!emailSent.IsSuccess)
-                        {
-                            _response.Result = new RegisterationResponseDto()
-                            {
-                                Password = registerationRequestDto.Password,
-                                Username = registerationRequestDto.Username
-                            };
-
-                            if (emailSent.Message == "Email already sent!")
-                            {
-                                _response.Message = "Email already sent!";
-                                _response.IsSuccess = false;
-                                return _response;
-                            }
-
-                            _response.Message = "Failed to send email.";
-                            _response.IsSuccess = false;
-                            return _response;
-                        }
-
-
-
                         ValidateResponseDto res = _otprepository.ValidateOtp(registerationRequestDto.Username, registerationRequestDto.otpCode);
 
                         if (!res.Response)
