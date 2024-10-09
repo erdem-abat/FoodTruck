@@ -5,6 +5,7 @@ using FoodTruck.Dto;
 using FoodTruck.Dto.AuthDtos;
 using FoodTruck.Dto.OtpDtos;
 using FoodTruck.WebApi.Data;
+using FoodTruck.WebApi.Repositories.AuthRepository;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
@@ -22,8 +23,8 @@ namespace FoodTruck.WebApi.Services
         private readonly IOtpRepository _otprepository;
         private ResponseDto _response;
         protected readonly IConfiguration _configuration;
-
-        public AuthService(UserIdentityDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator, IOtpRepository otprepository, IConfiguration configuration)
+        private readonly IRabbitMQOtpService _rabbitMQOtpService;
+        public AuthService(UserIdentityDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator, IOtpRepository otprepository, IConfiguration configuration, IRabbitMQOtpService rabbitMQOtpService)
         {
             _appDbContext = appDbContext;
             _userManager = userManager;
@@ -32,6 +33,7 @@ namespace FoodTruck.WebApi.Services
             _otprepository = otprepository;
             _response = new ResponseDto();
             _configuration = configuration;
+            _rabbitMQOtpService = rabbitMQOtpService;
         }
 
         public async Task<bool> AssignRole(string username, string roleName)
@@ -155,6 +157,7 @@ namespace FoodTruck.WebApi.Services
         {
             if (IsValid(registerationRequestDto.Username))
             {
+
                 ApplicationUser user = new()
                 {
                     UserName = registerationRequestDto.Username,
@@ -168,9 +171,12 @@ namespace FoodTruck.WebApi.Services
 
                     if (userValue == null)
                     {
-                        var emailSent = _otprepository.CheckOtp(registerationRequestDto.Username);
 
-                        if (emailSent.success)
+                        //var emailSent = _otprepository.CheckOtp(registerationRequestDto.Username);
+
+                        var emailSent = _rabbitMQOtpService.EmailSent(registerationRequestDto.Username);
+
+                        if (emailSent.IsSuccess)
                         {
                             _response.Result = new RegisterationResponseDto()
                             {
@@ -184,11 +190,33 @@ namespace FoodTruck.WebApi.Services
                             return _response;
                         }
 
+                        if (!emailSent.IsSuccess)
+                        {
+                            _response.Result = new RegisterationResponseDto()
+                            {
+                                Password = registerationRequestDto.Password,
+                                Username = registerationRequestDto.Username
+                            };
+
+                            if (emailSent.Message == "Email already sent!")
+                            {
+                                _response.Message = "Email already sent!";
+                                _response.IsSuccess = false;
+                                return _response;
+                            }
+
+                            _response.Message = "Failed to send email.";
+                            _response.IsSuccess = false;
+                            return _response;
+                        }
+
+
+
                         ValidateResponseDto res = _otprepository.ValidateOtp(registerationRequestDto.Username, registerationRequestDto.otpCode);
 
                         if (!res.Response)
                         {
-                            _response.Message = "Otp is not valid!";
+                            _response.Message = "Otp is not valid check your email!";
                             _response.IsSuccess = false;
 
                             return _response;

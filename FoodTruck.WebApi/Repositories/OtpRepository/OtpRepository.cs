@@ -3,96 +3,80 @@ using FoodTruck.Dto.OtpDtos;
 using System.Net.Mail;
 using System.Net;
 using System.Text;
+using FoodTruck.Dto.AuthDtos;
+using FoodTruck.WebApi.Repositories.AuthRepository;
 
 namespace FoodTruck.WebApi.Repositories.OtpRepository;
 
 public class OtpRepository : IOtpRepository
 {
-    private static Random r = new Random();
     private static Dictionary<string, string> otpDictionary = new Dictionary<string, string>();
     private readonly IConfiguration _configuration;
+    private readonly IRabbitMQAuthMessageSender _rabbitMQAuthMessageSender;
 
-    public OtpRepository(IConfiguration configuration)
+    public OtpRepository(IConfiguration configuration, IRabbitMQAuthMessageSender rabbitMQAuthMessageSender)
     {
         _configuration = configuration;
+        _rabbitMQAuthMessageSender = rabbitMQAuthMessageSender;
     }
 
-    public OtpResponseDto CheckOtp(string email)
+    public OtpResponseDto CheckOtp(string email, string? otp)
     {
-        var value = otpDictionary.FirstOrDefault(x => x.Key == email).Value;
-        if (value == null)
+        otpDictionary[email] = otp;
+
+        try
         {
-            string otp = GenerateOtp();
-            otpDictionary[email] = otp;
+            SmtpClient client = new SmtpClient("smtp.ethereal.email", 587);
+            client.EnableSsl = true;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential("norma.rosenbaum94@ethereal.email", _configuration["Email:Password"]);
 
-            try
-            {
-                // Set up SMTP client
-                SmtpClient client = new SmtpClient("smtp.ethereal.email", 587);
-                client.EnableSsl = true;
-                client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential("norma.rosenbaum94@ethereal.email", _configuration["Email:Password"]);
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress("norma.rosenbaum94@ethereal.email");
+            mailMessage.To.Add(email);
+            mailMessage.Subject = "subject";
+            mailMessage.IsBodyHtml = true;
+            StringBuilder mailBody = new StringBuilder();
+            mailBody.AppendFormat("<h1>User Registered</h1>");
+            mailBody.AppendFormat("<br />");
+            mailBody.AppendFormat("<p>Thank you For Registering account</p>" + otp);
+            mailMessage.Body = mailBody.ToString();
 
-                // Create email message
-                MailMessage mailMessage = new MailMessage();
-                mailMessage.From = new MailAddress("norma.rosenbaum94@ethereal.email");
-                mailMessage.To.Add(email);
-                mailMessage.Subject = "subject";
-                mailMessage.IsBodyHtml = true;
-                StringBuilder mailBody = new StringBuilder();
-                mailBody.AppendFormat("<h1>User Registered</h1>");
-                mailBody.AppendFormat("<br />");
-                mailBody.AppendFormat("<p>Thank you For Registering account</p>" + otp);
-                mailMessage.Body = mailBody.ToString();
+            client.Send(mailMessage);
 
-                // Send email
-                client.Send(mailMessage);
-
-            }
-            catch (SmtpException smtpEx)
-            {
-                Console.WriteLine("SMTP Exception: " + smtpEx.Message);
-                Console.WriteLine("Status Code: " + smtpEx.StatusCode);
-                if (smtpEx.InnerException != null)
-                {
-                    Console.WriteLine("Inner Exception: " + smtpEx.InnerException.Message);
-                }
-                return new OtpResponseDto
-                {
-                    Response = "email did not sent."
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred: " + ex.Message);
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
-                }
-                return new OtpResponseDto
-                {
-                    Response = "email did not sent."
-                };
-            }
             return new OtpResponseDto
             {
-                Response = "Email sent!",
+                Response = "email sent.",
                 success = true
             };
         }
-        else
+        catch (SmtpException smtpEx)
         {
+            Console.WriteLine("SMTP Exception: " + smtpEx.Message);
+            Console.WriteLine("Status Code: " + smtpEx.StatusCode);
+            if (smtpEx.InnerException != null)
+            {
+                Console.WriteLine("Inner Exception: " + smtpEx.InnerException.Message);
+            }
             return new OtpResponseDto
             {
-                Response = "Email already sent!",
+                Response = "email did not sent.",
                 success = false
             };
         }
-
-    }
-    private string GenerateOtp()
-    {
-        return r.Next(100000, 999999).ToString();
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+            }
+            return new OtpResponseDto
+            {
+                Response = "email did not sent.",
+                success = false
+            };
+        }
     }
 
     public ValidateResponseDto ValidateOtp(string email, string otpCode)
@@ -124,7 +108,7 @@ public class OtpRepository : IOtpRepository
         {
             res.Response = true;
             otpDictionary.Remove(email);
-            CheckOtp(email);
+            CheckOtp(email, null);
             return res;
         }
 

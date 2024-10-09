@@ -5,9 +5,11 @@ using FoodTruck.Domain.Entities;
 using FoodTruck.WebApi;
 using FoodTruck.WebApi.Data;
 using FoodTruck.WebApi.Extensions;
+using FoodTruck.WebApi.Message;
 using FoodTruck.WebApi.Middlewares;
 using FoodTruck.WebApi.Models;
 using FoodTruck.WebApi.Repositories;
+using FoodTruck.WebApi.Repositories.AuthRepository;
 using FoodTruck.WebApi.Repositories.CartRepository;
 using FoodTruck.WebApi.Repositories.CouponRepository;
 using FoodTruck.WebApi.Repositories.FoodRepository;
@@ -44,9 +46,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
     .AddDefaultTokenProviders();
 // Add services to the container.
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IRabbitMQOtpService), typeof(RabbitMQOtpService));
 builder.Services.AddScoped(typeof(IFoodRepository), typeof(FoodRepository));
-builder.Services.AddScoped(typeof(IOtpRepository), typeof(OtpRepository));
+builder.Services.AddSingleton(typeof(IOtpRepository), typeof(OtpRepository));
 builder.Services.AddScoped(typeof(ICartRepository), typeof(CartRepository));
+builder.Services.AddSingleton(typeof(IRabbitMQAuthMessageSender), typeof(RabbitMQAuthMessageSender));
 builder.Services.AddScoped(typeof(ICouponRepository), typeof(CouponRepository));
 builder.Services.AddScoped(typeof(ITruckRepository), typeof(TruckRepository));
 builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
@@ -55,6 +59,8 @@ builder.Services.AddScoped(typeof(IRestaurant), typeof(RestaurantRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddApplicationServices(builder.Configuration);
+
+builder.Services.AddHostedService<RabbitMQAuthConsumer>();
 
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
