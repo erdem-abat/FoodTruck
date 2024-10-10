@@ -3,6 +3,7 @@ using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
 using FoodTruck.Application.Features.MediatR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediatR.Queries.ChefQueries;
 using FoodTruck.Application.Features.MediatR.Queries.FoodQueries;
+using FoodTruck.Application.Features.MediatR.Queries.IngredientQueries;
 using FoodTruck.Application.Features.MediatR.Queries.MoodQueries;
 using FoodTruck.Application.Features.MediatR.Queries.TasteQueries;
 using FoodTruck.Dto.FoodDtos;
@@ -89,6 +90,7 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
+
         [HttpGet("GetMood")]
         public async Task<IActionResult> GetMood()
         {
@@ -105,6 +107,7 @@ namespace FoodTruck.WebApi.Controllers
 
             return Ok(_response);
         }
+
         [HttpGet("GetTaste")]
         public async Task<IActionResult> GetTaste()
         {
@@ -121,6 +124,24 @@ namespace FoodTruck.WebApi.Controllers
 
             return Ok(_response);
         }
+
+        [HttpGet("GetIngredient")]
+        public async Task<IActionResult> GetIngredient()
+        {
+            try
+            {
+                var values = await _mediator.Send(new GetIngredientQuery());
+                _response.Result = values;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return Ok(_response);
+        }
+
         [HttpGet]
         [Route("GetFoodsByFilter/getFoodsByFilterParameters")]
         public async Task<IActionResult> GetFoodsByFilter([FromQuery]GetFoodsByFilterParameters getFoodsByFilterParameters)
@@ -184,6 +205,7 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveFood(int id)
         {
