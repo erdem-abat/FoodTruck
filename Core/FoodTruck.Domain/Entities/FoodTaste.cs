@@ -9,6 +9,6 @@ public class FoodTaste
     [NotMapped]
     public Food Food { get; set; }
     public int TasteId { get; set; }
-    [NotMapped]
-    public Taste Taste { get; set; }
+    
+    public virtual Taste Taste { get; set; }
 }

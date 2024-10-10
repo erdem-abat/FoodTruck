@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Npgsql;
 using System.Data;
 using System.Data.OleDb;
+using System.Linq;
 
 
 namespace FoodTruck.WebApi.Repositories.FoodRepository
@@ -65,39 +66,103 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         }
         public async Task<List<FoodWithAllDto>> GetFoodsWithAll(CancellationToken cancellationToken)
         {
-            //return await _context.Foods
-            //    .Include(a => a.Country)
-            //    .Include(b => b.Category)
-            //    .Include(c => c.FoodMoods).ThenInclude(d => d.Mood)
-            //    .ToListAsync();
-
             string key = "food";
 
             string? cachedMember = await _distributedCache.GetStringAsync(key, cancellationToken);
 
             if (string.IsNullOrEmpty(cachedMember))
             {
-                List<FoodWithAllDto> foods = await (from food in _context.Foods
-                                                    join country in _context.Countries on food.CountryId equals country.CountryId
-                                                    join category in _context.Categories on food.CategoryId equals category.CategoryId
-                                                    join foodMood in _context.FoodMood on food.FoodId equals foodMood.FoodId into foodMoodGroup
-                                                    from foodMood in foodMoodGroup.DefaultIfEmpty()
-                                                    join mood in _context.Moods on foodMood.MoodId equals mood.MoodId into moodGroup
-                                                    from mood in moodGroup.DefaultIfEmpty()
-                                                    join foodTaste in _context.FoodTaste on food.FoodId equals foodTaste.FoodId into foodTasteGroup
-                                                    from foodTaste in foodTasteGroup.DefaultIfEmpty()
-                                                    join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
-                                                    from taste in tasteGroup.DefaultIfEmpty()
-                                                    select new FoodWithAllDto
-                                                    {
-                                                        Food = food,
-                                                        Country = country,
-                                                        Category = category,
-                                                        FoodMood = foodMood,
-                                                        FoodTaste = foodTaste,
-                                                        Mood = mood,
-                                                        Taste = taste
-                                                    }).ToListAsync();
+                #region oldQuery
+                //var foodData = await (from food in _context.Foods
+                //                      join country in _context.Countries on food.CountryId equals country.CountryId
+                //                      join category in _context.Categories on food.CategoryId equals category.CategoryId
+                //                      join foodMood in _context.FoodMood on food.FoodId equals foodMood.FoodId into foodMoodGroup
+                //                      from foodMood in foodMoodGroup.DefaultIfEmpty()
+                //                      join mood in _context.Moods on foodMood.MoodId equals mood.MoodId into moodGroup
+                //                      from mood in moodGroup.DefaultIfEmpty()
+                //                      join foodTaste in _context.FoodTaste on food.FoodId equals foodTaste.FoodId into foodTasteGroup
+                //                      from foodTaste in foodTasteGroup.DefaultIfEmpty()
+                //                      join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
+                //                      from taste in tasteGroup.DefaultIfEmpty()
+                //                      join foodIngredient in _context.FoodIngredient on food.FoodId equals foodIngredient.FoodId into foodIngredientGroup
+                //                      from foodIngredient in foodIngredientGroup.DefaultIfEmpty()
+                //                      join ingredient in _context.Ingredients on foodIngredient.IngredientId equals ingredient.IngredientId into ingredientGroup
+                //                      from ingredient in ingredientGroup.DefaultIfEmpty()
+                //                      select new
+                //                      {
+                //                          Food = food,
+                //                          Country = country,
+                //                          Category = category,
+                //                          FoodMood = foodMood,
+                //                          Mood = mood,
+                //                          FoodTaste = foodTaste,
+                //                          Taste = taste,
+                //                          FoodIngredient = foodIngredient,
+                //                          Ingredient = ingredient // Collect individual ingredients
+                //                      }).ToListAsync();
+
+                //// Grouping in-memory to return all ingredients for each food
+                //var foodWithIngredients = foodData
+                //    .GroupBy(f => f.Food.FoodId) // Group by FoodId
+                //    .Select(group => new FoodWithAllDto
+                //    {
+                //        Food = group.First().Food,
+                //        Country = group.First().Country,
+                //        Category = group.First().Category,
+                //        FoodMood = group.First().FoodMood,
+                //        Mood = group.First().Mood,
+                //        FoodTaste = group.First().FoodTaste,
+                //        Taste = group.First().Taste,
+                //        FoodIngredient = group.First().FoodIngredient,
+                //        Ingredients = group
+                //                      .Where(f => f.Ingredient != null)
+                //                      .Select(f => f.Ingredient) // Select only ingredients
+                //                      .ToList() // Convert to List
+                //    })
+                //    .ToList();
+                #endregion
+
+                var foods = await (from food in _context.Foods
+                                   join country in _context.Countries on food.CountryId equals country.CountryId
+                                   join category in _context.Categories on food.CategoryId equals category.CategoryId
+                                   join foodMood in _context.FoodMood on food.FoodId equals foodMood.FoodId into foodMoodGroup
+                                   from foodMood in foodMoodGroup.DefaultIfEmpty()
+                                   join mood in _context.Moods on foodMood.MoodId equals mood.MoodId into moodGroup
+                                   from mood in moodGroup.DefaultIfEmpty()
+                                   join foodTaste in _context.FoodTaste on food.FoodId equals foodTaste.FoodId into foodTasteGroup
+                                   from foodTaste in foodTasteGroup.DefaultIfEmpty()
+                                   join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
+                                   from taste in tasteGroup.DefaultIfEmpty()
+                                   join foodIngredient in _context.FoodIngredient on food.FoodId equals foodIngredient.FoodId into foodIngredientGroup
+                                   from foodIngredient in foodIngredientGroup.DefaultIfEmpty()
+                                   join ingredient in _context.Ingredients on foodIngredient.IngredientId equals ingredient.IngredientId into ingredientGroup
+                                   from ingredient in ingredientGroup.DefaultIfEmpty()
+                                   select new
+                                   {
+                                       Food = food,
+                                       Country = country,
+                                       Category = category,
+                                       FoodMood = foodMood,
+                                       Mood = mood,
+                                       FoodTaste = foodTaste,
+                                       Taste = taste,
+                                       FoodIngredient = foodIngredient,
+                                       Ingredient = ingredient
+                                   })
+                   .GroupBy(f => f.Food.FoodId)
+                   .Select(g => new FoodWithAllDto
+                   {
+                       Food = g.First().Food,
+                       Country = g.First().Country,
+                       Category = g.First().Category,
+                       FoodMood = g.First().FoodMood,
+                       FoodTaste = g.First().FoodTaste,
+                       FoodIngredient = g.First().FoodIngredient,
+                       Ingredients = g.Where(f => f.Ingredient != null).Select(f => f.Ingredient).Distinct().ToList(),
+                       Moods = g.Where(f => f.Mood != null).Select(f => f.Mood).Distinct().ToList(),
+                       Tastes = g.Where(f => f.Taste != null).Select(f => f.Taste).Distinct().ToList()
+                   })
+                   .ToListAsync();
 
                 var option = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(50));
                 option.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2);
@@ -139,16 +204,36 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                          from foodTaste in foodTasteGroup.DefaultIfEmpty()
                          join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
                          from taste in tasteGroup.DefaultIfEmpty()
-                         select new FoodWithAllDto
+                         join foodIngredient in _context.FoodIngredient on food.FoodId equals foodIngredient.FoodId into foodIngredientGroup
+                         from foodIngredient in foodIngredientGroup.DefaultIfEmpty()
+                         join ingredient in _context.Ingredients on foodIngredient.IngredientId equals ingredient.IngredientId into ingredientGroup
+                         from ingredient in ingredientGroup.DefaultIfEmpty()
+                         select new
                          {
                              Food = food,
                              Country = country,
                              Category = category,
                              FoodMood = foodMood,
-                             FoodTaste = foodTaste,
                              Mood = mood,
-                             Taste = taste
-                         }).AsNoTracking();
+                             FoodTaste = foodTaste,
+                             Taste = taste,
+                             FoodIngredient = foodIngredient,
+                             Ingredient = ingredient
+                         })
+                   .GroupBy(f => f.Food.FoodId)
+                   .Select(g => new FoodWithAllDto
+                   {
+                       Food = g.First().Food,
+                       Country = g.First().Country,
+                       Category = g.First().Category,
+                       FoodMood = g.First().FoodMood,
+                       FoodTaste = g.First().FoodTaste,
+                       FoodIngredient = g.First().FoodIngredient,
+                       Ingredients = g.Where(f => f.Ingredient != null).Select(f => f.Ingredient).Distinct().ToList(),
+                       Moods = g.Where(f => f.Mood != null).Select(f => f.Mood).Distinct().ToList(),
+                       Tastes = g.Where(f => f.Taste != null).Select(f => f.Taste).Distinct().ToList()
+                   })
+                   .AsNoTracking();
 
             if (getFoodsByFilterParameters.minPrice != null)
             {
@@ -172,12 +257,12 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
 
             if (getFoodsByFilterParameters.tasteId != null)
             {
-                foods = foods.Where(x => x.Taste.TasteId == getFoodsByFilterParameters.tasteId);
+                foods = foods.Where(x => x.Tastes.Any(t => t.TasteId == getFoodsByFilterParameters.tasteId));
             }
 
             if (getFoodsByFilterParameters.moodId != null)
             {
-                foods = foods.Where(x => x.Mood.MoodId == getFoodsByFilterParameters.moodId);
+                foods = foods.Where(f => f.Moods.Any(m => m.MoodId == getFoodsByFilterParameters.moodId));
             }
 
             List<FoodWithAllDto> responseList = foods.ToList();
@@ -323,6 +408,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         {
             var sqlconn = _configuration.GetConnectionString("AppDbConnectionString");
 
+            #region SQL
             //using (SqlConnection scon = new SqlConnection(sqlconn))
             //{
             //    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(scon))
@@ -339,6 +425,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             //        scon.Close();
             //    }
             //}
+            #endregion
 
             try
             {
@@ -376,7 +463,6 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
 
         public async Task<FoodWithAllDto> GetFoodById(int foodId)
         {
-
             var data = (from food in _context.Foods
                         join country in _context.Countries on food.CountryId equals country.CountryId
                         join category in _context.Categories on food.CategoryId equals category.CategoryId
@@ -388,19 +474,39 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                         from foodTaste in foodTasteGroup.DefaultIfEmpty()
                         join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
                         from taste in tasteGroup.DefaultIfEmpty()
+                        join foodIngredient in _context.FoodIngredient on food.FoodId equals foodIngredient.FoodId into foodIngredientGroup
+                        from foodIngredient in foodIngredientGroup.DefaultIfEmpty()
+                        join ingredient in _context.Ingredients on foodIngredient.IngredientId equals ingredient.IngredientId into ingredientGroup
+                        from ingredient in ingredientGroup.DefaultIfEmpty()
                         where food.FoodId == foodId
-                        select new FoodWithAllDto
+                        select new
                         {
                             Food = food,
                             Country = country,
                             Category = category,
                             FoodMood = foodMood,
-                            FoodTaste = foodTaste,
                             Mood = mood,
-                            Taste = taste
-                        }).AsNoTracking();
+                            FoodTaste = foodTaste,
+                            Taste = taste,
+                            FoodIngredient = foodIngredient,
+                            Ingredient = ingredient
+                        })
+                   .GroupBy(f => f.Food.FoodId)
+                   .Select(g => new FoodWithAllDto
+                   {
+                       Food = g.First().Food,
+                       Country = g.First().Country,
+                       Category = g.First().Category,
+                       FoodMood = g.First().FoodMood,
+                       FoodTaste = g.First().FoodTaste,
+                       FoodIngredient = g.First().FoodIngredient,
+                       Ingredients = g.Where(f => f.Ingredient != null).Select(f => f.Ingredient).Distinct().ToList(),
+                       Moods = g.Where(f => f.Mood != null).Select(f => f.Mood).Distinct().ToList(),
+                       Tastes = g.Where(f => f.Taste != null).Select(f => f.Taste).Distinct().ToList()
+                   })
+                   .AsNoTracking();
 
-            return data.FirstOrDefault();
+            return await data.FirstOrDefaultAsync();
         }
     }
 }

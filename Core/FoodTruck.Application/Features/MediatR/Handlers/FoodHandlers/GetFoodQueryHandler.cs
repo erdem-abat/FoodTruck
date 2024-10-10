@@ -29,8 +29,9 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
                 Name = x.Food.Name,
                 Price = x.Food.Price,
                 FoodId = x.Food.FoodId,
-                MoodName = x.Food.FoodMoods.FirstOrDefault(z => z.FoodId == x.Food.FoodId)?.Mood?.Name,
-                TasteName = x.Food.FoodTastes.FirstOrDefault(y => y.FoodId == x.Food.FoodId)?.Taste?.Name
+                MoodNames = x.Moods.Select(x => x.Name).ToList(),
+                TasteNames = x.Tastes.Select(x => x.Name).ToList(),
+                IngredientNames = x.Ingredients.Select(x=>x.Name).ToList()
             }).ToList();
         }
     }

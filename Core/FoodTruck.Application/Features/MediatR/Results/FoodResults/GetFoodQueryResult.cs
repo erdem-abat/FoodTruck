@@ -16,8 +16,9 @@ namespace FoodTruck.Application.Features.MediateR.Results.FoodResults
         public string Description { get; set; }
         public string CountryName { get; set; }
         public string CategoryName { get; set; }
-        public string TasteName { get; set; }
-        public string MoodName { get; set; }
+        public List<string> TasteNames { get; set; }
+        public List<string> MoodNames { get; set; }
+        public List<string> IngredientNames { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageLocalPath { get; set; }
     }
