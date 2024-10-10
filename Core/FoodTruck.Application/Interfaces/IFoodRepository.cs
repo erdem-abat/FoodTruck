@@ -8,7 +8,7 @@ namespace FoodTruck.Application.Interfaces
     public interface IFoodRepository
     {
         Task<List<Food>> GetFoodsWithCategory();
-        Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds);
+        Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> ingredientIds);
         Task<List<FoodDto>> GetFoods();
         Task<List<FoodDto>> GetFoodsWithPaging(int page, int pageSize);
         Task<FoodWithAllDto> GetFoodById(int foodId);

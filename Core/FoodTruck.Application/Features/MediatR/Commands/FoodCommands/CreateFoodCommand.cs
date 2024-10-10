@@ -16,5 +16,6 @@ namespace FoodTruck.Application.Features.MediateR.Commands.FoodCommands
         public IFormFile Image { get; set; }
         public List<int> FoodTasteIds { get; set; }
         public List<int> FoodMoodIds { get; set; }
+        public List<int> IngredientIds { get; set; }
     }
 }

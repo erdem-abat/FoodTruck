@@ -1,5 +1,6 @@
 ﻿using FoodTruck.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Xml;
 
 namespace FoodTruck.WebApi.Data
 {
@@ -25,13 +26,16 @@ namespace FoodTruck.WebApi.Data
                 .HasForeignKey(z => z.ToLocationId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<FoodIngredient>()
+            .HasKey(fi => new { fi.FoodId, fi.IngredientId });
+
             modelBuilder.Entity<Food>()
-                .HasMany(f => f.Ingredients)
-                .WithMany(i => i.Foods)
-                .UsingEntity<Dictionary<string, object>>(
-                    "FoodIngredient",
-                    j => j.HasOne<Ingredient>().WithMany().HasForeignKey("IngredientId"),
-                    j => j.HasOne<Food>().WithMany().HasForeignKey("FoodId"));
+            .HasMany(f => f.Ingredients)
+            .WithMany(i => i.Foods)
+            .UsingEntity<FoodIngredient>(
+                fi => fi.HasOne(fi => fi.Ingredient).WithMany().HasForeignKey(fi => fi.IngredientId),
+                fi => fi.HasOne(fi => fi.Food).WithMany().HasForeignKey(fi => fi.FoodId)
+            );
 
             modelBuilder.Entity<Food>()
                 .HasMany(f => f.Campaigns)
@@ -84,7 +88,7 @@ namespace FoodTruck.WebApi.Data
         public DbSet<Campaign> Campaigns { get; set; }
         public DbSet<Advertise> Advertises { get; set; }
         public DbSet<Rate> Rates { get; set; }
-       //public DbSet<FoodRate> FoodRates { get; set; }
+        public DbSet<FoodIngredient> FoodIngredient { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
     }
 }

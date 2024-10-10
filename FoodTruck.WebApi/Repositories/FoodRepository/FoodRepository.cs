@@ -198,7 +198,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             return values.Select(x => (x.Name, x.Price, x.ImageUrl)).ToList();
         }
 
-        public async Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds)
+        public async Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> foodIngredientIds)
         {
             try
             {
@@ -223,7 +223,6 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                     food.ImageUrl = "https://placehold.co/600x400";
                 }
                 _context.Foods.Update(food);
-                await _context.SaveChangesAsync();
 
                 Food foodFromDb = _context.Foods.First(x => x.Name.ToLower() == food.Name.ToLower());
 
@@ -238,8 +237,6 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                     _context.FoodMood.Add(mood);
                 }
 
-                await _context.SaveChangesAsync();
-
                 foreach (var item in foodTasteIds)
                 {
                     var taste = new FoodTaste
@@ -249,6 +246,17 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                     };
 
                     _context.FoodTaste.Add(taste);
+                }
+
+                foreach (var item in foodIngredientIds)
+                {
+                    var ingredient = new FoodIngredient
+                    {
+                        IngredientId = item,
+                        FoodId = foodFromDb.FoodId
+                    };
+
+                    _context.FoodIngredient.Add(ingredient);
                 }
 
                 await _context.SaveChangesAsync();
