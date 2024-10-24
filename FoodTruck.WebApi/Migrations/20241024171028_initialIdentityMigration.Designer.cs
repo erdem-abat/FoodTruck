@@ -3,17 +3,20 @@ using System;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FoodTruck.WebApi.Migrations.UserIdentityDb
+namespace FoodTruck.WebApi.Migrations
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    partial class UserIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241024171028_initialIdentityMigration")]
+    partial class initialIdentityMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,6 @@ namespace FoodTruck.WebApi.Migrations.UserIdentityDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")

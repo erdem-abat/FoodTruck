@@ -8,7 +8,6 @@ public class Chef
     public IEnumerable<FoodChef> GoodAt { get; set; }
     public int TruckId { get; set; }
     public virtual Truck Truck { get; set; }
-
     public int RestaurantId { get; set; }
     public virtual Restaurant Restaurant { get; set; }
 }

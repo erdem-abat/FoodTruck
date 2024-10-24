@@ -17,5 +17,6 @@ namespace FoodTruck.Application.Interfaces
         Task<string> DocumentUpload(IFormFile formFile);
         Task<DataTable> FoodDataTable(string path);
         Task<bool> ImportFood(DataTable food);
+        Task<bool> ImportDataFromExcel1(Dictionary<string, DataTable> excelData, string userId, int restaurantId);
     }
 }

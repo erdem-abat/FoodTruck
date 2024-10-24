@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FoodTruck.WebApi.Migrations
+namespace FoodTruck.WebApi.Migrations.FoodTruck
 {
     /// <inheritdoc />
     public partial class initialMigration : Migration
@@ -12,6 +12,22 @@ namespace FoodTruck.WebApi.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Campaigns",
+                columns: table => new
+                {
+                    CampaignId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Discount = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Campaigns", x => x.CampaignId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "CartHeaders",
                 columns: table => new
@@ -69,6 +85,24 @@ namespace FoodTruck.WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    IngredientId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    smallImageUrl = table.Column<string>(type: "text", nullable: true),
+                    bigImageUrl = table.Column<string>(type: "text", nullable: true),
+                    price = table.Column<double>(type: "double precision", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.IngredientId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -81,6 +115,21 @@ namespace FoodTruck.WebApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Locations", x => x.LocationId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LoginLogs",
+                columns: table => new
+                {
+                    LoginLogId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    IpAddress = table.Column<string>(type: "text", nullable: false),
+                    LoginDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoginLogs", x => x.LoginLogId);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,6 +156,21 @@ namespace FoodTruck.WebApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderStatuses", x => x.OrderStatusId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rates",
+                columns: table => new
+                {
+                    RateId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Rating = table.Column<double>(type: "double precision", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rates", x => x.RateId);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,7 +249,6 @@ namespace FoodTruck.WebApi.Migrations
                     FoodId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     ImageUrl = table.Column<string>(type: "text", nullable: true),
                     ImageLocalPath = table.Column<string>(type: "text", nullable: true),
@@ -219,6 +282,7 @@ namespace FoodTruck.WebApi.Migrations
                     OpenTime = table.Column<string>(type: "text", nullable: false),
                     CloseTime = table.Column<string>(type: "text", nullable: false),
                     IsAlcohol = table.Column<bool>(type: "boolean", nullable: false),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
                     LocationId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -290,6 +354,54 @@ namespace FoodTruck.WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FoodCampaign",
+                columns: table => new
+                {
+                    CampaignId = table.Column<int>(type: "integer", nullable: false),
+                    FoodId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FoodCampaign", x => new { x.CampaignId, x.FoodId });
+                    table.ForeignKey(
+                        name: "FK_FoodCampaign_Campaigns_CampaignId",
+                        column: x => x.CampaignId,
+                        principalTable: "Campaigns",
+                        principalColumn: "CampaignId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FoodCampaign_Foods_FoodId",
+                        column: x => x.FoodId,
+                        principalTable: "Foods",
+                        principalColumn: "FoodId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FoodIngredient",
+                columns: table => new
+                {
+                    IngredientId = table.Column<int>(type: "integer", nullable: false),
+                    FoodId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FoodIngredient", x => new { x.FoodId, x.IngredientId });
+                    table.ForeignKey(
+                        name: "FK_FoodIngredient_Foods_FoodId",
+                        column: x => x.FoodId,
+                        principalTable: "Foods",
+                        principalColumn: "FoodId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FoodIngredient_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "Ingredients",
+                        principalColumn: "IngredientId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FoodMood",
                 columns: table => new
                 {
@@ -312,6 +424,33 @@ namespace FoodTruck.WebApi.Migrations
                         column: x => x.MoodId,
                         principalTable: "Moods",
                         principalColumn: "MoodId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FoodRate",
+                columns: table => new
+                {
+                    FoodId = table.Column<int>(type: "integer", nullable: false),
+                    RateId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FoodRate", x => new { x.FoodId, x.RateId });
+                    table.ForeignKey(
+                        name: "FK_FoodRate_Foods_FoodId",
+                        column: x => x.FoodId,
+                        principalTable: "Foods",
+                        principalColumn: "FoodId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FoodRate_Rates_RateId",
+                        column: x => x.RateId,
+                        principalTable: "Rates",
+                        principalColumn: "RateId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -365,6 +504,33 @@ namespace FoodTruck.WebApi.Migrations
                         column: x => x.TruckId,
                         principalTable: "Trucks",
                         principalColumn: "TruckId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Advertises",
+                columns: table => new
+                {
+                    AdvertiseId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RestaurantId = table.Column<int>(type: "integer", nullable: false),
+                    FoodId = table.Column<int>(type: "integer", nullable: false),
+                    EndDate = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Advertises", x => x.AdvertiseId);
+                    table.ForeignKey(
+                        name: "FK_Advertises_Foods_FoodId",
+                        column: x => x.FoodId,
+                        principalTable: "Foods",
+                        principalColumn: "FoodId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Advertises_Restaurant_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurant",
+                        principalColumn: "RestaurantId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -437,6 +603,24 @@ namespace FoodTruck.WebApi.Migrations
                     table.PrimaryKey("PK_RestaurantDetails", x => x.RestaurantDetailId);
                     table.ForeignKey(
                         name: "FK_RestaurantDetails_Restaurant_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurant",
+                        principalColumn: "RestaurantId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RestaurantUsers",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    RestaurantId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RestaurantUsers", x => new { x.UserId, x.RestaurantId });
+                    table.ForeignKey(
+                        name: "FK_RestaurantUsers_Restaurant_RestaurantId",
                         column: x => x.RestaurantId,
                         principalTable: "Restaurant",
                         principalColumn: "RestaurantId",
@@ -538,6 +722,16 @@ namespace FoodTruck.WebApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Advertises_FoodId",
+                table: "Advertises",
+                column: "FoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Advertises_RestaurantId",
+                table: "Advertises",
+                column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CartDetails_CartHeaderId",
                 table: "CartDetails",
                 column: "CartHeaderId");
@@ -553,6 +747,11 @@ namespace FoodTruck.WebApi.Migrations
                 column: "TruckId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FoodCampaign_FoodId",
+                table: "FoodCampaign",
+                column: "FoodId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FoodChefs_ChefId",
                 table: "FoodChefs",
                 column: "ChefId");
@@ -563,6 +762,11 @@ namespace FoodTruck.WebApi.Migrations
                 column: "FoodId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FoodIngredient_IngredientId",
+                table: "FoodIngredient",
+                column: "IngredientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FoodMood_FoodId",
                 table: "FoodMood",
                 column: "FoodId");
@@ -571,6 +775,11 @@ namespace FoodTruck.WebApi.Migrations
                 name: "IX_FoodMood_MoodId",
                 table: "FoodMood",
                 column: "MoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FoodRate_RateId",
+                table: "FoodRate",
+                column: "RateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FoodRestaurant_FoodId",
@@ -643,6 +852,11 @@ namespace FoodTruck.WebApi.Migrations
                 column: "RestaurantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RestaurantUsers_RestaurantId",
+                table: "RestaurantUsers",
+                column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Seat_TableId",
                 table: "Seat",
                 column: "TableId");
@@ -672,16 +886,28 @@ namespace FoodTruck.WebApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Advertises");
+
+            migrationBuilder.DropTable(
                 name: "CartDetails");
 
             migrationBuilder.DropTable(
                 name: "Coupons");
 
             migrationBuilder.DropTable(
+                name: "FoodCampaign");
+
+            migrationBuilder.DropTable(
                 name: "FoodChefs");
 
             migrationBuilder.DropTable(
+                name: "FoodIngredient");
+
+            migrationBuilder.DropTable(
                 name: "FoodMood");
+
+            migrationBuilder.DropTable(
+                name: "FoodRate");
 
             migrationBuilder.DropTable(
                 name: "FoodRestaurant");
@@ -696,10 +922,16 @@ namespace FoodTruck.WebApi.Migrations
                 name: "FoodTrucks");
 
             migrationBuilder.DropTable(
+                name: "LoginLogs");
+
+            migrationBuilder.DropTable(
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "RestaurantDetails");
+
+            migrationBuilder.DropTable(
+                name: "RestaurantUsers");
 
             migrationBuilder.DropTable(
                 name: "Seat");
@@ -708,10 +940,19 @@ namespace FoodTruck.WebApi.Migrations
                 name: "TruckReservations");
 
             migrationBuilder.DropTable(
+                name: "Campaigns");
+
+            migrationBuilder.DropTable(
                 name: "Chefs");
 
             migrationBuilder.DropTable(
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
                 name: "Moods");
+
+            migrationBuilder.DropTable(
+                name: "Rates");
 
             migrationBuilder.DropTable(
                 name: "Tastes");

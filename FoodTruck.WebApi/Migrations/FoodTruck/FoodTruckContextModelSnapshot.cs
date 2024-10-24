@@ -3,20 +3,17 @@ using System;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FoodTruck.WebApi.Migrations
+namespace FoodTruck.WebApi.Migrations.FoodTruck
 {
     [DbContext(typeof(FoodTruckContext))]
-    [Migration("20241008122415_dbUpdated")]
-    partial class dbUpdated
+    partial class FoodTruckContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,21 +36,6 @@ namespace FoodTruck.WebApi.Migrations
                     b.HasIndex("FoodId");
 
                     b.ToTable("FoodCampaign");
-                });
-
-            modelBuilder.Entity("FoodIngredient", b =>
-                {
-                    b.Property<int>("FoodId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("FoodId", "IngredientId");
-
-                    b.HasIndex("IngredientId");
-
-                    b.ToTable("FoodIngredient");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Advertise", b =>
@@ -270,9 +252,6 @@ namespace FoodTruck.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
                     b.HasKey("FoodId");
 
                     b.HasIndex("CategoryId");
@@ -303,6 +282,21 @@ namespace FoodTruck.WebApi.Migrations
                     b.HasIndex("FoodId");
 
                     b.ToTable("FoodChefs");
+                });
+
+            modelBuilder.Entity("FoodTruck.Domain.Entities.FoodIngredient", b =>
+                {
+                    b.Property<int>("FoodId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FoodId", "IngredientId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("FoodIngredient");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.FoodMood", b =>
@@ -675,6 +669,9 @@ namespace FoodTruck.WebApi.Migrations
                     b.Property<bool>("IsAlcohol")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("boolean");
+
                     b.Property<int?>("LocationId")
                         .HasColumnType("integer");
 
@@ -712,6 +709,21 @@ namespace FoodTruck.WebApi.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("RestaurantDetails");
+                });
+
+            modelBuilder.Entity("FoodTruck.Domain.Entities.RestaurantUser", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "RestaurantId");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.ToTable("RestaurantUsers");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.Seat", b =>
@@ -837,21 +849,6 @@ namespace FoodTruck.WebApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FoodIngredient", b =>
-                {
-                    b.HasOne("FoodTruck.Domain.Entities.Food", null)
-                        .WithMany()
-                        .HasForeignKey("FoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FoodTruck.Domain.Entities.Ingredient", null)
-                        .WithMany()
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("FoodTruck.Domain.Entities.Advertise", b =>
                 {
                     b.HasOne("FoodTruck.Domain.Entities.Food", "Food")
@@ -939,6 +936,25 @@ namespace FoodTruck.WebApi.Migrations
                     b.Navigation("Food");
                 });
 
+            modelBuilder.Entity("FoodTruck.Domain.Entities.FoodIngredient", b =>
+                {
+                    b.HasOne("FoodTruck.Domain.Entities.Food", "Food")
+                        .WithMany()
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FoodTruck.Domain.Entities.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Food");
+
+                    b.Navigation("Ingredient");
+                });
+
             modelBuilder.Entity("FoodTruck.Domain.Entities.FoodMood", b =>
                 {
                     b.HasOne("FoodTruck.Domain.Entities.Food", "Food")
@@ -1000,11 +1016,13 @@ namespace FoodTruck.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FoodTruck.Domain.Entities.Taste", null)
+                    b.HasOne("FoodTruck.Domain.Entities.Taste", "Taste")
                         .WithMany("Foods")
                         .HasForeignKey("TasteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Taste");
                 });
 
             modelBuilder.Entity("FoodTruck.Domain.Entities.FoodTruck", b =>
@@ -1068,6 +1086,17 @@ namespace FoodTruck.WebApi.Migrations
                 {
                     b.HasOne("FoodTruck.Domain.Entities.Restaurant", "Restaurant")
                         .WithMany("RestaurantDetails")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("FoodTruck.Domain.Entities.RestaurantUser", b =>
+                {
+                    b.HasOne("FoodTruck.Domain.Entities.Restaurant", "Restaurant")
+                        .WithMany("RestaurantUsers")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1192,6 +1221,8 @@ namespace FoodTruck.WebApi.Migrations
                     b.Navigation("FoodRestaurants");
 
                     b.Navigation("RestaurantDetails");
+
+                    b.Navigation("RestaurantUsers");
 
                     b.Navigation("Tables");
                 });

@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FoodTruck.WebApi.Migrations.UserIdentityDb
+namespace FoodTruck.WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class initialUserIdentityMigration : Migration
+    public partial class initialIdentityMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +31,7 @@ namespace FoodTruck.WebApi.Migrations.UserIdentityDb
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

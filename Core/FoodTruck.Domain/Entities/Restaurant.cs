@@ -12,4 +12,6 @@ public class Restaurant
     public IEnumerable<Chef> Chefs { get; set; }
     public IEnumerable<Advertise> Advertises { get; set; }
     public bool IsAlcohol { get; set; }
+    public bool IsApproved { get; set; } = false;
+    public IEnumerable<RestaurantUser> RestaurantUsers { get; set; }
 }

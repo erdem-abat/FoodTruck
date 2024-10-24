@@ -1,4 +1,6 @@
-﻿namespace FoodTruck.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FoodTruck.Domain.Entities;
 
 public class TruckReservation
 {
@@ -7,7 +9,9 @@ public class TruckReservation
     public virtual Truck Truck { get; set; }
     public int? FromLocationId { get; set; }
     public int? ToLocationId { get; set; }
-    public virtual Location FromLocation { get; set; }
-    public virtual Location ToLocation { get; set; }
+    [NotMapped]
+    public Location FromLocation { get; set; }
+    [NotMapped]
+    public Location ToLocation { get; set; }
     public string Status { get; set; }
 }

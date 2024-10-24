@@ -15,26 +15,37 @@ namespace FoodTruck.WebApi.Data
 
             modelBuilder.HasCharSet(null, DelegationModes.ApplyToDatabases);
 
+            modelBuilder.Entity<RestaurantUser>()
+                .HasKey(fi => new { fi.UserId, fi.RestaurantId });
+
+            modelBuilder.Entity<RestaurantUser>()
+              .HasOne(ur => ur.Restaurant)
+              .WithMany(r => r.RestaurantUsers)
+              .HasForeignKey(ur => ur.RestaurantId);
+
             modelBuilder.Entity<TruckReservation>()
                 .HasOne(x => x.FromLocation)
                 .WithMany(y => y.FromReservation)
                 .HasForeignKey(z => z.FromLocationId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .IsRequired(false);
+
             modelBuilder.Entity<TruckReservation>()
                 .HasOne(x => x.ToLocation)
                 .WithMany(y => y.ToReservation)
                 .HasForeignKey(z => z.ToLocationId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .IsRequired(false);
 
             modelBuilder.Entity<FoodIngredient>()
-            .HasKey(fi => new { fi.FoodId, fi.IngredientId });
+                .HasKey(fi => new { fi.FoodId, fi.IngredientId });
 
             modelBuilder.Entity<Food>()
-            .HasMany(f => f.Ingredients)
-            .WithMany(i => i.Foods)
-            .UsingEntity<FoodIngredient>(
-                fi => fi.HasOne(fi => fi.Ingredient).WithMany().HasForeignKey(fi => fi.IngredientId),
-                fi => fi.HasOne(fi => fi.Food).WithMany().HasForeignKey(fi => fi.FoodId)
+                .HasMany(f => f.Ingredients)
+                .WithMany(i => i.Foods)
+                .UsingEntity<FoodIngredient>(
+                    fi => fi.HasOne(fi => fi.Ingredient).WithMany().HasForeignKey(fi => fi.IngredientId),
+                    fi => fi.HasOne(fi => fi.Food).WithMany().HasForeignKey(fi => fi.FoodId)
             );
 
             modelBuilder.Entity<Food>()
@@ -46,9 +57,9 @@ namespace FoodTruck.WebApi.Data
                     j => j.HasOne<Food>().WithMany().HasForeignKey("FoodId"));
 
             modelBuilder.Entity<Food>()
-               .HasMany(f => f.FoodRates)
-               .WithOne(fr => fr.Food)
-               .HasForeignKey(fr => fr.FoodId);
+                .HasMany(f => f.FoodRates)
+                .WithOne(fr => fr.Food)
+                .HasForeignKey(fr => fr.FoodId);
 
             modelBuilder.Entity<Rate>()
                 .HasMany(r => r.FoodRates)
@@ -90,5 +101,6 @@ namespace FoodTruck.WebApi.Data
         public DbSet<Rate> Rates { get; set; }
         public DbSet<FoodIngredient> FoodIngredient { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<RestaurantUser> RestaurantUsers { get; set; }
     }
 }

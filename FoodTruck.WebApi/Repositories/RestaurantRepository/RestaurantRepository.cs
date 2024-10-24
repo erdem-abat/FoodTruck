@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
-using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.RestaurantDtos;
 using FoodTruck.Dto.SeatDtos;
-using FoodTruck.Dto.TruckReservationDtos;
 using FoodTruck.WebApi.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 
 namespace FoodTruck.WebApi.Repositories.RestaurantRepository
 {
@@ -15,34 +13,49 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
     {
         private IMapper _mapper;
         private readonly FoodTruckContext _context;
+        private readonly UserIdentityDbContext _identityContext;
 
-        public RestaurantRepository(IMapper mapper, FoodTruckContext context)
+        public RestaurantRepository(IMapper mapper, FoodTruckContext context, UserIdentityDbContext identityContext)
         {
             _mapper = mapper;
             _context = context;
+            _identityContext = identityContext;
         }
 
         public async Task<RestaurantDto> CreateRestaurant(RestaurantDto restaurantDto)
         {
             try
             {
-                var restaurant = _mapper.Map<Restaurant>(restaurantDto.RestaurantHeaderDto);
+                var user = _identityContext.Users.First(x => x.Id == restaurantDto.UserId);
 
-                _context.Restaurant.Add(restaurant);
-                await _context.SaveChangesAsync();
-
-                foreach (var detailDto in restaurantDto.RestaurantDetailDto)
+                if (user != null)
                 {
-                    var detail = _mapper.Map<RestaurantDetail>(detailDto);
+                    var restaurant = _mapper.Map<Restaurant>(restaurantDto.RestaurantHeaderDto);
 
-                    detail.RestaurantId = restaurant.RestaurantId;
+                    _context.Restaurant.Add(restaurant);
+                    await _context.SaveChangesAsync();
 
-                    _context.RestaurantDetails.Add(detail);
+                    foreach (var detailDto in restaurantDto.RestaurantDetailDto)
+                    {
+                        var detail = _mapper.Map<RestaurantDetail>(detailDto);
+
+                        detail.RestaurantId = restaurant.RestaurantId;
+
+                        _context.RestaurantDetails.Add(detail);
+                    }
+
+                    _context.RestaurantUsers.Add(new RestaurantUser
+                    {
+                        RestaurantId = restaurant.RestaurantId,
+                        UserId = user.Id
+                    });
+
+                    await _context.SaveChangesAsync();
+
+                    return restaurantDto;
                 }
 
-                await _context.SaveChangesAsync();
-
-                return restaurantDto;
+                return new RestaurantDto();
             }
             catch (Exception)
             {
@@ -85,16 +98,14 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                 Food food = _context.Foods.First(x => x.FoodId == foodId);
 
                 Restaurant restaurant = _context.Restaurant.First(x => x.RestaurantId == restaurantId);
-                
-               
 
-                if(food != null && restaurant != null)
+                if (food != null && restaurant != null)
                 {
                     FoodRestaurant foodRestaurant = await _context.FoodRestaurant.FirstOrDefaultAsync(x => x.FoodId == foodId && x.RestaurantId == restaurantId);
 
-                    if(foodRestaurant!= null)
+                    if (foodRestaurant != null)
                     {
-                        foodRestaurant.Price = price != 0 ? price: food.Price;
+                        foodRestaurant.Price = price != 0 ? price : foodRestaurant.Price;
                         _context.FoodRestaurant.Update(foodRestaurant);
 
                         await _context.SaveChangesAsync();
@@ -107,7 +118,7 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                         {
                             FoodId = foodId,
                             RestaurantId = restaurantId,
-                            Price = price != 0 ? price : food.Price
+                            Price = price != 0 ? price : foodRestaurant.Price
                         });
 
                         await _context.SaveChangesAsync();
@@ -122,6 +133,23 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
             {
                 throw;
             }
+        }
+
+        public async Task<bool> ApproveRestaurant(bool isApprove, int restaurantId)
+        {
+            Restaurant restaurant = _context.Restaurant.First(x => x.RestaurantId == restaurantId);
+
+            if (restaurant != null)
+            {
+                _context.Attach<Restaurant>(restaurant);
+                _context.Entry<Restaurant>(restaurant).Property(x => x.IsApproved).IsModified = true;
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

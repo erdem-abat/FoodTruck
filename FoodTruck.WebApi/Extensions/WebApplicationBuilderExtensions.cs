@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System.Text;
 
 namespace FoodTruck.WebApi.Extensions
@@ -29,6 +30,11 @@ namespace FoodTruck.WebApi.Extensions
                     ValidAudience = audience,
                     ValidateAudience = true
                 };
+            });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
             });
 
             return builder;

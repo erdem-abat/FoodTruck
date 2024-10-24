@@ -8,5 +8,6 @@ namespace FoodTruck.Application.Interfaces
         Task<RestaurantDto> CreateRestaurant(RestaurantDto restaurantDto);
         Task<SeatPlanDto> CreateSeatPlan(SeatPlanDto seatPlanDto);
         Task<string> AddFoodToRestaurant(int foodId, int restaurantId, double price);
+        Task<bool> ApproveRestaurant(bool isApprove, int restaurantId);
     }
 }

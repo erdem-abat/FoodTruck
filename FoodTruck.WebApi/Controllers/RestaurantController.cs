@@ -38,6 +38,32 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
+        [HttpPut("ApproveRestaurant")]
+        public async Task<IActionResult> ApproveRestaurant(ApproveRestaurantCommand createRestaurantCommand)
+        {
+            try
+            {
+                var value = await _mediator.Send(createRestaurantCommand);
+                
+                if(value)
+                {
+                    _response.Message = "Restaurant has been approved.";
+
+                    return StatusCode(StatusCodes.Status201Created, _response);
+                }
+
+                _response.Message = "Something went wrong!";
+
+                return StatusCode(StatusCodes.Status304NotModified, _response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return Ok(_response);
+        }
+
         [HttpPost("CreateSeatPlan")]
         public async Task<IActionResult> CreateSeatPlan(CreateSeatPlanCommand createSeatPlanCommand)
         {

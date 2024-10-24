@@ -1,16 +1,22 @@
 ﻿using AutoMapper;
+using EFCore.BulkExtensions;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Npgsql;
+using StackExchange.Redis;
+using Stripe;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using static StackExchange.Redis.Role;
 
 
 namespace FoodTruck.WebApi.Repositories.FoodRepository
@@ -38,7 +44,6 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                 FoodId = x.FoodId,
                 Name = x.Name,
                 ImageUrl = x.ImageUrl,
-                Price = x.Price,
                 CategoryId = x.CategoryId,
                 CountryId = x.CountryId,
                 Description = x.Description
@@ -55,7 +60,6 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                 ImageLocalPath = x.ImageLocalPath,
                 Name = x.Name,
                 ImageUrl = x.ImageUrl,
-                Price = x.Price
             }).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             return foods;
@@ -235,15 +239,15 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                    })
                    .AsNoTracking();
 
-            if (getFoodsByFilterParameters.minPrice != null)
-            {
-                foods = foods.Where(x => x.Food.Price > getFoodsByFilterParameters.minPrice);
-            }
+            //if (getFoodsByFilterParameters.minPrice != null)
+            //{
+            //    foods = foods.Where(x => x.Food.Price > getFoodsByFilterParameters.minPrice);
+            //}
 
-            if (getFoodsByFilterParameters.maxPrice != null && getFoodsByFilterParameters.maxPrice > getFoodsByFilterParameters.minPrice)
-            {
-                foods = foods.Where(x => x.Food.Price < getFoodsByFilterParameters.maxPrice);
-            }
+            //if (getFoodsByFilterParameters.maxPrice != null && getFoodsByFilterParameters.maxPrice > getFoodsByFilterParameters.minPrice)
+            //{
+            //    foods = foods.Where(x => x.Food.Price < getFoodsByFilterParameters.maxPrice);
+            //}
 
             if (getFoodsByFilterParameters.categoryId != null)
             {
@@ -270,17 +274,116 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             return responseList;
         }
 
-        public async Task<List<(string name, double price, string imageUrl)>> GetFoodMainPageInfo()
+        public async Task<List<(string name, string imageUrl)>> GetFoodMainPageInfo()
         {
             var values = await (from food in _context.Foods
                                 select new
                                 {
                                     food.Name,
-                                    food.Price,
                                     food.ImageUrl
                                 }).ToListAsync();
 
-            return values.Select(x => (x.Name, x.Price, x.ImageUrl)).ToList();
+            return values.Select(x => (x.Name, x.ImageUrl)).ToList();
+        }
+
+        public async Task<string> CreateFoodToRestaurant(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> foodIngredientIds, int restaurantId, string userId, double price)
+        {
+            try
+            {
+                RestaurantUser restaurantUserFromDb = _context.RestaurantUsers.First(x => x.UserId == userId && x.RestaurantId == restaurantId);
+
+                if (restaurantUserFromDb != null)
+                {
+                    _context.Foods.Add(food);
+                    await _context.SaveChangesAsync();
+
+                    if (food.Image != null)
+                    {
+                        string fileName = food.FoodId + Path.GetExtension(food.Image.FileName);
+                        string filePath = @"wwwroot\FoodImages\" + fileName;
+                        var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+                        using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
+                        {
+                            food.Image.CopyTo(fileStream);
+                        }
+
+                        food.ImageUrl = "/FoodImages/" + fileName;
+                        food.ImageLocalPath = filePath;
+                    }
+                    else
+                    {
+                        food.ImageUrl = "https://placehold.co/600x400";
+                    }
+                    _context.Foods.Update(food);
+
+                    Food foodFromDb = _context.Foods.First(x => x.Name.ToLower() == food.Name.ToLower());
+
+                    foreach (var item in foodMoodIds)
+                    {
+                        var mood = new FoodMood
+                        {
+                            MoodId = item,
+                            FoodId = foodFromDb.FoodId
+                        };
+
+                        _context.FoodMood.Add(mood);
+                    }
+
+                    foreach (var item in foodTasteIds)
+                    {
+                        var taste = new FoodTaste
+                        {
+                            TasteId = item,
+                            FoodId = foodFromDb.FoodId
+                        };
+
+                        _context.FoodTaste.Add(taste);
+                    }
+
+                    foreach (var item in foodIngredientIds)
+                    {
+                        var ingredient = new FoodIngredient
+                        {
+                            IngredientId = item,
+                            FoodId = foodFromDb.FoodId
+                        };
+
+                        _context.FoodIngredient.Add(ingredient);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    FoodRestaurant foodRestaurant = await _context.FoodRestaurant.FirstOrDefaultAsync(x => x.FoodId == foodFromDb.FoodId && x.RestaurantId == restaurantId);
+
+                    if (foodRestaurant != null)
+                    {
+                        foodRestaurant.Price = price != 0 ? price : foodRestaurant.Price;
+                        _context.FoodRestaurant.Update(foodRestaurant);
+
+                        await _context.SaveChangesAsync();
+                    }
+
+                    else
+                    {
+                        _context.FoodRestaurant.Add(new FoodRestaurant
+                        {
+                            FoodId = foodFromDb.FoodId,
+                            RestaurantId = restaurantId,
+                            Price = price != 0 ? price : foodRestaurant.Price
+                        });
+
+                        await _context.SaveChangesAsync();
+                    }
+
+                    return "Food has been created!";
+                }
+
+                return "There is an error.";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> foodIngredientIds)
@@ -460,6 +563,173 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                 throw ex;
             }
         }
+
+        public async Task<bool> ImportDataFromExcel1(Dictionary<string, DataTable> excelData, string userId, int restaurantId)
+        {
+            var sqlconn = _configuration.GetConnectionString("AppDbConnectionString");
+
+            try
+            {
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    // Dictionary to store Food IDs
+                    Dictionary<string, int> foodIds = new Dictionary<string, int>();
+
+                    var restaurant = _context.Restaurant.First(x => x.RestaurantId == restaurantId);
+                    var userData = _context.RestaurantUsers.First(x => x.UserId == userId && x.RestaurantId == restaurant.RestaurantId);
+                    var restaurantFoodIds = _context.FoodRestaurant.Where(x => x.RestaurantId == userData.RestaurantId).Select(x => x.FoodId).ToList();
+
+                    // List to hold entities for bulk insert
+                    List<Food> newFoods = new List<Food>();
+                    List<FoodIngredient> newIngredients = new List<FoodIngredient>();
+                    List<FoodTaste> newTastes = new List<FoodTaste>();
+
+                    if (excelData.ContainsKey("Foods"))
+                    {
+                        foreach (DataRow row in excelData["Foods"].Rows)
+                        {
+                            // Step 1: Check if the food already exists in the database
+                            var existingFood = _context.Foods.FirstOrDefault(f => f.Name == row["Name"].ToString());
+
+                            if (existingFood != null && restaurantFoodIds.Contains(existingFood.FoodId))
+                            {
+                                foodIds.Add(row["Name"].ToString(), existingFood.FoodId);
+                                continue; // Skip the insert as the food already exists
+                            }
+
+                            // Step 2: Prepare new food for bulk insert
+                            var newFood = new Food
+                            {
+                                Name = row["Name"].ToString(),
+                                Description = row["Description"].ToString(),
+                                ImageUrl = row["ImageUrl"].ToString(),
+                                CountryId = Convert.ToInt32(row["CountryId"]),
+                                CategoryId = Convert.ToInt32(row["CategoryId"])
+                            };
+
+                            newFoods.Add(newFood);
+                        }
+
+                        // Perform bulk insert for new foods
+                        if (newFoods.Count > 0)
+                        {
+                            await _context.BulkInsertAsync(newFoods);
+                            await _context.SaveChangesAsync();
+
+                            // Add the inserted food IDs to the dictionary for future use
+                            foreach (var food in newFoods)
+                            {
+                                foodIds.Add(food.Name, food.FoodId);
+                            }
+                        }
+                    }
+
+                    // Bulk insert for Ingredients
+                    if (excelData.ContainsKey("Ingredients"))
+                    {
+                        foreach (DataRow row in excelData["Ingredients"].Rows)
+                        {
+                            string foodName = row["FoodName"].ToString();
+                            if (foodIds.TryGetValue(foodName, out int foodId))
+                            {
+                                var newIngredient = new FoodIngredient
+                                {
+                                    FoodId = foodId,
+                                    IngredientId = Convert.ToInt32(row["IngredientId"])
+                                };
+
+                                newIngredients.Add(newIngredient);
+                            }
+                        }
+
+                        if (newIngredients.Count > 0)
+                        {
+                            await _context.BulkInsertAsync(newIngredients);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    // Bulk insert for Tastes
+                    if (excelData.ContainsKey("Tastes"))
+                    {
+                        foreach (DataRow row in excelData["Tastes"].Rows)
+                        {
+                            string foodName = row["FoodName"].ToString();
+                            if (foodIds.TryGetValue(foodName, out int foodId))
+                            {
+                                var newTaste = new FoodTaste
+                                {
+                                    FoodId = foodId,
+                                    TasteId = Convert.ToInt32(row["TasteId"])
+                                };
+
+                                newTastes.Add(newTaste);
+                            }
+                        }
+
+                        if (newTastes.Count > 0)
+                        {
+                            await _context.BulkInsertAsync(newTastes);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        //// Step 1: Upload the Excel document
+        //string path = await DocumentUpload(formFile);
+
+        //// Step 2: Load data from the Excel file
+        //var excelData = await LoadExcelData(path);
+
+        //// Step 3: Import the data into the database
+        //bool success = await ImportDataFromExcel(excelData);
+
+        //public async Task<Dictionary<string, DataTable>> LoadExcelData(string path)
+        //{
+        //    var conStr = _configuration.GetConnectionString("ExcelConnectionString");
+        //    conStr = string.Format(conStr, path);
+
+        //    var tables = new Dictionary<string, DataTable>();
+
+        //    using (OleDbConnection excelconn = new OleDbConnection(conStr))
+        //    {
+        //        excelconn.Open();
+
+        //        // Get the schema information for all sheets in the Excel file
+        //        DataTable excelSchema = excelconn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+
+        //        // Loop through all sheets and load each sheet into a separate DataTable
+        //        foreach (DataRow sheet in excelSchema.Rows)
+        //        {
+        //            string sheetName = sheet["TABLE_NAME"].ToString();
+        //            if (!sheetName.EndsWith("$")) continue; // Skip non-data sheets
+
+        //            using (OleDbCommand cmd = new OleDbCommand($"SELECT * FROM [{sheetName}]", excelconn))
+        //            {
+        //                using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
+        //                {
+        //                    DataTable dataTable = new DataTable();
+        //                    adapter.Fill(dataTable);
+        //                    tables.Add(sheetName.TrimEnd('$'), dataTable); // Add each DataTable to dictionary, using the sheet name as the key
+        //                }
+        //            }
+        //        }
+        //        excelconn.Close();
+        //    }
+
+        //    return tables; // Dictionary containing each sheet's data
+        //}
 
         public async Task<FoodWithAllDto> GetFoodById(int foodId)
         {

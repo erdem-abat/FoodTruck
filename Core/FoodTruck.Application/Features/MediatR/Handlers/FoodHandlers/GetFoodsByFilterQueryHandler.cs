@@ -27,7 +27,6 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
                 CategoryName = x.Category.CategoryName,
                 ImageUrl = x.Food.ImageUrl,
                 Name = x.Food.Name,
-                Price = x.Food.Price,
                 FoodId = x.Food.FoodId,
                 MoodNames = x.Moods.Select(x=>x.Name).ToList(),
                 TasteNames = x.Tastes.Select(x => x.Name).ToList(),

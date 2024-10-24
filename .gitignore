@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/FoodTruck.WebApi/Migrations/20241004130544_initialMigration.cs
+/FoodTruck.WebApi/Migrations/20241004130544_initialMigration.Designer.cs
+/FoodTruck.WebApi/Migrations/20241008122415_dbUpdated.cs
+/FoodTruck.WebApi/Migrations/20241008122415_dbUpdated.Designer.cs
+/FoodTruck.WebApi/Migrations/UserIdentityDb/20241004140050_initialUserIdentityMigration.cs
+/FoodTruck.WebApi/Migrations/UserIdentityDb/20241004140050_initialUserIdentityMigration.Designer.cs
+/FoodTruck.WebApi/Migrations/UserIdentityDb/UserIdentityDbContextModelSnapshot.cs
+/FoodTruck.WebApi/Migrations/FoodTruckContextModelSnapshot.cs
