@@ -9,5 +9,5 @@ public class Mood
     public int MoodId { get; set; }
     [Required]
     public string Name { get; set; }
-    public IEnumerable<FoodMood> Foods { get; set; }
+    public virtual IEnumerable<FoodMood> Foods { get; set; }
 }

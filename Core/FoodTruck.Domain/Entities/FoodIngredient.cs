@@ -3,8 +3,8 @@
     public class FoodIngredient
     {
         public int IngredientId { get; set; }
-        public Ingredient Ingredient { get; set; }
+        public virtual Ingredient Ingredient { get; set; }
         public int FoodId { get; set; }
-        public Food Food { get; set; }
+        public virtual Food Food { get; set; }
     }
 }

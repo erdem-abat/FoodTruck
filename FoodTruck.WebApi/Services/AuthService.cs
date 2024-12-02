@@ -1,16 +1,12 @@
-﻿using Azure;
-using FoodTruck.Application.Interfaces;
+﻿using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto;
 using FoodTruck.Dto.AuthDtos;
 using FoodTruck.Dto.OtpDtos;
 using FoodTruck.WebApi.Data;
-using FoodTruck.WebApi.Repositories.AuthRepository;
 using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
-using static Google.Apis.Requests.BatchRequest;
 
 namespace FoodTruck.WebApi.Services
 {

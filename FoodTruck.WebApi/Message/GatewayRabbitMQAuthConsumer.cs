@@ -7,14 +7,14 @@ using FoodTruck.Dto.EmailDtos;
 
 namespace FoodTruck.WebApi.Message
 {
-    public class RabbitMQAuthConsumer : BackgroundService
+    public class GatewayRabbitMQAuthConsumer : BackgroundService
     {
         private readonly IConfiguration _configuration;
         private IConnection _connection;
         private IModel _channel;
         private readonly IOtpRepository _otpRepository;
 
-        public RabbitMQAuthConsumer(IConfiguration configuration, IOtpRepository otpRepository)
+        public GatewayRabbitMQAuthConsumer(IConfiguration configuration, IOtpRepository otpRepository)
         {
             _configuration = configuration;
             _otpRepository = otpRepository;
@@ -27,7 +27,7 @@ namespace FoodTruck.WebApi.Message
             };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(_configuration.GetValue<string>("QueueName:RegisterUserOtpQueue"), false, false, false, null);
+            _channel.QueueDeclare(_configuration.GetValue<string>("GatewayQueue:GatewayQueueName"), false, false, false, null);
 
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -45,7 +45,7 @@ namespace FoodTruck.WebApi.Message
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
-            _channel.BasicConsume(_configuration.GetValue<string>("QueueName:RegisterUserOtpQueue"), false, consumer);
+            _channel.BasicConsume(_configuration.GetValue<string>("GatewayQueue:GatewayQueueName"), false, consumer);
 
             return Task.CompletedTask;
         }

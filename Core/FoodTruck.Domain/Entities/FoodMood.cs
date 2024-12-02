@@ -2,7 +2,6 @@
 
 public class FoodMood
 {
-    public int FoodMoodId { get; set; }
     public int FoodId { get; set; }
     public virtual Food Food { get; set; }
     public int MoodId { get; set; }

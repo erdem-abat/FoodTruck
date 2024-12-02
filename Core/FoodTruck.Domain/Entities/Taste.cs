@@ -8,5 +8,5 @@ public class Taste
     public int TasteId { get; set; }
     [Required]
     public string Name { get; set; }      
-    public IEnumerable<FoodTaste> Foods { get; set; }
+    public virtual IEnumerable<FoodTaste> FoodTastes { get; set; }
 }

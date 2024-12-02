@@ -23,14 +23,16 @@ public class Food
     public int CategoryId { get; set; }
     public virtual Category Category { get; set; }
 
-    public IEnumerable<FoodMood> FoodMoods { get; set; }
-    public IEnumerable<FoodTaste> FoodTastes { get; set; }
-    public IEnumerable<OrderDetail> OrderDetails { get; set; }
-    public IEnumerable<FoodTruck> Trucks { get; set; }
-    public IEnumerable<FoodChef> Chefs { get; set; }
-    public IEnumerable<FoodRestaurant> FoodRestaurants { get; set; }
-    public IEnumerable<Ingredient> Ingredients { get; set; }
-    public IEnumerable<FoodRate> FoodRates { get; set; }
-    public IEnumerable<Campaign> Campaigns { get; set; }
-    public IEnumerable<Advertise> Advertises { get; set; }
+    public virtual IEnumerable<CartDetail> CartDetails { get; set; }
+    public virtual IEnumerable<FoodMood> FoodMoods { get; set; }
+    public virtual IEnumerable<FoodTaste> FoodTastes { get; set; }
+    public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
+    public virtual IEnumerable<FoodTruck> FoodTrucks { get; set; }
+    public virtual IEnumerable<FoodChef> FoodChefs { get; set; }
+    public virtual IEnumerable<FoodRestaurant> FoodRestaurants { get; set; }
+    public virtual IEnumerable<FoodIngredient> FoodIngredients { get; set; }
+    public virtual IEnumerable<FoodRate> FoodRates { get; set; }
+    public virtual IEnumerable<FoodCampaign> FoodCampaigns { get; set; }
+    public virtual IEnumerable<Advertise> Advertises { get; set; }
+    public virtual IEnumerable<FoodTruckCartDetail> FoodTruckCartDetails { get; set; }
 }

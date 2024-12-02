@@ -7,9 +7,9 @@ namespace FoodTruck.WebApi.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly FoodTruckContext _context;
+        private readonly UserIdentityDbContext _context;
 
-        public Repository(FoodTruckContext context)
+        public Repository(UserIdentityDbContext context)
         {
             _context = context;
         }

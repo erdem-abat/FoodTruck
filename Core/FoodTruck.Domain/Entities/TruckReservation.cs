@@ -10,8 +10,8 @@ public class TruckReservation
     public int? FromLocationId { get; set; }
     public int? ToLocationId { get; set; }
     [NotMapped]
-    public Location FromLocation { get; set; }
+    public virtual Location FromLocation { get; set; }
     [NotMapped]
-    public Location ToLocation { get; set; }
+    public virtual Location ToLocation { get; set; }
     public string Status { get; set; }
 }

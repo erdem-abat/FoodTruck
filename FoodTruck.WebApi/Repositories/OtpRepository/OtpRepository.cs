@@ -29,10 +29,10 @@ public class OtpRepository : IOtpRepository
             SmtpClient client = new SmtpClient("smtp.ethereal.email", 587);
             client.EnableSsl = true;
             client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential("norma.rosenbaum94@ethereal.email", _configuration["Email:Password"]);
+            client.Credentials = new NetworkCredential("madilyn55@ethereal.email", _configuration["Email:Password"]);
 
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress("norma.rosenbaum94@ethereal.email");
+            mailMessage.From = new MailAddress("madilyn55@ethereal.email");
             mailMessage.To.Add(email);
             mailMessage.Subject = "subject";
             mailMessage.IsBodyHtml = true;

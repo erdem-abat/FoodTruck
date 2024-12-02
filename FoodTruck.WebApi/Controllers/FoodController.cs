@@ -26,7 +26,7 @@ namespace FoodTruck.WebApi.Controllers
             _mediator = mediator;
             _response = new ResponseDto();
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles ="ADMIN")]
         [HttpGet("GetFoods")]
         public async Task<IActionResult> GetFoods()
         {

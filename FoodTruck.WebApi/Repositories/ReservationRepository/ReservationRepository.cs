@@ -8,9 +8,9 @@ namespace FoodTruck.WebApi.Repositories.ReservationRepository
     public class ReservationRepository : IReservationRepository
     {
         private IMapper _mapper;
-        private readonly FoodTruckContext _context;
+        private readonly UserIdentityDbContext _context;
 
-        public ReservationRepository(IMapper mapper, FoodTruckContext context)
+        public ReservationRepository(IMapper mapper, UserIdentityDbContext context)
         {
             _mapper = mapper;
             _context = context;

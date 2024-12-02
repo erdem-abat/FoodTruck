@@ -11,8 +11,8 @@ namespace FoodTruck.WebApi.Repositories.CouponRepository
     public class CouponRepository : ICouponRepository
     {
         private IMapper _mapper;
-        private FoodTruckContext _context;
-        public CouponRepository(IMapper mapper, FoodTruckContext dbcontext)
+        private UserIdentityDbContext _context;
+        public CouponRepository(IMapper mapper, UserIdentityDbContext dbcontext)
         {
             _mapper = mapper;
             _context = dbcontext;

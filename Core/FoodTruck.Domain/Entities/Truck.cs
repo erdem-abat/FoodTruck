@@ -4,7 +4,8 @@ public class Truck
 {
     public int TruckId { get; set; }
     public string TruckName { get; set; }
-    public List<FoodTruck> Foods { get; set; }
-    public List<Chef> Chefs { get; set; }
-    public List<TruckReservation> TruckReservations { get; set; }
+    public virtual ICollection<FoodTruck> FoodTrucks { get; set; }
+    public virtual ICollection<Chef> Chefs { get; set; }
+    public virtual ICollection<TruckReservation> TruckReservations { get; set; }
+    public virtual ICollection<FoodTruckCartDetail> FoodTruckCartDetails { get; set; }
 }

@@ -10,5 +10,5 @@ public class RestaurantDetail
 
     public int LocationId { get; set; }
     [NotMapped]
-    public Location Location { get; set; }
+    public virtual Location Location { get; set; }
 }

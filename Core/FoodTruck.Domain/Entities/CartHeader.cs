@@ -11,4 +11,6 @@ public class CartHeader
     public double Discount { get; set; }
     [NotMapped]
     public double CartTotal { get; set; }
+    public virtual ICollection<CartDetail> CartDetails { get; set; }
+    public virtual ICollection<FoodTruckCartDetail> FoodTruckCartDetails { get; set; }
 }

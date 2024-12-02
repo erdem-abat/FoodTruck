@@ -12,10 +12,10 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
     public class RestaurantRepository : IRestaurant
     {
         private IMapper _mapper;
-        private readonly FoodTruckContext _context;
+        private readonly UserIdentityDbContext _context;
         private readonly UserIdentityDbContext _identityContext;
 
-        public RestaurantRepository(IMapper mapper, FoodTruckContext context, UserIdentityDbContext identityContext)
+        public RestaurantRepository(IMapper mapper, UserIdentityDbContext context, UserIdentityDbContext identityContext)
         {
             _mapper = mapper;
             _context = context;

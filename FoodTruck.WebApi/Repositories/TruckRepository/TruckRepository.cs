@@ -13,10 +13,10 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
 {
     public class TruckRepository : ITruckRepository
     {
-        private readonly FoodTruckContext _context;
+        private readonly UserIdentityDbContext _context;
         private IMapper _mapper;
 
-        public TruckRepository(FoodTruckContext context, IMapper mapper)
+        public TruckRepository(UserIdentityDbContext context, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
@@ -105,7 +105,6 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
                                 Truck = _mapper.Map<TruckDto>(truck),
                                 FoodId = foodtruck.FoodId,
                                 Stock = foodtruck.Stock,
-                                FoodTruckId = foodtruck.FoodTruckId,
                                 TruckId = foodtruck.TruckId
                             }).ToListAsync();
             }

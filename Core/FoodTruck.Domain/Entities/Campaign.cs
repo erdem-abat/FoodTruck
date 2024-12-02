@@ -10,5 +10,5 @@ public class Campaign : DateFields
     public string Description { get; set; }
     [Range(0.01, 99.99)]
     public decimal Discount { get; set; }
-    public IEnumerable<Food> Foods { get; set; }
+    public virtual IEnumerable<FoodCampaign> FoodCampaigns { get; set; }
 }

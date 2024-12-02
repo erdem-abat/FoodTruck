@@ -4,10 +4,9 @@ namespace FoodTruck.Domain.Entities;
 
 public class FoodTaste
 {
-    public int FoodTasteId { get; set; }
     public int FoodId { get; set; }
     [NotMapped]
-    public Food Food { get; set; }
+    public virtual Food Food { get; set; }
     public int TasteId { get; set; }
     
     public virtual Taste Taste { get; set; }

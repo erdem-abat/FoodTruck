@@ -13,9 +13,9 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
     public class OrderRepository : IOrderRepository
     {
         private IMapper _mapper;
-        private readonly FoodTruckContext _context;
+        private readonly UserIdentityDbContext _context;
 
-        public OrderRepository(IMapper mapper, FoodTruckContext context)
+        public OrderRepository(IMapper mapper, UserIdentityDbContext context)
         {
             _mapper = mapper;
             _context = context;

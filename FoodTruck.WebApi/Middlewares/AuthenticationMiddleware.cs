@@ -13,7 +13,7 @@ namespace FoodTruck.WebApi.Middlewares
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, FoodTruckContext _dbContext)
+        public async Task Invoke(HttpContext context, UserIdentityDbContext _dbContext)
         {
             if (context.Request.Path == "/api/Auth/login" && context.Request.Method == "POST")
             {

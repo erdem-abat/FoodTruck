@@ -1,7 +1,5 @@
 ﻿using FoodTruck.Application.Interfaces;
 using FoodTruck.Dto;
-using FoodTruck.Dto.EmailDtos;
-using FoodTruck.WebApi.Repositories.AuthRepository;
 
 namespace FoodTruck.WebApi.Services
 {

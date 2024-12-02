@@ -13,12 +13,12 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
 {
     public class CartRepository : ICartRepository
     {
-        private readonly FoodTruckContext _dbContext;
+        private readonly UserIdentityDbContext _dbContext;
         private IMapper _mapper;
         private readonly IFoodRepository _foodRepository;
         private readonly IRepository<Coupon> _couponRepository;
 
-        public CartRepository(FoodTruckContext dbContext, IMapper mapper, IFoodRepository foodRepository, IRepository<Coupon> couponRepository)
+        public CartRepository(UserIdentityDbContext dbContext, IMapper mapper, IFoodRepository foodRepository, IRepository<Coupon> couponRepository)
         {
             _dbContext = dbContext;
             _mapper = mapper;

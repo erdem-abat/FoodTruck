@@ -15,6 +15,6 @@ public class Order
 
     public int OrderStatusId { get; set; }
     [NotMapped]
-    public OrderStatus OrderStatus { get; set; }
-    public IEnumerable<OrderDetail> OrderDetails { get; set; }
+    public virtual OrderStatus OrderStatus { get; set; }
+    public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
 }

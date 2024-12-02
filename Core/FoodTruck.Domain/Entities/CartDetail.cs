@@ -9,8 +9,8 @@ public class CartDetail
 
     public int CartHeaderId { get; set; }
     [ForeignKey("CartHeaderId")]
-    public  CartHeader CartHeader { get; set; }
+    public  virtual CartHeader CartHeader { get; set; }
     public int FoodId { get; set; }
     [NotMapped]
-    public Food Food { get; set; }
+    public virtual Food Food { get; set; }
 }

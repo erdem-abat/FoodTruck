@@ -4,32 +4,25 @@ using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Npgsql;
-using StackExchange.Redis;
-using Stripe;
 using System.Data;
 using System.Data.OleDb;
-using System.Linq;
-using static StackExchange.Redis.Role;
 
 
 namespace FoodTruck.WebApi.Repositories.FoodRepository
 {
     public class FoodRepository : IFoodRepository
     {
-        private readonly FoodTruckContext _context;
+        private readonly UserIdentityDbContext _context;
         private IDistributedCache _distributedCache;
         private IConfiguration _configuration;
         private IWebHostEnvironment _webHostEnvironment;
         private IMapper _mapper;
 
-        public FoodRepository(FoodTruckContext context, IDistributedCache distributedCache, IConfiguration configuration, IWebHostEnvironment webHostEnvironment, IMapper mapper)
+        public FoodRepository(UserIdentityDbContext context, IDistributedCache distributedCache, IConfiguration configuration, IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             _context = context;
             _distributedCache = distributedCache;
