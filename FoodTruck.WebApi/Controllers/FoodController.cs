@@ -161,16 +161,20 @@ namespace FoodTruck.WebApi.Controllers
         [HttpPost("CreateFood")]
         public async Task<IActionResult> CreateFoodAsync(CreateFoodCommand createFoodCommand, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _mediator.Send(createFoodCommand, cancellationToken);
-                _response.Result = "Food successfully created.";
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
+        //    try
+        //    {
+        //        await _mediator.Send(createFoodCommand, cancellationToken);
+        //        _response.Result = "Food successfully created.";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _response.IsSuccess = false;
+        //        _response.Result = ex;
+        //    }
+        //    return Ok(_response);
+
+            await _mediator.Send(createFoodCommand, cancellationToken);
+            _response.Result = "Food successfully created.";
             return Ok(_response);
         }
 
@@ -189,11 +193,12 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateFoodAsync(UpdateFoodCommand updateFoodCommand, CancellationToken cancellationToken)
+        [HttpPut("updateFood/{id}")]
+        public async Task<IActionResult> UpdateFoodAsync(int id, [FromBody] UpdateFoodCommand updateFoodCommand, CancellationToken cancellationToken)
         {
             try
             {
+                updateFoodCommand.FoodId = id;
                 await _mediator.Send(updateFoodCommand, cancellationToken);
                 _response.Result = "Food successfully updated.";
             }

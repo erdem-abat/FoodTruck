@@ -11,7 +11,7 @@ public interface IFoodRepository
     Task<Food> CreateFoodAsync(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> ingredientIds);
     Task<List<FoodDto>> GetFoodsAsync();
     Task<List<FoodDto>> GetFoodsWithPagingAsync(int page, int pageSize);
-    Task<FoodWithAllDto> GetFoodByIdAsync(int foodId);
+    Task<FoodWithAllDto> GetFoodByIdAsync(int foodId, CancellationToken cancellationToken);
     Task<List<FoodWithAllDto>> GetFoodsWithAllAsync(CancellationToken cancellationToken);
     Task<List<FoodWithAllDto>> GetFoodsByFilterAsync(GetFoodsByFilterParameters getFoodsByFilterParameters);
     Task<string> DocumentUploadAsync(IFormFile formFile);

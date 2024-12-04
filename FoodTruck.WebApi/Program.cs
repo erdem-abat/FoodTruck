@@ -5,6 +5,7 @@ using FoodTruck.Domain.Entities;
 using FoodTruck.WebApi;
 using FoodTruck.WebApi.Data;
 using FoodTruck.WebApi.Extensions;
+using FoodTruck.WebApi.Handlers;
 using FoodTruck.WebApi.Message;
 using FoodTruck.WebApi.Middlewares;
 using FoodTruck.WebApi.Models;
@@ -106,6 +107,7 @@ Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Sec
 
 builder.AddAppAuthentication();
 builder.Services.AddAuthorization();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
@@ -116,10 +118,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("CorsPolicy");
+app.UseExceptionHandler(_ => { });
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.UseMiddleware<AuthenticationMiddleware>();
 app.Run();

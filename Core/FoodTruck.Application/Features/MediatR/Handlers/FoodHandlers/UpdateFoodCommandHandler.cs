@@ -22,7 +22,9 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
             value.ImageLocalPath = request.ImageLocalPath;
             value.Description= request.Description;
             value.ImageUrl= request.ImageUrl;
-            value.Name= request.Name;            
+            value.Name= request.Name;  
+            value.price = request.Price;
+            
             await _repository.UpdateAsync(value);
         }
     }

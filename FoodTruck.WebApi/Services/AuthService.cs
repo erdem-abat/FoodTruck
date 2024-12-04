@@ -1,4 +1,5 @@
-﻿using FoodTruck.Application.Interfaces;
+﻿using FoodTruck.Application.Exceptions;
+using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto;
 using FoodTruck.Dto.AuthDtos;
@@ -131,7 +132,7 @@ namespace FoodTruck.WebApi.Services
 
                 if (user == null || !isValid)
                 {
-                    return new LoginResponseDto();
+                    throw new NotFoundException("Check your username and password!");
                 }
 
                 var roles = await _userManager.GetRolesAsync(user);

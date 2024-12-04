@@ -714,36 +714,36 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         //    return tables; // Dictionary containing each sheet's data
         //}
 
-        public async Task<FoodWithAllDto> GetFoodByIdAsync(int foodId)
+        public async Task<FoodWithAllDto> GetFoodByIdAsync(int foodId, CancellationToken cancellationToken)
         {
-            var data = (from food in _context.Foods
-                        join country in _context.Countries on food.CountryId equals country.CountryId
-                        join category in _context.Categories on food.CategoryId equals category.CategoryId
-                        join foodMood in _context.FoodMood on food.FoodId equals foodMood.FoodId into foodMoodGroup
-                        from foodMood in foodMoodGroup.DefaultIfEmpty()
-                        join mood in _context.Moods on foodMood.MoodId equals mood.MoodId into moodGroup
-                        from mood in moodGroup.DefaultIfEmpty()
-                        join foodTaste in _context.FoodTaste on food.FoodId equals foodTaste.FoodId into foodTasteGroup
-                        from foodTaste in foodTasteGroup.DefaultIfEmpty()
-                        join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
-                        from taste in tasteGroup.DefaultIfEmpty()
-                        join foodIngredient in _context.FoodIngredient on food.FoodId equals foodIngredient.FoodId into foodIngredientGroup
-                        from foodIngredient in foodIngredientGroup.DefaultIfEmpty()
-                        join ingredient in _context.Ingredients on foodIngredient.IngredientId equals ingredient.IngredientId into ingredientGroup
-                        from ingredient in ingredientGroup.DefaultIfEmpty()
-                        where food.FoodId == foodId
-                        select new
-                        {
-                            Food = food,
-                            Country = country,
-                            Category = category,
-                            FoodMood = foodMood,
-                            Mood = mood,
-                            FoodTaste = foodTaste,
-                            Taste = taste,
-                            FoodIngredient = foodIngredient,
-                            Ingredient = ingredient
-                        })
+            return await (from food in _context.Foods
+                    join country in _context.Countries on food.CountryId equals country.CountryId
+                    join category in _context.Categories on food.CategoryId equals category.CategoryId
+                    join foodMood in _context.FoodMood on food.FoodId equals foodMood.FoodId into foodMoodGroup
+                    from foodMood in foodMoodGroup.DefaultIfEmpty()
+                    join mood in _context.Moods on foodMood.MoodId equals mood.MoodId into moodGroup
+                    from mood in moodGroup.DefaultIfEmpty()
+                    join foodTaste in _context.FoodTaste on food.FoodId equals foodTaste.FoodId into foodTasteGroup
+                    from foodTaste in foodTasteGroup.DefaultIfEmpty()
+                    join taste in _context.Tastes on foodTaste.TasteId equals taste.TasteId into tasteGroup
+                    from taste in tasteGroup.DefaultIfEmpty()
+                    join foodIngredient in _context.FoodIngredient on food.FoodId equals foodIngredient.FoodId into foodIngredientGroup
+                    from foodIngredient in foodIngredientGroup.DefaultIfEmpty()
+                    join ingredient in _context.Ingredients on foodIngredient.IngredientId equals ingredient.IngredientId into ingredientGroup
+                    from ingredient in ingredientGroup.DefaultIfEmpty()
+                    where food.FoodId == foodId
+                    select new
+                    {
+                        Food = food,
+                        Country = country,
+                        Category = category,
+                        FoodMood = foodMood,
+                        Mood = mood,
+                        FoodTaste = foodTaste,
+                        Taste = taste,
+                        FoodIngredient = foodIngredient,
+                        Ingredient = ingredient
+                    })
                    .GroupBy(f => f.Food.FoodId)
                    .Select(g => new FoodWithAllDto
                    {
@@ -757,9 +757,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                        Moods = g.Where(f => f.Mood != null).Select(f => f.Mood).Distinct().ToList(),
                        Tastes = g.Where(f => f.Taste != null).Select(f => f.Taste).Distinct().ToList()
                    })
-                   .AsNoTracking();
-
-            return await data.FirstOrDefaultAsync();
+                   .FirstOrDefaultAsync(cancellationToken) ?? new FoodWithAllDto();
         }
     }
 }

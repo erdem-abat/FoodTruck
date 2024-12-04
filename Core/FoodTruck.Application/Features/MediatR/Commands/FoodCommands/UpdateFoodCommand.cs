@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 
 namespace FoodTruck.Application.Features.MediateR.Commands.FoodCommands
 {
     public class UpdateFoodCommand : IRequest
     {
+        [JsonIgnore]
         public int FoodId { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
