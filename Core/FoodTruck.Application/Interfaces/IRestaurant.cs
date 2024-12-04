@@ -1,13 +1,12 @@
 ﻿using FoodTruck.Dto.RestaurantDtos;
 using FoodTruck.Dto.SeatDtos;
 
-namespace FoodTruck.Application.Interfaces
+namespace FoodTruck.Application.Interfaces;
+
+public interface IRestaurant
 {
-    public interface IRestaurant
-    {
-        Task<RestaurantDto> CreateRestaurant(RestaurantDto restaurantDto);
-        Task<SeatPlanDto> CreateSeatPlan(SeatPlanDto seatPlanDto);
-        Task<string> AddFoodToRestaurant(int foodId, int restaurantId, double price);
-        Task<bool> ApproveRestaurant(bool isApprove, int restaurantId);
-    }
+    Task<RestaurantDto> CreateRestaurantAsync(RestaurantDto restaurantDto);
+    Task<SeatPlanDto> CreateSeatPlanAsync(SeatPlanDto seatPlanDto);
+    Task<string> AddFoodToRestaurantAsync(int foodId, int restaurantId, double price);
+    Task<bool> ApproveRestaurantAsync(bool isApprove, int restaurantId);
 }

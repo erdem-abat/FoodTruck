@@ -1,7 +1,5 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.CartCommands;
 using FoodTruck.Application.Features.MediatR.Queries.CartQueries;
-using FoodTruck.Domain.Entities;
-using FoodTruck.Dto.CartDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +20,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetCart")]
-        public async Task<IActionResult> GetCart([FromQuery] string userId)
+        public async Task<IActionResult> GetCartAsync([FromQuery] string userId, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetCartQuery(userId));
+                var values = await _mediator.Send(new GetCartQuery(userId), cancellationToken);
                 _response.Result = values.CartsDto;
             }
             catch (Exception ex)
@@ -39,11 +37,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetFoodTruckCart")]
-        public async Task<IActionResult> GetFoodTruckCart([FromQuery] string userId)
+        public async Task<IActionResult> GetFoodTruckCartAsync([FromQuery] string userId, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetFoodTruckCartQuery(userId));
+                var values = await _mediator.Send(new GetFoodTruckCartQuery(userId), cancellationToken);
                 _response.Result = values.foodTruckCartsDto;
             }
             catch (Exception ex)
@@ -56,11 +54,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("FoodTruckCartUpsert")]
-        public async Task<IActionResult> FoodTruckCartUpsert(FoodTruckCartUpsertCommand foodTruckCartUpsertCommand)
+        public async Task<IActionResult> FoodTruckCartUpsertAsync(FoodTruckCartUpsertCommand foodTruckCartUpsertCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(foodTruckCartUpsertCommand);
+                await _mediator.Send(foodTruckCartUpsertCommand, cancellationToken);
                 _response.Result = "Cart operation has been completed.";
             }
             catch (Exception ex)
@@ -73,11 +71,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CartUpsert")]
-        public async Task<IActionResult> CartUpsert(CartUpsertCommand cartUpsertCommand)
+        public async Task<IActionResult> CartUpsertAsync(CartUpsertCommand cartUpsertCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(cartUpsertCommand);
+                await _mediator.Send(cartUpsertCommand, cancellationToken);
                 _response.Result = "Cart operation has been completed.";
             }
             catch (Exception ex)
@@ -90,11 +88,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("ApplyCoupon")]
-        public async Task<object> ApplyCoupon(string UserId, string couponCode)
+        public async Task<object> ApplyCouponAsync(string UserId, string couponCode, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(new GetCartCouponApplyQuery(UserId, couponCode));
+                var value = await _mediator.Send(new GetCartCouponApplyQuery(UserId, couponCode), cancellationToken);
                 _response.Result = value.IsApply == true ? "Coupon applied!" : "Check coupon code!";
             }
             catch (Exception ex)
@@ -107,11 +105,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("RemoveCart")]
-        public async Task<ResponseDto> RemoveCart(CartRemoveCommand cartRemoveCommand)
+        public async Task<ResponseDto> RemoveCartAsync(CartRemoveCommand cartRemoveCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(cartRemoveCommand);
+                var value = await _mediator.Send(cartRemoveCommand, cancellationToken);
                 _response.Result = value.IsDeleted == true ? "Cart removed!" : "Check the cart!";
             }
             catch (Exception ex)

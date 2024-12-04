@@ -1,8 +1,4 @@
-﻿using FoodTruck.Domain.Entities;
-using FoodTruck.Dto.RestaurantDtos;
-using FoodTruck.Dto.TruckDtos;
-
-namespace FoodTruck.Dto.ChefDtos;
+﻿namespace FoodTruck.Dto.ChefDtos;
 
 public class ChefDto
 {

@@ -16,7 +16,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.FoodHandlers
 
         public async Task Handle(CreateFoodCommand request, CancellationToken cancellationToken)
         {
-            await _repository.CreateFood(new Food
+            await _repository.CreateFoodAsync(new Food
             {
                 CategoryId = request.CategoryId,
                 CountryId = request.CountryId,

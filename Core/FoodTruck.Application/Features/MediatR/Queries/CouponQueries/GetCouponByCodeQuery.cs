@@ -1,11 +1,5 @@
-﻿using Amazon.Runtime.Internal;
-using FoodTruck.Application.Features.MediatR.Results.CouponResults;
+﻿using FoodTruck.Application.Features.MediatR.Results.CouponResults;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodTruck.Application.Features.MediatR.Queries.CouponQueries
 {

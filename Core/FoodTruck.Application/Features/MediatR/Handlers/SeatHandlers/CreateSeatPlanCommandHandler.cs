@@ -17,7 +17,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.SeatHandlers
         {
             return new CreateSeatPlanCommandResult
             {
-                SeatPlanDto = await _repository.CreateSeatPlan(request.SeatPlanDto)
+                SeatPlanDto = await _repository.CreateSeatPlanAsync(request.SeatPlanDto)
             };
         }
     }

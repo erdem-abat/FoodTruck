@@ -1,13 +1,8 @@
-﻿using Azure;
-using FoodTruck.Application.Features.MediatR.Commands.AuthCommands;
-using FoodTruck.Application.Features.MediatR.Commands.ChefCommands;
+﻿using FoodTruck.Application.Features.MediatR.Commands.ChefCommands;
 using FoodTruck.Application.Features.MediatR.Queries.ChefQueries;
-using FoodTruck.Application.Interfaces;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FoodTruck.WebApi.Controllers
 {
@@ -24,11 +19,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateChef")]
-        public async Task<IActionResult> CreateChef(ChefCreateCommand createChefCommand)
+        public async Task<IActionResult> CreateChefAsync(ChefCreateCommand createChefCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(createChefCommand);
+                await _mediator.Send(createChefCommand, cancellationToken);
                 _response.Result = "Chef successfully created.";
             }
             catch (Exception ex)
@@ -41,11 +36,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetChef")]
-        public async Task<IActionResult> GetChef()
+        public async Task<IActionResult> GetChefAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetChefQuery());
+                var values = await _mediator.Send(new GetChefQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)

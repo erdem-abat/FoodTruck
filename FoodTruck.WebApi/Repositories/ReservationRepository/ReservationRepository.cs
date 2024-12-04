@@ -16,7 +16,7 @@ namespace FoodTruck.WebApi.Repositories.ReservationRepository
             _context = context;
         }
 
-        public Task<TruckReservationResponseDto> CreateReservation(TruckReservationRequestDto truckReservationRequestDto)
+        public Task<TruckReservationResponseDto> CreateReservationAsync(TruckReservationRequestDto truckReservationRequestDto)
         {
             throw new NotImplementedException();
         }

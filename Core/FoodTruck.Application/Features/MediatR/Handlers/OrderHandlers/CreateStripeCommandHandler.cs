@@ -16,7 +16,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
 
         public async Task<CreateStripeCommandResult> Handle(CreateStripeCommand request, CancellationToken cancellationToken)
         {
-            var value = await _repository.CreateStripe(request.stripeRequestDto);
+            var value = await _repository.CreateStripeAsync(request.stripeRequestDto);
 
             return new CreateStripeCommandResult
             {

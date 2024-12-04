@@ -1,8 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediatR.Queries.CategoryQueires;
-using FoodTruck.Application.Features.MediatR.Queries.CountryQueries;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTruck.WebApi.Controllers
@@ -21,11 +19,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetCategories")]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> GetCategoriesAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetCategoryQuery());
+                var values = await _mediator.Send(new GetCategoryQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)

@@ -1,10 +1,7 @@
-﻿using Azure;
-using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
-using FoodTruck.Application.Features.MediatR.Commands.RestaurantCommands;
+﻿using FoodTruck.Application.Features.MediatR.Commands.RestaurantCommands;
 using FoodTruck.Application.Features.MediatR.Commands.SeatCommands;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTruck.WebApi.Controllers
@@ -23,11 +20,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateRestaurant")]
-        public async Task<IActionResult> CreateRestaurant(CreateRestaurantCommand createRestaurantCommand)
+        public async Task<IActionResult> CreateRestaurantAsync(CreateRestaurantCommand createRestaurantCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createRestaurantCommand);
+                var value = await _mediator.Send(createRestaurantCommand, cancellationToken);
                 _response.Result = value;
             }
             catch (Exception ex)
@@ -39,13 +36,13 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPut("ApproveRestaurant")]
-        public async Task<IActionResult> ApproveRestaurant(ApproveRestaurantCommand createRestaurantCommand)
+        public async Task<IActionResult> ApproveRestaurantAsync(ApproveRestaurantCommand createRestaurantCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createRestaurantCommand);
-                
-                if(value)
+                var value = await _mediator.Send(createRestaurantCommand, cancellationToken);
+
+                if (value)
                 {
                     _response.Message = "Restaurant has been approved.";
 
@@ -65,11 +62,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateSeatPlan")]
-        public async Task<IActionResult> CreateSeatPlan(CreateSeatPlanCommand createSeatPlanCommand)
+        public async Task<IActionResult> CreateSeatPlanAsync(CreateSeatPlanCommand createSeatPlanCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createSeatPlanCommand);
+                var value = await _mediator.Send(createSeatPlanCommand, cancellationToken);
                 _response.Result = value;
             }
             catch (Exception ex)
@@ -80,11 +77,11 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
         [HttpPost("AddFoodToRestaurant")]
-        public async Task<IActionResult> AddFoodToRestaurant(CreateAddFoodToRestaurantCommand createAddFoodToRestaurantCommand)
+        public async Task<IActionResult> AddFoodToRestaurantAsync(CreateAddFoodToRestaurantCommand createAddFoodToRestaurantCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createAddFoodToRestaurantCommand);
+                var value = await _mediator.Send(createAddFoodToRestaurantCommand, cancellationToken);
                 _response.Result = value;
             }
             catch (Exception ex)

@@ -1,7 +1,5 @@
-﻿using FoodTruck.Application.Features.MediatR.Commands.AuthCommands;
-using FoodTruck.Application.Features.MediatR.Commands.MoodCommands;
+﻿using FoodTruck.Application.Features.MediatR.Commands.MoodCommands;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTruck.WebApi.Controllers
@@ -21,11 +19,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateMood")]
-        public async Task<IActionResult> CreateMood(CreateMoodCommand createMoodCommand)
+        public async Task<IActionResult> CreateMoodAsync(CreateMoodCommand createMoodCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createMoodCommand);
+                var value = await _mediator.Send(createMoodCommand, cancellationToken);
 
                 if (value)
                 {

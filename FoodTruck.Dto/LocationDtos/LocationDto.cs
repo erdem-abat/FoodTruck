@@ -1,6 +1,4 @@
-﻿using FoodTruck.Domain.Entities;
-
-namespace FoodTruck.Dto.LocationDtos
+﻿namespace FoodTruck.Dto.LocationDtos
 {
     public class LocationDto
     {

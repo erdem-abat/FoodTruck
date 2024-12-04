@@ -2,12 +2,6 @@
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
 {

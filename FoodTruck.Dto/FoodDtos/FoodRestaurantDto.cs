@@ -1,6 +1,4 @@
-﻿using FoodTruck.Dto.RestaurantDtos;
-
-namespace FoodTruck.Dto.FoodDtos;
+﻿namespace FoodTruck.Dto.FoodDtos;
 
 public class FoodRestaurantDto
 {

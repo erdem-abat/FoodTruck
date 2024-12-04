@@ -26,7 +26,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             _couponRepository = couponRepository;
         }
 
-        public async Task<FoodTruckCartsDto> FoodTruckCartUpsert(FoodTruckCartsDto foodTruckCartsDto)
+        public async Task<FoodTruckCartsDto> FoodTruckCartUpsertAsync(FoodTruckCartsDto foodTruckCartsDto)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<CartsDto> CartUpsert(CartsDto cartsDto)
+        public async Task<CartsDto> CartUpsertAsync(CartsDto cartsDto)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<CartsDto> GetCart(string userId)
+        public async Task<CartsDto> GetCartAsync(string userId)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                 cartDto.CartDetails = _mapper.Map<IEnumerable<CartDetailDto>>(_dbContext.CartDetails
                     .Where(x => x.CartHeaderId == cartDto.CartHeader.CartHeaderId));
 
-                IEnumerable<FoodDto> foodDto = await _foodRepository.GetFoods();
+                IEnumerable<FoodDto> foodDto = await _foodRepository.GetFoodsAsync();
 
                 foreach (var item in cartDto.CartDetails)
                 {
@@ -155,7 +155,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<FoodTruckCartsDto> GetFoodTruckCart(string userId)
+        public async Task<FoodTruckCartsDto> GetFoodTruckCartAsync(string userId)
         {
             try
             {
@@ -166,7 +166,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                 foodTruckCartsDto.FoodTruckCartDetail = _mapper.Map<IEnumerable<FoodTruckCartDetailDto>>(_dbContext.FoodTruckCartDetails
                     .Where(x => x.CartHeaderId == foodTruckCartsDto.CartHeader.CartHeaderId));
 
-                IEnumerable<FoodDto> foodDto = await _foodRepository.GetFoods();
+                IEnumerable<FoodDto> foodDto = await _foodRepository.GetFoodsAsync();
 
                 foreach (var item in foodTruckCartsDto.FoodTruckCartDetail)
                 {
@@ -192,7 +192,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<bool> ApplyCoupon(string UserId, string couponCode)
+        public async Task<bool> ApplyCouponAsync(string UserId, string couponCode)
         {
             try
             {
@@ -208,7 +208,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<bool> CartRemove(int cartDetailId)
+        public async Task<bool> CartRemoveAsync(int cartDetailId)
         {
             try
             {

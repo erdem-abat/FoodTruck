@@ -17,7 +17,7 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
 
         public async Task<List<GetFoodQueryResult>> Handle(GetFoodQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<FoodWithAllDto> foods = await _repository.GetFoodsWithAll(cancellationToken);
+            IEnumerable<FoodWithAllDto> foods = await _repository.GetFoodsWithAllAsync(cancellationToken);
            
             return foods.Select(x => new GetFoodQueryResult
             {
@@ -30,7 +30,8 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
                 FoodId = x.Food.FoodId,
                 MoodNames = x.Moods.Select(x => x.Name).ToList(),
                 TasteNames = x.Tastes.Select(x => x.Name).ToList(),
-                IngredientNames = x.Ingredients.Select(x=>x.Name).ToList()
+                IngredientNames = x.Ingredients.Select(x=>x.Name).ToList(),
+                Price = x.Food.price
             }).ToList();
         }
     }

@@ -1,5 +1,4 @@
-﻿using Amazon.Util.Internal;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace FoodTruck.Application.Features.MediateR.Commands.FoodCommands
@@ -7,7 +6,6 @@ namespace FoodTruck.Application.Features.MediateR.Commands.FoodCommands
     public class CreateFoodCommand : IRequest
     {
         public string Name { get; set; }
-        public double Price { get; set; }
         public string Description { get; set; }
         public int CountryId { get; set; }
         public int CategoryId { get; set; }

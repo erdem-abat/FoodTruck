@@ -1,9 +1,8 @@
 ﻿using FoodTruck.Dto.TruckReservationDtos;
 
-namespace FoodTruck.Application.Interfaces
+namespace FoodTruck.Application.Interfaces;
+
+public interface IReservationRepository
 {
-    public interface IReservationRepository
-    {
-        Task<TruckReservationResponseDto> CreateReservation(TruckReservationRequestDto truckReservationRequestDto);
-    }
+    Task<TruckReservationResponseDto> CreateReservationAsync(TruckReservationRequestDto truckReservationRequestDto);
 }

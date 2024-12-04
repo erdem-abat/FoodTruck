@@ -1,6 +1,4 @@
-﻿using FoodTruck.Dto.CouponDtos;
-using MediatR;
-using System.ComponentModel.DataAnnotations;
+﻿using MediatR;
 
 namespace FoodTruck.Application.Features.MediatR.Commands.CouponCommands
 {

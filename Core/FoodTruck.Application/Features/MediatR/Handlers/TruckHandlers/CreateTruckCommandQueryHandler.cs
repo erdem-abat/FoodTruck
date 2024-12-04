@@ -1,14 +1,8 @@
-﻿using Amazon.Runtime.Internal;
-using FoodTruck.Application.Features.MediatR.Commands.TruckCommands;
+﻿using FoodTruck.Application.Features.MediatR.Commands.TruckCommands;
 using FoodTruck.Application.Features.MediatR.Results.TruckResults;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.TruckHandlers
 {
@@ -23,7 +17,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.TruckHandlers
 
         public async Task<GetTruckCreateCommandResult> Handle(CreateTruckCommand request, CancellationToken cancellationToken)
         {
-            var value = await _repository.CreateTruck(new Truck
+            var value = await _repository.CreateTruckAsync(new Truck
             {
                 TruckName = request.TruckName
             }, request.foodIdsWithStocks, request.ChefIds);

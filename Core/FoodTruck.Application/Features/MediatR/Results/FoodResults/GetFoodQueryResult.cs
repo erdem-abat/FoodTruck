@@ -1,12 +1,4 @@
-﻿using FoodTruck.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FoodTruck.Application.Features.MediateR.Results.FoodResults
+﻿namespace FoodTruck.Application.Features.MediateR.Results.FoodResults
 {
     public class GetFoodQueryResult
     {

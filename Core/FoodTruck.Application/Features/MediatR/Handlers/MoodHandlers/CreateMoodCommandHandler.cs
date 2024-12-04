@@ -1,6 +1,4 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.MoodCommands;
-using FoodTruck.Application.Features.MediatR.Queries.MoodQueries;
-using FoodTruck.Application.Features.MediatR.Results.MoodResults;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using MediatR;

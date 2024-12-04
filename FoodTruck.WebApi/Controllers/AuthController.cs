@@ -1,17 +1,8 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.AuthCommands;
 using FoodTruck.Application.Features.MediatR.Queries.AuthQueries;
-using FoodTruck.Application.Interfaces;
-using FoodTruck.Domain.Entities;
-using FoodTruck.Dto.AuthDtos;
 using FoodTruck.WebApi.Models.Dto;
-using FoodTruck.WebApi.Services;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace FoodTruck.WebApi.Controllers
 {
@@ -31,11 +22,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserCommand registerUserCommand)
+        public async Task<IActionResult> RegisterAsync(RegisterUserCommand registerUserCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(registerUserCommand);
+                var value = await _mediator.Send(registerUserCommand, cancellationToken);
 
                 if (value.IsSuccess)
                 {
@@ -56,11 +47,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(GetLoginUserQuery getLoginUserQuery)
+        public async Task<IActionResult> LoginAsync(GetLoginUserQuery getLoginUserQuery, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(getLoginUserQuery);
+                var values = await _mediator.Send(getLoginUserQuery, cancellationToken);
 
                 if (values.IsExist)
                 {
@@ -82,14 +73,14 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("googleLogin")]
-        public async Task<IActionResult> GoogleLogin(GoogleLoginUserCommand googleLoginUserCommand)
+        public async Task<IActionResult> GoogleLoginAsync(GoogleLoginUserCommand googleLoginUserCommand, CancellationToken cancellationToken)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState.Values.SelectMany(it => it.Errors).Select(it => it.ErrorMessage));
 
-                return Ok(await _mediator.Send(googleLoginUserCommand));
+                return Ok(await _mediator.Send(googleLoginUserCommand, cancellationToken));
             }
             catch (Exception ex)
             {
@@ -101,11 +92,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("AssignRole")]
-        public async Task<IActionResult> AssignRole(AssignRoleUserCommand assignRoleUserCommand)
+        public async Task<IActionResult> AssignRoleAsync(AssignRoleUserCommand assignRoleUserCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(assignRoleUserCommand);
+                await _mediator.Send(assignRoleUserCommand, cancellationToken);
                 _response.Result = "Role successfully assigned.";
             }
             catch (Exception ex)

@@ -1,6 +1,4 @@
-﻿using FoodTruck.Domain.Entities;
-using FoodTruck.Dto.FoodDtos;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using FoodTruck.Dto.FoodDtos;
 
 namespace FoodTruck.Dto.CartDtos
 {

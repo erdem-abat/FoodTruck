@@ -1,7 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
 using FoodTruck.Application.Features.MediatR.Commands.FoodCommands;
-using FoodTruck.Application.Features.MediatR.Queries.ChefQueries;
 using FoodTruck.Application.Features.MediatR.Queries.FoodQueries;
 using FoodTruck.Application.Features.MediatR.Queries.IngredientQueries;
 using FoodTruck.Application.Features.MediatR.Queries.MoodQueries;
@@ -26,13 +25,13 @@ namespace FoodTruck.WebApi.Controllers
             _mediator = mediator;
             _response = new ResponseDto();
         }
-        [Authorize(Roles ="ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("GetFoods")]
-        public async Task<IActionResult> GetFoods()
+        public async Task<IActionResult> GetFoodsAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetFoodQuery());
+                var values = await _mediator.Send(new GetFoodQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -44,11 +43,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetFoodById")]
-        public async Task<IActionResult> GetFoodById(int foodId)
+        public async Task<IActionResult> GetFoodByIdAsync(int foodId, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetFoodByIdQuery(foodId));
+                var values = await _mediator.Send(new GetFoodByIdQuery(foodId), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -60,11 +59,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetFoodsWithPaging")]
-        public async Task<IActionResult> GetFoodsWithPaging(int page, int pageSize)
+        public async Task<IActionResult> GetFoodsWithPagingAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetFoodsWithPagingQuery(page,pageSize));
+                var values = await _mediator.Send(new GetFoodsWithPagingQuery(page, pageSize), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -76,11 +75,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetFoodsMainPage")]
-        public async Task<IActionResult> GetFoodsMainPage()
+        public async Task<IActionResult> GetFoodsMainPageAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetFoodMainPageQuery());
+                var values = await _mediator.Send(new GetFoodMainPageQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -92,11 +91,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetMood")]
-        public async Task<IActionResult> GetMood()
+        public async Task<IActionResult> GetMoodAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetMoodQuery());
+                var values = await _mediator.Send(new GetMoodQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -109,11 +108,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetTaste")]
-        public async Task<IActionResult> GetTaste()
+        public async Task<IActionResult> GetTasteAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetTasteQuery());
+                var values = await _mediator.Send(new GetTasteQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -126,11 +125,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetIngredient")]
-        public async Task<IActionResult> GetIngredient()
+        public async Task<IActionResult> GetIngredientAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetIngredientQuery());
+                var values = await _mediator.Send(new GetIngredientQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -144,11 +143,11 @@ namespace FoodTruck.WebApi.Controllers
 
         [HttpGet]
         [Route("GetFoodsByFilter/getFoodsByFilterParameters")]
-        public async Task<IActionResult> GetFoodsByFilter([FromQuery]GetFoodsByFilterParameters getFoodsByFilterParameters)
+        public async Task<IActionResult> GetFoodsByFilterAsync([FromQuery] GetFoodsByFilterParameters getFoodsByFilterParameters, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetFoodsByFilterQuery(getFoodsByFilterParameters));
+                var values = await _mediator.Send(new GetFoodsByFilterQuery(getFoodsByFilterParameters), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -160,11 +159,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateFood")]
-        public async Task<IActionResult> CreateFood(CreateFoodCommand createFoodCommand)
+        public async Task<IActionResult> CreateFoodAsync(CreateFoodCommand createFoodCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(createFoodCommand);
+                await _mediator.Send(createFoodCommand, cancellationToken);
                 _response.Result = "Food successfully created.";
             }
             catch (Exception ex)
@@ -176,11 +175,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateFoodWithExcel")]
-        public async Task<IActionResult> CreateFoodWithExcel(CreateFoodWithExcelCommand createFoodWithExcelCommand)
+        public async Task<IActionResult> CreateFoodWithExcelAsync(CreateFoodWithExcelCommand createFoodWithExcelCommand, CancellationToken cancellationToken)
         {
             try
             {
-                _response.Result = await _mediator.Send(createFoodWithExcelCommand);
+                _response.Result = await _mediator.Send(createFoodWithExcelCommand, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -191,11 +190,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateFood(UpdateFoodCommand updateFoodCommand)
+        public async Task<IActionResult> UpdateFoodAsync(UpdateFoodCommand updateFoodCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(updateFoodCommand);
+                await _mediator.Send(updateFoodCommand, cancellationToken);
                 _response.Result = "Food successfully updated.";
             }
             catch (Exception ex)
@@ -207,11 +206,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveFood(int id)
+        public async Task<IActionResult> RemoveFoodAsync(int id, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(new RemoveFoodCommand(id));
+                await _mediator.Send(new RemoveFoodCommand(id), cancellationToken);
                 _response.Result = "Food successfully deleted.";
             }
             catch (Exception ex)

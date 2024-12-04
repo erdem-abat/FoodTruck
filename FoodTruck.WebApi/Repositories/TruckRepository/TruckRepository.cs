@@ -22,7 +22,7 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
             _context = context;
         }
 
-        public async Task<bool> CreateTruck(Truck truck, List<int[][]> foodIdsWithStocks, List<int> chefIds)
+        public async Task<bool> CreateTruckAsync(Truck truck, List<int[][]> foodIdsWithStocks, List<int> chefIds)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
             }
         }
 
-        public async Task<List<FoodTruckDto>> GetFoodTrucks()
+        public async Task<List<FoodTruckDto>> GetFoodTrucksAsync()
         {
             try
             {

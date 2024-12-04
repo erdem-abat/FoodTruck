@@ -3,11 +3,6 @@ using FoodTruck.Application.Features.MediatR.Results.CountryResults;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.CountryHandlers
 {
@@ -29,7 +24,5 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CountryHandlers
                 CountryId = x.CountryId
             }).ToList();
         }
-       
-        
     }
 }

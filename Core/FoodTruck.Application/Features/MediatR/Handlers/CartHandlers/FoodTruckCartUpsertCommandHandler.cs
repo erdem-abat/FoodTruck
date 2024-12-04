@@ -14,7 +14,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
         }
         public async Task Handle(FoodTruckCartUpsertCommand request, CancellationToken cancellationToken)
         {
-            await _repository.FoodTruckCartUpsert(request.FoodTruckCartsDto);
+            await _repository.FoodTruckCartUpsertAsync(request.FoodTruckCartsDto);
         }
     }
 }

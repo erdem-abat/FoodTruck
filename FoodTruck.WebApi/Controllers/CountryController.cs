@@ -1,9 +1,6 @@
-﻿using Azure;
-using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
-using FoodTruck.Application.Features.MediatR.Queries.CountryQueries;
+﻿using FoodTruck.Application.Features.MediatR.Queries.CountryQueries;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTruck.WebApi.Controllers
@@ -22,11 +19,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpGet("GetCountries")]
-        public async Task<IActionResult> GetCountries()
+        public async Task<IActionResult> GetCountriesAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetCountryQuery());
+                var values = await _mediator.Send(new GetCountryQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)

@@ -16,7 +16,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
 
         public async Task<CreateOrderCommandResult> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var value = _repository.CreateOrder(request.CartsDto);
+            var value = _repository.CreateOrderAsync(request.CartsDto);
             return new CreateOrderCommandResult
             {
                 orderHeaderDto = value.Result

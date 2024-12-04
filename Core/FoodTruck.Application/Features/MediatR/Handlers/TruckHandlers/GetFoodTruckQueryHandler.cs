@@ -15,7 +15,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.TruckHandlers
         }
         public async Task<List<GetFoodTruckQueryResult>> Handle(GetFoodTruckQuery request, CancellationToken cancellationToken)
         {
-            var values = await _truckRepository.GetFoodTrucks();
+            var values = await _truckRepository.GetFoodTrucksAsync();
 
             return values.Select(x => new GetFoodTruckQueryResult
             {

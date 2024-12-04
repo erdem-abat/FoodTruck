@@ -32,7 +32,7 @@ namespace FoodTruck.WebApi.Services
             _rabbitMQOtpService = rabbitMQOtpService;
         }
 
-        public async Task<bool> AssignRole(string username, string roleName)
+        public async Task<bool> AssignRoleAsync(string username, string roleName)
         {
             var user = _appDbContext.applicationUsers.FirstOrDefault(x => x.UserName.ToLower() == username.ToLower());
 
@@ -121,7 +121,7 @@ namespace FoodTruck.WebApi.Services
             return new UserTokenDto();
         }
 
-        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
+        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto loginRequestDto)
         {
             if (IsValid(loginRequestDto.Username))
             {
@@ -149,7 +149,7 @@ namespace FoodTruck.WebApi.Services
             return null;
         }
 
-        public async Task<ResponseDto> Register(RegisterationRequestDto registerationRequestDto)
+        public async Task<ResponseDto> RegisterAsync(RegisterationRequestDto registerationRequestDto)
         {
             if (IsValid(registerationRequestDto.Username))
             {
@@ -217,7 +217,7 @@ namespace FoodTruck.WebApi.Services
                                 return _response;
                             }
 
-                            var data = await Login(new LoginRequestDto()
+                            var data = await LoginAsync(new LoginRequestDto()
                             {
                                 Username = registerationRequestDto.Username,
                                 Password = registerationRequestDto.Password

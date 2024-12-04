@@ -1,6 +1,4 @@
-﻿using FoodTruck.Domain.Entities;
-using FoodTruck.Dto.TableDtos;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace FoodTruck.Dto.RestaurantDtos
 {

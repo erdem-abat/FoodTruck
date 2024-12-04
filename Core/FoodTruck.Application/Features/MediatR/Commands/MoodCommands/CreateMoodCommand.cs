@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FoodTruck.Application.Features.MediatR.Commands.MoodCommands;
 

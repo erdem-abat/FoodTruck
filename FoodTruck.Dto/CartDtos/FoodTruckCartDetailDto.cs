@@ -1,5 +1,4 @@
 ﻿using FoodTruck.Dto.FoodDtos;
-using FoodTruck.Dto.TruckDtos;
 
 namespace FoodTruck.Dto.CartDtos
 {

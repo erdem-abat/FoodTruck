@@ -1,5 +1,4 @@
 ﻿using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
-using FoodTruck.Application.Features.MediateR.Results.FoodResults;
 using FoodTruck.Application.Features.MediatR.Results.FoodResults;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Dto.FoodDtos;
@@ -18,7 +17,7 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
 
         public async Task<List<GetFoodsByFilterQueryResult>> Handle(GetFoodsByFilterQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<FoodWithAllDto> foods = await _repository.GetFoodsByFilter(request.getFoodsByFilterParameters);
+            IEnumerable<FoodWithAllDto> foods = await _repository.GetFoodsByFilterAsync(request.getFoodsByFilterParameters);
             return foods.Select(x => new GetFoodsByFilterQueryResult
             {
                 CountryName = x.Country.Name,

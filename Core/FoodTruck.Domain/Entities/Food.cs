@@ -16,6 +16,7 @@ public class Food
     public string? ImageLocalPath { get; set; }
     [NotMapped]
     public IFormFile? Image { get; set; }
+    public double price { get; set; }
 
     public int CountryId { get; set; }
     public virtual Country Country { get; set; }

@@ -100,7 +100,7 @@ public class OtpRepository : IOtpRepository
         return res;
     }
 
-    public async Task<ValidateResponseDto> ResendOtp(string email)
+    public async Task<ValidateResponseDto> ResendOtpAsync(string email)
     {
         ValidateResponseDto res = new ValidateResponseDto();
 

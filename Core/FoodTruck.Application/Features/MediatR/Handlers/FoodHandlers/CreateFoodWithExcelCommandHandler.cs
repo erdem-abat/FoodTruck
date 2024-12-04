@@ -17,9 +17,9 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.FoodHandlers
 
         public async Task<CreateFoodWithExcelCommandResult> Handle(CreateFoodWithExcelCommand request, CancellationToken cancellationToken)
         {
-            string path = await _repository.DocumentUpload(request.formFile);
-            DataTable dt = await _repository.FoodDataTable(path);
-            var data = await _repository.ImportFood(dt);
+            string path = await _repository.DocumentUploadAsync(request.formFile);
+            DataTable dt = await _repository.FoodDataTableAsync(path);
+            var data = await _repository.ImportFoodAsync(dt);
 
             return new CreateFoodWithExcelCommandResult
             {

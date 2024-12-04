@@ -1,9 +1,8 @@
 ﻿using FoodTruck.Domain.Entities;
 
-namespace FoodTruck.Application.Interfaces
+namespace FoodTruck.Application.Interfaces;
+
+public interface IJwtTokenGenerator
 {
-    public interface IJwtTokenGenerator
-    {
-        string GenerateToken(ApplicationUser applicationUser, IEnumerable<string> roles);
-    }
+    string GenerateToken(ApplicationUser applicationUser, IEnumerable<string> roles);
 }

@@ -1,7 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.RestaurantCommands;
 using FoodTruck.Application.Features.MediatR.Results.RestaurantResults;
 using FoodTruck.Application.Interfaces;
-using FoodTruck.Dto.RestaurantDtos;
 using MediatR;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.RestaurantHandlers
@@ -18,7 +17,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.RestaurantHandlers
         {
             return new CreateRestaurantCommandResult
             {
-                RestaurantDto = await _repository.CreateRestaurant(request.RestaurantDto)
+                RestaurantDto = await _repository.CreateRestaurantAsync(request.RestaurantDto)
             };
         }
     }

@@ -8,7 +8,6 @@ public class GoogleLoginUserCommand : IRequest<UserTokenDto>
 {
     public const string PROVIDER = "google";
 
-    //[JsonProperty("idToken")]
     [Required]
     public string IdToken { get; set; }
 }

@@ -17,7 +17,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.RestaurantHandlers
         {
             return new CreateAddFoodToRestaurantCommandResult
             {
-                Message = await _repository.AddFoodToRestaurant(request.FoodId, request.RestaurantId, request.Price)
+                Message = await _repository.AddFoodToRestaurantAsync(request.FoodId, request.RestaurantId, request.Price)
             };
         }
     }

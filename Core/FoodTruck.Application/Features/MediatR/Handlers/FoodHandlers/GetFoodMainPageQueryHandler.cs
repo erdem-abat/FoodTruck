@@ -17,7 +17,7 @@ namespace FoodTruck.Application.Features.MediateR.Handlers.FoodHandlers
 
         public async Task<List<GetFoodMainPageQueryResult>> Handle(GetFoodMainPageQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<Food> foods = await _repository.GetFoodsWithCategory();
+            IEnumerable<Food> foods = await _repository.GetFoodsWithCategoryAsync();
             return foods.Select(x => new GetFoodMainPageQueryResult
             {
                 ImageUrl = x.ImageUrl,

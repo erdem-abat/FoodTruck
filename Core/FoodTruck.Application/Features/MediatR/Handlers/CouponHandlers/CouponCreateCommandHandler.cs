@@ -2,11 +2,6 @@
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.CouponHandlers
 {
@@ -21,7 +16,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CouponHandlers
 
         public async Task Handle(CouponCreateCommand request, CancellationToken cancellationToken)
         {
-            await _couponRepository.CreateCoupon(new Coupon
+            await _couponRepository.CreateCouponAsync(new Coupon
             {
                 CouponCode = request.CouponCode,
                 DiscountAmount = request.DiscountAmount,

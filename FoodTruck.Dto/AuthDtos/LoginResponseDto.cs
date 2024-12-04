@@ -1,6 +1,4 @@
-﻿using FoodTruck.Domain.Entities;
-
-namespace FoodTruck.Dto.AuthDtos
+﻿namespace FoodTruck.Dto.AuthDtos
 {
     public class LoginResponseDto
     {

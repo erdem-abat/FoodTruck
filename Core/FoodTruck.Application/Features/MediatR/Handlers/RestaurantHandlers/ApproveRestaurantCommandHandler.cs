@@ -15,7 +15,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.RestaurantHandlers
 
         public async Task<bool> Handle(ApproveRestaurantCommand request, CancellationToken cancellationToken)
         {
-            return await _restaurant.ApproveRestaurant(request.IsApproved, request.RestaurantId);
+            return await _restaurant.ApproveRestaurantAsync(request.IsApproved, request.RestaurantId);
         }
     }
 }

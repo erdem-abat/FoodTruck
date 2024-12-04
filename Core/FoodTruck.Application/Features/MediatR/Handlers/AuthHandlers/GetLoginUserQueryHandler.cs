@@ -21,7 +21,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
         {
             var values = new GetLoginUserQueryResult();
            
-            var userResponse = _authService.Login(new LoginRequestDto
+            var userResponse = _authService.LoginAsync(new LoginRequestDto
             {
                 Username = request.Username,
                 Password = request.Password

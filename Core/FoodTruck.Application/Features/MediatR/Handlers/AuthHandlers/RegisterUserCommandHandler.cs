@@ -17,7 +17,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
 
         public async Task<ResponseDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            return await _authService.Register(new RegisterationRequestDto
+            return await _authService.RegisterAsync(new RegisterationRequestDto
             {
                 Username = request.Username,
                 Password = request.Password,

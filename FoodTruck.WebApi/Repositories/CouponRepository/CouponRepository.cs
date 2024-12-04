@@ -18,7 +18,7 @@ namespace FoodTruck.WebApi.Repositories.CouponRepository
             _context = dbcontext;
         }
 
-        public async Task<CouponDto> CreateCoupon(Coupon coupon)
+        public async Task<CouponDto> CreateCouponAsync(Coupon coupon)
         {
             try
             {
@@ -46,12 +46,12 @@ namespace FoodTruck.WebApi.Repositories.CouponRepository
             }
         }
 
-        public Task<CouponDto> DeleteCoupon(int id)
+        public Task<CouponDto> DeleteCouponAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CouponDto> UpdateCoupon(Coupon coupon)
+        public Task<CouponDto> UpdateCouponAsync(Coupon coupon)
         {
             throw new NotImplementedException();
         }

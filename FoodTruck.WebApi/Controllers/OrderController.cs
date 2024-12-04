@@ -1,8 +1,6 @@
-﻿using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
-using FoodTruck.Application.Features.MediatR.Commands.OrderCommands;
+﻿using FoodTruck.Application.Features.MediatR.Commands.OrderCommands;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTruck.WebApi.Controllers
@@ -21,11 +19,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrder(CreateOrderCommand createOrderCommand)
+        public async Task<IActionResult> CreateOrderAsync(CreateOrderCommand createOrderCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createOrderCommand);
+                var value = await _mediator.Send(createOrderCommand, cancellationToken);
                 _response.Result = value;
             }
             catch (Exception ex)
@@ -38,11 +36,11 @@ namespace FoodTruck.WebApi.Controllers
 
 
         [HttpPost("CreateOrderFoodTruck")]
-        public async Task<IActionResult> CreateOrderFoodTruck(CreateOrderFoodTruckCommand createOrderFoodTruckCommand)
+        public async Task<IActionResult> CreateOrderFoodTruckAsync(CreateOrderFoodTruckCommand createOrderFoodTruckCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createOrderFoodTruckCommand);
+                var value = await _mediator.Send(createOrderFoodTruckCommand, cancellationToken);
                 _response.Result = value;
             }
             catch (Exception ex)
@@ -54,11 +52,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateStripeSession")]
-        public async Task<IActionResult> CreateStripeSession(CreateStripeCommand createStripeCommand)
+        public async Task<IActionResult> CreateStripeSessionAsync(CreateStripeCommand createStripeCommand, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(createStripeCommand);
+                var value = await _mediator.Send(createStripeCommand, cancellationToken);
                 _response.Result = value;
             }
             catch (Exception ex)
@@ -70,11 +68,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("ValidateStripeSession")]
-        public async Task<IActionResult> ValidateStripeSession(ValidateStripeCommand validateStripeCommand)
+        public async Task<IActionResult> ValidateStripeSessionAsync(ValidateStripeCommand validateStripeCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(validateStripeCommand);
+                await _mediator.Send(validateStripeCommand, cancellationToken);
                 _response.Result = "Stripe successfull.";
             }
             catch (Exception ex)

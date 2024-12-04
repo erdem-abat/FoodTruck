@@ -40,7 +40,7 @@ namespace FoodTruck.WebApi.Message
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 res = JsonConvert.DeserializeObject<OtpEmailDto>(content);
 
-                HandleMessage(res.Email, res.Otp);
+                HandleMessageAsync(res.Email, res.Otp);
 
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
@@ -50,7 +50,7 @@ namespace FoodTruck.WebApi.Message
             return Task.CompletedTask;
         }
 
-        private async Task HandleMessage(string email, string otp)
+        private async Task HandleMessageAsync(string email, string otp)
         {
             _otpRepository.CheckOtp(email, otp);
         }

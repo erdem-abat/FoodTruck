@@ -1,16 +1,8 @@
-﻿using Azure;
-using FoodTruck.Application.Features.MediatR.Commands.CartCommands;
-using FoodTruck.Application.Features.MediatR.Commands.CouponCommands;
+﻿using FoodTruck.Application.Features.MediatR.Commands.CouponCommands;
 using FoodTruck.Application.Features.MediatR.Queries.CouponQueries;
-using FoodTruck.Domain.Entities;
-using FoodTruck.Dto.CartDtos;
-using FoodTruck.Dto.CouponDtos;
 using FoodTruck.WebApi.Models.Dto;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FoodTruck.WebApi.Controllers
 {
@@ -28,11 +20,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ResponseDto> CreateCoupon(CouponCreateCommand couponCreateCommand)
+        public async Task<ResponseDto> CreateCouponAsync(CouponCreateCommand couponCreateCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(couponCreateCommand);
+                await _mediator.Send(couponCreateCommand, cancellationToken);
                 _response.Result = "Coupon has been created.";
             }
             catch (Exception ex)
@@ -46,11 +38,11 @@ namespace FoodTruck.WebApi.Controllers
 
         [HttpGet]
         [Route("GetCoupon")]
-        public async Task<ResponseDto> GetCoupon()
+        public async Task<ResponseDto> GetCouponAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetCouponQuery());
+                var values = await _mediator.Send(new GetCouponQuery(), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -63,11 +55,11 @@ namespace FoodTruck.WebApi.Controllers
 
         [HttpGet]
         [Route("GetCouponByCode")]
-        public async Task<ResponseDto> GetCouponByCode([FromQuery] string code)
+        public async Task<ResponseDto> GetCouponByCodeAsync([FromQuery] string code, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await _mediator.Send(new GetCouponByCodeQuery(code));
+                var values = await _mediator.Send(new GetCouponByCodeQuery(code), cancellationToken);
                 _response.Result = values;
             }
             catch (Exception ex)
@@ -79,11 +71,11 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ResponseDto> UpdateCoupon(CouponUpdateCommand couponUpdateCommand)
+        public async Task<ResponseDto> UpdateCouponAsync(CouponUpdateCommand couponUpdateCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(couponUpdateCommand);
+                await _mediator.Send(couponUpdateCommand, cancellationToken);
                 _response.Result = "Coupon successfully updated.";
             }
             catch (Exception ex)
@@ -94,6 +86,6 @@ namespace FoodTruck.WebApi.Controllers
             return _response;
         }
 
-        
+
     }
 }

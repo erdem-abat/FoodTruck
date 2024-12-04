@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Npgsql;
+using Stripe;
 using System.Data;
 using System.Data.OleDb;
 
@@ -30,7 +31,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
         }
-        public async Task<List<FoodDto>> GetFoods()
+        public async Task<List<FoodDto>> GetFoodsAsync()
         {
             var foods = await _context.Foods.Select(x => new FoodDto
             {
@@ -44,7 +45,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
 
             return foods;
         }
-        public async Task<List<FoodDto>> GetFoodsWithPaging(int page, int pageSize)
+        public async Task<List<FoodDto>> GetFoodsWithPagingAsync(int page, int pageSize)
         {
             var foods = await _context.Foods.Select(x => new FoodDto
             {
@@ -57,11 +58,11 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
 
             return foods;
         }
-        public async Task<List<Food>> GetFoodsWithCategory()
+        public async Task<List<Food>> GetFoodsWithCategoryAsync()
         {
             return await _context.Foods.Include(x => x.Category).ToListAsync();
         }
-        public async Task<List<FoodWithAllDto>> GetFoodsWithAll(CancellationToken cancellationToken)
+        public async Task<List<FoodWithAllDto>> GetFoodsWithAllAsync(CancellationToken cancellationToken)
         {
             string key = "food";
 
@@ -187,7 +188,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             return cachedFoods.ToList();
         }
 
-        public async Task<List<FoodWithAllDto>> GetFoodsByFilter(GetFoodsByFilterParameters getFoodsByFilterParameters)
+        public async Task<List<FoodWithAllDto>> GetFoodsByFilterAsync(GetFoodsByFilterParameters getFoodsByFilterParameters)
         {
 
             var foods = (from food in _context.Foods
@@ -267,7 +268,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             return responseList;
         }
 
-        public async Task<List<(string name, string imageUrl)>> GetFoodMainPageInfo()
+        public async Task<List<(string name, string imageUrl)>> GetFoodMainPageInfoAsync()
         {
             var values = await (from food in _context.Foods
                                 select new
@@ -279,7 +280,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             return values.Select(x => (x.Name, x.ImageUrl)).ToList();
         }
 
-        public async Task<string> CreateFoodToRestaurant(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> foodIngredientIds, int restaurantId, string userId, double price)
+        public async Task<string> CreateFoodToRestaurantAsync(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> foodIngredientIds, int restaurantId, string userId, double price)
         {
             try
             {
@@ -379,16 +380,21 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             }
         }
 
-        public async Task<Food> CreateFood(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> foodIngredientIds)
+        public async Task<Food> CreateFoodAsync(Food food, List<int> foodMoodIds, List<int> foodTasteIds, List<int> foodIngredientIds)
         {
             try
             {
+                var ingredients = await _context.Ingredients
+                                        .Where(i => foodIngredientIds.Contains(i.IngredientId))
+                                        .ToListAsync();
+
+                food.price = ingredients.Sum(x => x.price);
+
                 _context.Foods.Add(food);
-                await _context.SaveChangesAsync();
 
                 if (food.Image != null)
                 {
-                    string fileName = food.FoodId + Path.GetExtension(food.Image.FileName);
+                    string fileName = /*food.FoodId + */ Path.GetExtension(food.Image.FileName);
                     string filePath = @"wwwroot\FoodImages\" + fileName;
                     var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
                     using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
@@ -403,42 +409,28 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                 {
                     food.ImageUrl = "https://placehold.co/600x400";
                 }
-                _context.Foods.Update(food);
 
-                Food foodFromDb = _context.Foods.First(x => x.Name.ToLower() == food.Name.ToLower());
-
-                foreach (var item in foodMoodIds)
+                var foodMoods = foodMoodIds.Select(moodId => new FoodMood
                 {
-                    var mood = new FoodMood
-                    {
-                        MoodId = item,
-                        FoodId = foodFromDb.FoodId
-                    };
+                    MoodId = moodId,
+                    Food = food
+                }).ToList();
 
-                    _context.FoodMood.Add(mood);
-                }
-
-                foreach (var item in foodTasteIds)
+                var foodTastes = foodTasteIds.Select(tasteId => new FoodTaste
                 {
-                    var taste = new FoodTaste
-                    {
-                        TasteId = item,
-                        FoodId = foodFromDb.FoodId
-                    };
+                    TasteId = tasteId,
+                    Food = food
+                }).ToList();
 
-                    _context.FoodTaste.Add(taste);
-                }
-
-                foreach (var item in foodIngredientIds)
+                var foodIngredients = foodIngredientIds.Select(ingredientId => new FoodIngredient
                 {
-                    var ingredient = new FoodIngredient
-                    {
-                        IngredientId = item,
-                        FoodId = foodFromDb.FoodId
-                    };
+                    IngredientId = ingredientId,
+                    Food = food
+                }).ToList();
 
-                    _context.FoodIngredient.Add(ingredient);
-                }
+                _context.FoodMood.AddRange(foodMoods);
+                _context.FoodTaste.AddRange(foodTastes);
+                _context.FoodIngredient.AddRange(foodIngredients);
 
                 await _context.SaveChangesAsync();
 
@@ -450,7 +442,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             }
         }
 
-        public async Task<string> DocumentUpload(IFormFile formFile)
+        public async Task<string> DocumentUploadAsync(IFormFile formFile)
         {
             string uploadPath = _webHostEnvironment.WebRootPath;
             string dest_path = Path.Combine(uploadPath, "uploaded_doc");
@@ -470,7 +462,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             return path;
         }
 
-        public async Task<DataTable> FoodDataTable(string path)
+        public async Task<DataTable> FoodDataTableAsync(string path)
         {
             var conStr = _configuration.GetConnectionString("ExcelConnectionString");
             DataTable dataTable = new DataTable();
@@ -493,14 +485,13 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                         adapterexcel.SelectCommand = cmd;
                         adapterexcel.Fill(dataTable);
                         excelconn.Close();
-
                     }
                 }
             }
             return dataTable;
         }
 
-        public async Task<bool> ImportFood(DataTable food)
+        public async Task<bool> ImportFoodAsync(DataTable food)
         {
             var sqlconn = _configuration.GetConnectionString("AppDbConnectionString");
 
@@ -557,7 +548,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             }
         }
 
-        public async Task<bool> ImportDataFromExcel1(Dictionary<string, DataTable> excelData, string userId, int restaurantId)
+        public async Task<bool> ImportDataFromExcelAsync(Dictionary<string, DataTable> excelData, string userId, int restaurantId)
         {
             var sqlconn = _configuration.GetConnectionString("AppDbConnectionString");
 
@@ -676,7 +667,6 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
             {
                 throw ex;
             }
-
         }
 
         //// Step 1: Upload the Excel document
@@ -724,7 +714,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
         //    return tables; // Dictionary containing each sheet's data
         //}
 
-        public async Task<FoodWithAllDto> GetFoodById(int foodId)
+        public async Task<FoodWithAllDto> GetFoodByIdAsync(int foodId)
         {
             var data = (from food in _context.Foods
                         join country in _context.Countries on food.CountryId equals country.CountryId

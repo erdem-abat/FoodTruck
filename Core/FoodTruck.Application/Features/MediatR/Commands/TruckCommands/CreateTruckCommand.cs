@@ -1,5 +1,4 @@
 ﻿using FoodTruck.Application.Features.MediatR.Results.TruckResults;
-using FoodTruck.Domain.Entities;
 using MediatR;
 
 namespace FoodTruck.Application.Features.MediatR.Commands.TruckCommands

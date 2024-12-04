@@ -22,7 +22,7 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
             _identityContext = identityContext;
         }
 
-        public async Task<RestaurantDto> CreateRestaurant(RestaurantDto restaurantDto)
+        public async Task<RestaurantDto> CreateRestaurantAsync(RestaurantDto restaurantDto)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
             }
         }
 
-        public async Task<SeatPlanDto> CreateSeatPlan(SeatPlanDto seatPlanDto)
+        public async Task<SeatPlanDto> CreateSeatPlanAsync(SeatPlanDto seatPlanDto)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
                 throw;
             }
         }
-        public async Task<string> AddFoodToRestaurant(int foodId, int restaurantId, double price)
+        public async Task<string> AddFoodToRestaurantAsync(int foodId, int restaurantId, double price)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace FoodTruck.WebApi.Repositories.RestaurantRepository
             }
         }
 
-        public async Task<bool> ApproveRestaurant(bool isApprove, int restaurantId)
+        public async Task<bool> ApproveRestaurantAsync(bool isApprove, int restaurantId)
         {
             Restaurant restaurant = _context.Restaurant.First(x => x.RestaurantId == restaurantId);
 

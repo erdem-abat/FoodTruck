@@ -1,16 +1,10 @@
 ﻿using FoodTruck.Dto.OtpDtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FoodTruck.Application.Interfaces
+namespace FoodTruck.Application.Interfaces;
+
+public interface IOtpRepository
 {
-    public interface IOtpRepository
-    {
-        OtpResponseDto CheckOtp(string email, string otp);
-        ValidateResponseDto ValidateOtp(string email, string otpCode);
-        Task<ValidateResponseDto> ResendOtp(string email);
-    }
+    OtpResponseDto CheckOtp(string email, string otp);
+    ValidateResponseDto ValidateOtp(string email, string otpCode);
+    Task<ValidateResponseDto> ResendOtpAsync(string email);
 }

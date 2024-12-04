@@ -18,7 +18,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
         {
             var values = new GetFoodTruckCartQueryResult();
 
-            var cartResponse = _cartRepository.GetFoodTruckCart(request.UserId);
+            var cartResponse = _cartRepository.GetFoodTruckCartAsync(request.UserId);
 
             if (cartResponse != null)
             {

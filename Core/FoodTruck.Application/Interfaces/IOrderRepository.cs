@@ -1,14 +1,13 @@
 ﻿using FoodTruck.Dto.CartDtos;
 using FoodTruck.Dto.OrderDtos;
 
-namespace FoodTruck.Application.Interfaces
-{
-    public interface IOrderRepository
-    {
-        Task<OrderHeaderDto> CreateOrder(CartsDto cartsDto); 
-        Task<OrderHeaderDto> CreateOrderFoodTruck(FoodTruckCartsDto foodTruckCartsDto); 
-        Task<StripeRequestDto> CreateStripe(StripeRequestDto stripeRequestDto);
-        Task<OrderHeaderDto> ValidateStripe(int orderId, int? truckId);
+namespace FoodTruck.Application.Interfaces;
 
-    }
+public interface IOrderRepository
+{
+    Task<OrderHeaderDto> CreateOrderAsync(CartsDto cartsDto); 
+    Task<OrderHeaderDto> CreateOrderFoodTruckAsync(FoodTruckCartsDto foodTruckCartsDto); 
+    Task<StripeRequestDto> CreateStripeAsync(StripeRequestDto stripeRequestDto);
+    Task<OrderHeaderDto> ValidateStripeAsync(int orderId, int? truckId);
+
 }

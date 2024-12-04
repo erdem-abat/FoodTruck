@@ -15,7 +15,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.AuthHandlers
 
         public async Task Handle(AssignRoleUserCommand request, CancellationToken cancellationToken)
         {
-            var assignRoleStatus = await _authService.AssignRole(request.Username, request.Role.ToUpper());
+            var assignRoleStatus = await _authService.AssignRoleAsync(request.Username, request.Role.ToUpper());
         }
 
 

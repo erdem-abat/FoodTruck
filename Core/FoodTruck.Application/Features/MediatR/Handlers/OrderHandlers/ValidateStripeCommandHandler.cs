@@ -16,7 +16,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
 
         public async Task<ValidateStripeCommandResult> Handle(ValidateStripeCommand request, CancellationToken cancellationToken)
         {
-            var value = await _repository.ValidateStripe(request.orderId, request.truckId);
+            var value = await _repository.ValidateStripeAsync(request.orderId, request.truckId);
 
             return new ValidateStripeCommandResult
             {

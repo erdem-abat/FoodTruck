@@ -21,7 +21,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
             _context = context;
         }
 
-        public async Task<OrderHeaderDto> CreateOrder(CartsDto cartsDto)
+        public async Task<OrderHeaderDto> CreateOrderAsync(CartsDto cartsDto)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
             }
         }
 
-        public async Task<OrderHeaderDto> CreateOrderFoodTruck(FoodTruckCartsDto foodTruckCartsDto)
+        public async Task<OrderHeaderDto> CreateOrderFoodTruckAsync(FoodTruckCartsDto foodTruckCartsDto)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
             }
         }
 
-        public async Task<StripeRequestDto> CreateStripe(StripeRequestDto stripeRequestDto)
+        public async Task<StripeRequestDto> CreateStripeAsync(StripeRequestDto stripeRequestDto)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 throw;
             }
         }
-        public async Task<OrderHeaderDto> ValidateStripe(int orderId, int? truckId)
+        public async Task<OrderHeaderDto> ValidateStripeAsync(int orderId, int? truckId)
         {
             try
             {

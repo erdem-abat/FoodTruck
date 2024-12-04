@@ -3,7 +3,7 @@ using MediatR;
 
 namespace FoodTruck.Application.Features.MediatR.Queries.AuthQueries
 {
-    public class GetLoginUserQuery:IRequest<GetLoginUserQueryResult>
+    public class GetLoginUserQuery : IRequest<GetLoginUserQueryResult>
     {
         public string Username { get; set; }
         public string Password { get; set; }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Stripe;
 using System.Text;
 
 namespace FoodTruck.WebApi.Extensions

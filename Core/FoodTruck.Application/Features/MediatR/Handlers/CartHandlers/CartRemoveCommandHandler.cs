@@ -18,7 +18,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
         {
             return new GetCartRemoveCommandResult
             {
-                IsDeleted = _cartRepository.CartRemove(request.cartDetailId).Result
+                IsDeleted = _cartRepository.CartRemoveAsync(request.cartDetailId).Result
             };
         }
     }
