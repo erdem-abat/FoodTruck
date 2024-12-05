@@ -394,7 +394,7 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
 
                 if (food.Image != null)
                 {
-                    string fileName = /*food.FoodId + */ Path.GetExtension(food.Image.FileName);
+                    string fileName = food.Name +  Path.GetExtension(food.Image.FileName);
                     string filePath = @"wwwroot\FoodImages\" + fileName;
                     var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
                     using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))

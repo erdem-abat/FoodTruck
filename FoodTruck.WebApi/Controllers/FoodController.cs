@@ -25,7 +25,7 @@ namespace FoodTruck.WebApi.Controllers
             _mediator = mediator;
             _response = new ResponseDto();
         }
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [HttpGet("GetFoods")]
         public async Task<IActionResult> GetFoodsAsync(CancellationToken cancellationToken)
         {
@@ -42,7 +42,7 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
-        [HttpGet("GetFoodById")]
+        [HttpGet("GetFoodById/{foodId}")]
         public async Task<IActionResult> GetFoodByIdAsync(int foodId, CancellationToken cancellationToken)
         {
             try

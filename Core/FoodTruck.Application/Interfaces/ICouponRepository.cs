@@ -7,5 +7,5 @@ public interface ICouponRepository
 {
     Task<CouponDto> CreateCouponAsync(Coupon coupon);
     Task<CouponDto> UpdateCouponAsync(Coupon coupon);
-    Task<CouponDto> DeleteCouponAsync(int id);
+    Task<bool> DeleteCouponAsync(int id);
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using FoodTruck.Application.Exceptions;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CouponDtos;
@@ -46,14 +47,36 @@ namespace FoodTruck.WebApi.Repositories.CouponRepository
             }
         }
 
-        public Task<CouponDto> DeleteCouponAsync(int id)
+        public async Task<bool> DeleteCouponAsync(int id)
         {
-            throw new NotImplementedException();
+            var coupon = _context.Coupons.First(x => x.CouponId == id);
+
+            if (coupon == null)
+            {
+                throw new NotFoundException("Coupon not found!");
+            }
+
+            _context.Coupons.Remove(coupon);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
-        public Task<CouponDto> UpdateCouponAsync(Coupon coupon)
+        public async Task<CouponDto> UpdateCouponAsync(Coupon coupon)
         {
-            throw new NotImplementedException();
+            var couponFromDb = _context.Coupons.First(x => x.CouponId == coupon.CouponId);
+
+            if (couponFromDb == null)
+            {
+                throw new NotFoundException("Coupon not found!");
+            }
+
+            _context.Attach(coupon);
+            _context.Entry(coupon).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<CouponDto>(coupon);
         }
     }
 }

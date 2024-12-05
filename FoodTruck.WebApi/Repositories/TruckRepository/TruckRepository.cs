@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using FoodTruck.Application.Features.MediatR.Results.TruckResults;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.Dto.TruckDtos;
 using FoodTruck.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using ZstdSharp.Unsafe;
 
 namespace FoodTruck.WebApi.Repositories.TruckRepository
 {
@@ -96,22 +93,28 @@ namespace FoodTruck.WebApi.Repositories.TruckRepository
                 //    FoodTruckId = x.FoodTruckId
                 //}).ToList();
 
-                return await(from foodtruck in _context.FoodTrucks
-                            join truck in _context.Trucks on foodtruck.TruckId equals truck.TruckId
-                            join food in _context.Foods on foodtruck.FoodId equals food.FoodId
-                            select new FoodTruckDto
-                            {
-                                Food = _mapper.Map<FoodDto>(food),
-                                Truck = _mapper.Map<TruckDto>(truck),
-                                FoodId = foodtruck.FoodId,
-                                Stock = foodtruck.Stock,
-                                TruckId = foodtruck.TruckId
-                            }).ToListAsync();
+                return await (from foodtruck in _context.FoodTrucks
+                              join truck in _context.Trucks on foodtruck.TruckId equals truck.TruckId
+                              join food in _context.Foods on foodtruck.FoodId equals food.FoodId
+                              select new FoodTruckDto
+                              {
+                                  Food = _mapper.Map<FoodDto>(food),
+                                  Truck = _mapper.Map<TruckDto>(truck),
+                                  FoodId = foodtruck.FoodId,
+                                  Stock = foodtruck.Stock,
+                                  TruckId = foodtruck.TruckId
+                              }).ToListAsync();
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+
+        public async Task<int> GetTruckCountAsync()
+        {
+            int count = await _context.Trucks.CountAsync();
+            return count;
         }
     }
 }

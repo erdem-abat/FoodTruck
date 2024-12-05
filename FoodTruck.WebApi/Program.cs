@@ -6,6 +6,7 @@ using FoodTruck.WebApi;
 using FoodTruck.WebApi.Data;
 using FoodTruck.WebApi.Extensions;
 using FoodTruck.WebApi.Handlers;
+using FoodTruck.WebApi.Hubs;
 using FoodTruck.WebApi.Message;
 using FoodTruck.WebApi.Middlewares;
 using FoodTruck.WebApi.Models;
@@ -38,6 +39,8 @@ builder.Services.AddCors(opt =>
         .AllowCredentials();
     });
 });
+
+builder.Services.AddSignalR();
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 builder.Services.AddDbContext<UserIdentityDbContext>(options => options.UseNpgsql(connectionString));
@@ -124,4 +127,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<AuthenticationMiddleware>();
+app.MapHub<TruckHub>("/truckhub");
 app.Run();

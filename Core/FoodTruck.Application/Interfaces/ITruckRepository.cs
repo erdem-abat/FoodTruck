@@ -7,4 +7,5 @@ public interface ITruckRepository
 {
     Task<bool> CreateTruckAsync(Truck truck, List<int[][]> foodIdsWithStocks, List<int> chefIds);
     Task<List<FoodTruckDto>> GetFoodTrucksAsync();
+    Task<int> GetTruckCountAsync();
 }

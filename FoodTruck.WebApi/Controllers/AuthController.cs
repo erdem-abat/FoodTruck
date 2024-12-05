@@ -62,13 +62,13 @@ namespace FoodTruck.WebApi.Controllers
                     _response.Message = "Username or password invalid.";
                     _response.IsSuccess = false;
                 }
-
             }
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
                 _response.Message = ex.Message;
             }
+
             return Ok(_response);
         }
 
