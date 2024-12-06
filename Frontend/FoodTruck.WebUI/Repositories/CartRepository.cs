@@ -40,7 +40,7 @@ namespace FoodTruck.WebUI.Repositories
             {
                 ApiType = ApiType.POST,
                 Data = cartDto,
-                Url = APIBase + "/api/Cart/FoodTruckCartUpsertAsync"
+                Url = APIBase + "/api/Cart/FoodTruckCartUpsert"
             });
         }
     }

@@ -24,9 +24,9 @@ namespace FoodTruck.WebUI.Controllers
         {
             List<FoodDto>? list = null;
 
-            var truckCount = await _truckRepository.GetTruckCountAsync();
+            //var truckCount = await _truckRepository.GetTruckCountAsync();
 
-            ViewBag.truckCount = truckCount.Result;
+            //ViewBag.truckCount = truckCount.Result;
 
             ResponseDto? response = await _foodRepository.GetAllFoodsAsync();
 

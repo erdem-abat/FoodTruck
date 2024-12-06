@@ -27,7 +27,7 @@ namespace FoodTruck.WebApi.Controllers
             _response.Result= value.TruckCount;
             _response.IsSuccess = true;
 
-            return Ok(_response);
+            return Ok(value);
         }
     }
 }

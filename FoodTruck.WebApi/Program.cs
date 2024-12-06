@@ -28,11 +28,23 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddCors(opt =>
+//{
+//    opt.AddPolicy("CorsPolicy", builder =>
+//    {
+//        builder.WithOrigins("exp://192.168.72.168:8081");
+//        builder.AllowAnyHeader()
+//        .AllowAnyMethod()
+//        .SetIsOriginAllowed((host) => true)
+//        .AllowCredentials();
+//    });
+//});
+
+builder.Services.AddHttpClient();
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", builder =>
     {
-        builder.WithOrigins("exp://192.168.72.168:8081");
         builder.AllowAnyHeader()
         .AllowAnyMethod()
         .SetIsOriginAllowed((host) => true)
@@ -127,5 +139,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<AuthenticationMiddleware>();
-app.MapHub<TruckHub>("/truckhub");
+app.MapHub<TruckHub>("/TruckHub");
 app.Run();
