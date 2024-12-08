@@ -19,12 +19,12 @@ namespace FoodTruck.WebApi
             var mappingConfig = new MapperConfiguration(config =>
             {
                 config.CreateMap<CartHeader, CartHeaderDto>().ReverseMap();
-                config.CreateMap<CartDetail, CartDetailDto>().ReverseMap();
+                config.CreateMap<CartDetail, CartDetailsDto>().ReverseMap();
                 config.CreateMap<FoodTruckCartDetail, FoodTruckCartDetailDto>().ReverseMap();
                 config.CreateMap<Order, OrderHeaderDto>().ReverseMap();
                 config.CreateMap<OrderDetail, OrderDetailDto>().ReverseMap();
                 config.CreateMap<CartHeaderDto, OrderHeaderDto>().ReverseMap();
-                config.CreateMap<CartDetailDto, OrderDetailDto>().ReverseMap();
+                config.CreateMap<CartDetailsDto, OrderDetailDto>().ReverseMap();
                 config.CreateMap<FoodTruckCartDetailDto, OrderDetailDto>().ReverseMap();
                 config.CreateMap<TruckReservationRequestDto, TruckReservation>().ReverseMap();
                 config.CreateMap<TruckReservationResponseDto, TruckReservation>().ReverseMap();

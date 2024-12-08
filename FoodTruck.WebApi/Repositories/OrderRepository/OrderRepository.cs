@@ -21,21 +21,21 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
             _context = context;
         }
 
-        public async Task<OrderHeaderDto> CreateOrderAsync(CartsDto cartsDto)
+        public async Task<OrderHeaderDto> CreateOrderAsync(CartDto cartDto)
         {
             try
             {
-                OrderHeaderDto orderHeaderDto = _mapper.Map<OrderHeaderDto>(cartsDto.CartHeader);
+                OrderHeaderDto orderHeaderDto = _mapper.Map<OrderHeaderDto>(cartDto.CartHeader);
 
                 var orderStatus = await _context.OrderStatuses.FirstAsync(x => x.StatusName == "Pending");
                 var dateTime = DateTime.Now;
 
                 orderHeaderDto.CreatedDate = dateTime.ToUniversalTime();
                 orderHeaderDto.OrderStatusId = orderStatus.OrderStatusId;
-                orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailDto>>(cartsDto.CartDetails);
+                orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailDto>>(cartDto.CartDetails);
                 foreach (var item in orderHeaderDto.OrderDetails)
                 {
-                    item.Price = cartsDto.CartDetails.First(x => x.FoodId == item.FoodId).Food.Price;
+                    item.Price = cartDto.CartDetails.First(x => x.FoodId == item.FoodId).Food.Price;
                 }
 
                 Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;

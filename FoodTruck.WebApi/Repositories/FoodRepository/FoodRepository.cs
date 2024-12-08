@@ -40,7 +40,8 @@ namespace FoodTruck.WebApi.Repositories.FoodRepository
                 ImageUrl = x.ImageUrl,
                 CategoryId = x.CategoryId,
                 CountryId = x.CountryId,
-                Description = x.Description
+                Description = x.Description,
+                Price = x.price
             }).ToListAsync();
 
             return foods;

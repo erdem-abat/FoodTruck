@@ -22,7 +22,7 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
 
             if (cartResponse != null)
             {
-                values.CartsDto = cartResponse.Result;
+                values.CartDto = cartResponse.Result;
                 return values;
             }
             return values;

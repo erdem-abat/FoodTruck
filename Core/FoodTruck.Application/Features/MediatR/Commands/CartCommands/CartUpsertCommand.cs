@@ -5,6 +5,7 @@ namespace FoodTruck.Application.Features.MediatR.Commands.CartCommands
 {
     public class CartUpsertCommand : IRequest
     {
-        public CartsDto CartsDto { get; set; }
+        public CartDto CartDto { get; set; }
+       
     }
 }

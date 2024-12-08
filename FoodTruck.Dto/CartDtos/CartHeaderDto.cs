@@ -1,4 +1,6 @@
-﻿namespace FoodTruck.Dto.CartDtos
+﻿using System.Text.Json.Serialization;
+
+namespace FoodTruck.Dto.CartDtos
 {
     public class CartHeaderDto
     {

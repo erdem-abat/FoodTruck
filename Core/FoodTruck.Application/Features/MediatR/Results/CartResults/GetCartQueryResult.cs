@@ -4,6 +4,6 @@ namespace FoodTruck.Application.Features.MediatR.Results.CartResults
 {
     public class GetCartQueryResult
     {
-        public CartsDto CartsDto;
+        public CartDto CartDto;
     }
 }

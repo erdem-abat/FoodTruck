@@ -5,7 +5,7 @@ namespace FoodTruck.Application.Interfaces;
 
 public interface IOrderRepository
 {
-    Task<OrderHeaderDto> CreateOrderAsync(CartsDto cartsDto); 
+    Task<OrderHeaderDto> CreateOrderAsync(CartDto cartDto); 
     Task<OrderHeaderDto> CreateOrderFoodTruckAsync(FoodTruckCartsDto foodTruckCartsDto); 
     Task<StripeRequestDto> CreateStripeAsync(StripeRequestDto stripeRequestDto);
     Task<OrderHeaderDto> ValidateStripeAsync(int orderId, int? truckId);

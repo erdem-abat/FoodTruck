@@ -1,8 +1,8 @@
 ﻿namespace FoodTruck.Dto.CartDtos
 {
-    public class CartsDto
+    public class CartDto
     {
         public CartHeaderDto CartHeader { get; set; }
-        public IEnumerable<CartDetailDto>? CartDetails { get; set; }
+        public IEnumerable<CartDetailsDto>? CartDetails { get; set; }
     }
 }

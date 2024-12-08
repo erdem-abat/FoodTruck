@@ -1,8 +1,12 @@
-﻿namespace FoodTruck.WebUI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FoodTruck.WebUI.Models
 {
     public class CartDto
     {
-        public CartHeaderDto CartHeader { get; set; }
-        public IEnumerable<CartDetailsDto>? CartDetails { get; set; }
+        [Required]
+        public CartHeaderDto cartHeader { get; set; }
+        [Required]
+        public IEnumerable<CartDetailsDto>? cartDetails { get; set; }
     }
 }

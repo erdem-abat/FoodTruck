@@ -24,9 +24,13 @@ namespace FoodTruck.WebUI.Repositories
             });
         }
 
-        public Task<ResponseDto?> GetCartByUserIdAsync(string userId)
+        public async Task<ResponseDto?> GetCartByUserIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.GET,
+                Url = APIBase + "/api/Cart/GetCart/" + userId
+            });
         }
 
         public Task<ResponseDto?> RemoveFromCartAsync(int cartDetailsId)
@@ -39,8 +43,8 @@ namespace FoodTruck.WebUI.Repositories
             return await _baseService.SendAsync(new RequestDto()
             {
                 ApiType = ApiType.POST,
-                Data = cartDto,
-                Url = APIBase + "/api/Cart/FoodTruckCartUpsert"
+                Data = new CartDto { cartDetails = cartDto.cartDetails, cartHeader = cartDto.cartHeader },
+                Url = APIBase + "/api/Cart/CartUpsert"
             });
         }
     }

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using FoodTruck.WebUI.Interfaces;
 using FoodTruck.WebUI.Models;
 using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -70,24 +71,25 @@ namespace FoodTruck.WebUI.Controllers
         {
             CartDto cartDto = new CartDto()
             {
-                CartHeader = new CartHeaderDto
+                cartHeader = new CartHeaderDto
                 {
-                    UserId = User.Claims.Where(x => x.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value
+                    userId = User.Claims.Where(x => x.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value
                 }
             };
 
             CartDetailsDto cartDetails = new CartDetailsDto()
             {
-                Count = foodDto.Count,
-                ProductId = foodDto.FoodId,
+                count = foodDto.Count,
+                FoodId = foodDto.FoodId,
             };
 
             List<CartDetailsDto> cartDetailsDtos = new() { cartDetails };
-            cartDto.CartDetails = cartDetailsDtos;
+            cartDto.cartDetails = cartDetailsDtos;
 
-            cartDto.CartHeader.Email = User.Claims.Where(x => x.Type == JwtClaimTypes.Email)?.FirstOrDefault()?.Value;
-            cartDto.CartHeader.Phone = "1111111";
-            cartDto.CartHeader.Name = User.Claims.Where(x => x.Type == ClaimTypes.Name)?.FirstOrDefault()?.Value;
+            cartDto.cartHeader.email = User.Claims.Where(x => x.Type == JwtClaimTypes.Email)?.FirstOrDefault()?.Value;
+            cartDto.cartHeader.phone = "1111111";
+            cartDto.cartHeader.name = User.Claims.Where(x => x.Type == ClaimTypes.Name)?.FirstOrDefault()?.Value;
+            cartDto.cartHeader.couponCode = "";
 
             ResponseDto? response = await _cartRepository.UpsertCartAsync(cartDto);
 

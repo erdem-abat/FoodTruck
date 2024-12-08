@@ -6,6 +6,6 @@ namespace FoodTruck.Application.Features.MediatR.Commands.OrderCommands
 {
     public class CreateOrderCommand : IRequest<CreateOrderCommandResult>
     {
-        public CartsDto CartsDto { get; set; }
+        public CartDto CartDto { get; set; }
     }
 }

@@ -49,6 +49,15 @@ namespace FoodTruck.WebUI.Controllers
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            _tokenProvider.ClearToken();
+            return RedirectToAction("Index", "Home");
+        }
+
         private async Task SignInUser(LoginResponseDto loginResponseDto)
         {
             var handler = new JwtSecurityTokenHandler();

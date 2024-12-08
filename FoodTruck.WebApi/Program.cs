@@ -116,6 +116,7 @@ builder.Services.AddSwaggerGen(option =>
             }, new string[]{ }
         }
     });
+
 });
 
 Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
@@ -131,7 +132,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseDeveloperExceptionPage();
 app.UseCors("CorsPolicy");
 app.UseExceptionHandler(_ => { });
 app.UseHttpsRedirection();

@@ -1,5 +1,6 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.CartCommands;
 using FoodTruck.Application.Interfaces;
+using FoodTruck.Dto.CartDtos;
 using MediatR;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
@@ -14,7 +15,11 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.CartHandlers
         }
         public async Task Handle(CartUpsertCommand request, CancellationToken cancellationToken)
         {
-            await _repository.CartUpsertAsync(request.CartsDto);
+            await _repository.CartUpsertAsync(new CartDto
+            {
+                CartDetails = request.CartDetails,
+                CartHeader = request.CartHeader
+            });
         }
     }
 }

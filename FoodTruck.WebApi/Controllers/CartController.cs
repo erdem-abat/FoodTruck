@@ -19,13 +19,13 @@ namespace FoodTruck.WebApi.Controllers
             _response = new ResponseDto();
         }
 
-        [HttpGet("GetCart")]
-        public async Task<IActionResult> GetCartAsync([FromQuery] string userId, CancellationToken cancellationToken)
+        [HttpGet("GetCart/{userId}")]
+        public async Task<IActionResult> GetCartAsync(string userId, CancellationToken cancellationToken)
         {
             try
             {
                 var values = await _mediator.Send(new GetCartQuery(userId), cancellationToken);
-                _response.Result = values.CartsDto;
+                _response.Result = values.CartDto;
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CartUpsert")]
-        public async Task<IActionResult> CartUpsertAsync(CartUpsertCommand cartUpsertCommand, CancellationToken cancellationToken)
+        public async Task<IActionResult> CartUpsertAsync([FromBody] CartUpsertCommand cartUpsertCommand, CancellationToken cancellationToken)
         {
             try
             {

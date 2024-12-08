@@ -73,7 +73,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<CartsDto> CartUpsertAsync(CartsDto cartsDto)
+        public async Task<CartDto> CartUpsertAsync(CartDto cartsDto)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                     else
                     {
                         cartsDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
-                        cartsDto.CartDetails.First().CartDetailId = cartDetailsFromDb.CartDetailId;
+                        cartsDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartDetailId;
                         _dbContext.CartDetails.Update(_mapper.Map<CartDetail>(cartsDto.CartDetails.First()));
                         await _dbContext.SaveChangesAsync();
                     }
@@ -118,15 +118,15 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
             }
         }
 
-        public async Task<CartsDto> GetCartAsync(string userId)
+        public async Task<CartDto> GetCartAsync(string userId)
         {
             try
             {
-                CartsDto cartDto = new()
+                CartDto cartDto = new()
                 {
                     CartHeader = _mapper.Map<CartHeaderDto>(_dbContext.CartHeaders.First(x => x.UserId == userId))
                 };
-                cartDto.CartDetails = _mapper.Map<IEnumerable<CartDetailDto>>(_dbContext.CartDetails
+                cartDto.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_dbContext.CartDetails
                     .Where(x => x.CartHeaderId == cartDto.CartHeader.CartHeaderId));
 
                 IEnumerable<FoodDto> foodDto = await _foodRepository.GetFoodsAsync();
