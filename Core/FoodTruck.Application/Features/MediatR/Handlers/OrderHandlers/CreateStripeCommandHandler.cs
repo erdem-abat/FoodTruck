@@ -1,6 +1,7 @@
 ﻿using FoodTruck.Application.Features.MediatR.Commands.OrderCommands;
 using FoodTruck.Application.Features.MediatR.Results.OrderResults;
 using FoodTruck.Application.Interfaces;
+using FoodTruck.Dto.OrderDtos;
 using MediatR;
 
 namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
@@ -16,7 +17,14 @@ namespace FoodTruck.Application.Features.MediatR.Handlers.OrderHandlers
 
         public async Task<CreateStripeCommandResult> Handle(CreateStripeCommand request, CancellationToken cancellationToken)
         {
-            var value = await _repository.CreateStripeAsync(request.stripeRequestDto);
+            var value = await _repository.CreateStripeAsync(new StripeRequestDto
+            {
+                ApprovedUrl = request.ApprovedUrl,
+                CancelUrl = request.CancelUrl,
+                orderHeaderDto = request.orderHeaderDto,
+                StripeSessionId = request.StripeSessionId,
+                StripeSessionUrl = request.StripeSessionUrl
+            });
 
             return new CreateStripeCommandResult
             {

@@ -22,10 +22,11 @@ namespace FoodTruck.WebApi
                 config.CreateMap<CartDetail, CartDetailsDto>().ReverseMap();
                 config.CreateMap<FoodTruckCartDetail, FoodTruckCartDetailDto>().ReverseMap();
                 config.CreateMap<Order, OrderHeaderDto>().ReverseMap();
-                config.CreateMap<OrderDetail, OrderDetailDto>().ReverseMap();
+                config.CreateMap<OrderDetail, OrderDetailsDto>().ReverseMap();
                 config.CreateMap<CartHeaderDto, OrderHeaderDto>().ReverseMap();
-                config.CreateMap<CartDetailsDto, OrderDetailDto>().ReverseMap();
-                config.CreateMap<FoodTruckCartDetailDto, OrderDetailDto>().ReverseMap();
+                config.CreateMap<CartDetailsDto, OrderDetailsDto>().ReverseMap();
+                config.CreateMap<CouponDto, Coupon>().ReverseMap();
+                config.CreateMap<FoodTruckCartDetailDto, OrderDetailsDto>().ReverseMap();
                 config.CreateMap<TruckReservationRequestDto, TruckReservation>().ReverseMap();
                 config.CreateMap<TruckReservationResponseDto, TruckReservation>().ReverseMap();
                 config.CreateMap<Coupon, CouponDto>().ReverseMap();

@@ -88,12 +88,12 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("ApplyCoupon")]
-        public async Task<object> ApplyCouponAsync(string UserId, string couponCode, CancellationToken cancellationToken)
+        public async Task<object> ApplyCouponAsync([FromQuery] string userId, [FromQuery] string? couponCode, CancellationToken cancellationToken)
         {
             try
             {
-                var value = await _mediator.Send(new GetCartCouponApplyQuery(UserId, couponCode), cancellationToken);
-                _response.Result = value.IsApply == true ? "Coupon applied!" : "Check coupon code!";
+                var value = await _mediator.Send(new GetCartCouponApplyQuery(userId, couponCode), cancellationToken);
+                _response.Result = value.IsApply ? "Coupon applied!" : "Check coupon code!";
             }
             catch (Exception ex)
             {
@@ -104,11 +104,14 @@ namespace FoodTruck.WebApi.Controllers
             return Ok(_response);
         }
 
+
         [HttpPost("RemoveCart")]
-        public async Task<ResponseDto> RemoveCartAsync(CartRemoveCommand cartRemoveCommand, CancellationToken cancellationToken)
+        public async Task<ResponseDto> RemoveCartAsync([FromQuery] int cartDetailId, CancellationToken cancellationToken)
         {
             try
             {
+                var cartRemoveCommand = new CartRemoveCommand { cartDetailId = cartDetailId };
+
                 var value = await _mediator.Send(cartRemoveCommand, cancellationToken);
                 _response.Result = value.IsDeleted == true ? "Cart removed!" : "Check the cart!";
             }

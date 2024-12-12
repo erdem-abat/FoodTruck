@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.CodeDom;
+using AutoMapper;
 using FoodTruck.Application.Interfaces;
 using FoodTruck.Domain.Entities;
 using FoodTruck.Dto.CartDtos;
@@ -30,9 +31,10 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 var orderStatus = await _context.OrderStatuses.FirstAsync(x => x.StatusName == "Pending");
                 var dateTime = DateTime.Now;
 
+                orderHeaderDto.OrderTotal = cartDto.CartHeader.CartTotal;
                 orderHeaderDto.CreatedDate = dateTime.ToUniversalTime();
                 orderHeaderDto.OrderStatusId = orderStatus.OrderStatusId;
-                orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailDto>>(cartDto.CartDetails);
+                orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailsDto>>(cartDto.CartDetails);
                 foreach (var item in orderHeaderDto.OrderDetails)
                 {
                     item.Price = cartDto.CartDetails.First(x => x.FoodId == item.FoodId).Food.Price;
@@ -51,57 +53,58 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
             }
         }
 
-        public async Task<OrderHeaderDto> CreateOrderFoodTruckAsync(FoodTruckCartsDto foodTruckCartsDto)
+        public Task<OrderHeaderDto> CreateOrderFoodTruckAsync(FoodTruckCartsDto foodTruckCartsDto)
         {
-            try
-            {
-                OrderHeaderDto orderHeaderDto = _mapper.Map<OrderHeaderDto>(foodTruckCartsDto.CartHeader);
+            throw new NotImplementedException();
+            //try
+            //{
+            //    OrderHeaderDto orderHeaderDto = _mapper.Map<OrderHeaderDto>(foodTruckCartsDto.CartHeader);
 
-                var orderStatus = await _context.OrderStatuses.FirstAsync(x => x.StatusName == "Pending");
-                var dateTime = DateTime.Now;
+            //    var orderStatus = await _context.OrderStatuses.FirstAsync(x => x.StatusName == "Pending");
+            //    var dateTime = DateTime.Now;
 
-                orderHeaderDto.CreatedDate = dateTime.ToUniversalTime();
-                orderHeaderDto.OrderStatusId = orderStatus.OrderStatusId;
-                orderHeaderDto.truckId = foodTruckCartsDto.FoodTruckCartDetail.First().TruckId;
-                orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailDto>>(foodTruckCartsDto.FoodTruckCartDetail);
-                foreach (var item in orderHeaderDto.OrderDetails)
-                {
-                    item.Price = foodTruckCartsDto.FoodTruckCartDetail.First(x => x.FoodId == item.FoodId).Food.Price;
-                }
-                if (orderHeaderDto.truckId != 0)
-                {
-                    foreach (var item in foodTruckCartsDto.FoodTruckCartDetail)
-                    {
-                        var truck = _context.FoodTrucks.First(x => x.FoodId == item.FoodId && x.TruckId == orderHeaderDto.truckId);
-                        truck.Stock -= item.Count;
-                        if (truck.Stock >= 0)
-                        {
-                            Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
-                            await _context.SaveChangesAsync();
+            //    orderHeaderDto.CreatedDate = dateTime.ToUniversalTime();
+            //    orderHeaderDto.OrderStatusId = orderStatus.OrderStatusId;
+            //    orderHeaderDto.truckId = foodTruckCartsDto.FoodTruckCartDetail.First().TruckId;
+            //    orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailsDto>>(foodTruckCartsDto.FoodTruckCartDetail);
+            //    foreach (var item in orderHeaderDto.OrderDetails)
+            //    {
+            //        item.Price = foodTruckCartsDto.FoodTruckCartDetail.First(x => x.FoodId == item.FoodId).Food.Price;
+            //    }
+            //    if (orderHeaderDto.truckId != 0)
+            //    {
+            //        foreach (var item in foodTruckCartsDto.FoodTruckCartDetail)
+            //        {
+            //            var truck = _context.FoodTrucks.First(x => x.FoodId == item.FoodId && x.TruckId == orderHeaderDto.truckId);
+            //            truck.Stock -= item.Count;
+            //            if (truck.Stock >= 0)
+            //            {
+            //                Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
+            //                await _context.SaveChangesAsync();
 
-                            orderHeaderDto.OrderId = order.OrderId;
-                        }
-                        else
-                        {
-                            return orderHeaderDto;
-                        }
-                    }
-                }
+            //                orderHeaderDto.OrderId = order.OrderId;
+            //            }
+            //            else
+            //            {
+            //                return orderHeaderDto;
+            //            }
+            //        }
+            //    }
 
-                else
-                {
-                    Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
-                    await _context.SaveChangesAsync();
+            //    else
+            //    {
+            //        Order order = _context.Orders.Add(_mapper.Map<Order>(orderHeaderDto)).Entity;
+            //        await _context.SaveChangesAsync();
 
-                    orderHeaderDto.OrderId = order.OrderId;
-                }
+            //        orderHeaderDto.OrderId = order.OrderId;
+            //    }
 
-                return orderHeaderDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //    return orderHeaderDto;
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public async Task<StripeRequestDto> CreateStripeAsync(StripeRequestDto stripeRequestDto)
@@ -175,7 +178,8 @@ namespace FoodTruck.WebApi.Repositories.OrderRepository
                 if (paymentIntent.Status == "succeeded")
                 {
                     order.PaymentIntentId = paymentIntent.Id;
-                    order.OrderStatus = _context.OrderStatuses.First(x => x.StatusName == "Approved");
+                    order.OrderStatusId = _context.OrderStatuses.First(x => x.StatusName == "Approved").OrderStatusId;
+                    //_context.Attach<Order>(order);
                     await _context.SaveChangesAsync();
 
                     if (truckId != 0)

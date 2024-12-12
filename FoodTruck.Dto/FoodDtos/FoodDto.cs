@@ -1,4 +1,7 @@
-﻿namespace FoodTruck.Dto.FoodDtos
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace FoodTruck.Dto.FoodDtos
 {
     public class FoodDto
     {
@@ -8,8 +11,13 @@
         public string Description { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageLocalPath { get; set; }
+        [Range(1, 100)]
 
+        public int Count { get; set; } = 1;
         public int CountryId { get; set; }
+ 
+        public string? CategoryName { get; set; }
+
         public int CategoryId { get; set; }
     }
 }

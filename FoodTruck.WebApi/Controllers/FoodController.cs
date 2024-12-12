@@ -1,4 +1,5 @@
-﻿using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
+﻿using System.Threading;
+using FoodTruck.Application.Features.MediateR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediateR.Queries.FoodQueries;
 using FoodTruck.Application.Features.MediatR.Commands.FoodCommands;
 using FoodTruck.Application.Features.MediatR.Queries.FoodQueries;
@@ -7,6 +8,7 @@ using FoodTruck.Application.Features.MediatR.Queries.MoodQueries;
 using FoodTruck.Application.Features.MediatR.Queries.TasteQueries;
 using FoodTruck.Dto.FoodDtos;
 using FoodTruck.WebApi.Models.Dto;
+using FoodTruck.WebApi.Repositories.FoodRepository;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +21,23 @@ namespace FoodTruck.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private ResponseDto _response;
+        private readonly RecommendationService _recommendationService;
 
-        public FoodController(IMediator mediator)
+        public FoodController(IMediator mediator, RecommendationService recommendationService)
         {
             _mediator = mediator;
             _response = new ResponseDto();
+            _recommendationService = recommendationService;
         }
+
+        [HttpGet("GetRelatedFoods")]
+        public async Task<ActionResult> GetRelatedFoods(CancellationToken cancellationToken)
+        {
+            _recommendationService.GetInfo();
+
+            return Ok();
+        }
+
         //[Authorize(Roles = "ADMIN")]
         [HttpGet("GetFoods")]
         public async Task<IActionResult> GetFoodsAsync(CancellationToken cancellationToken)

@@ -95,6 +95,7 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                     var cartDetailsFromDb = await _dbContext.CartDetails.AsNoTracking().FirstOrDefaultAsync(
                         x => x.FoodId == cartsDto.CartDetails.First().FoodId &&
                         x.CartHeaderId == cartHeaderFromDb.CartHeaderId);
+
                     if (cartDetailsFromDb == null)
                     {
                         cartsDto.CartDetails.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
@@ -105,7 +106,8 @@ namespace FoodTruck.WebApi.Repositories.CartRepository
                     else
                     {
                         cartsDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
-                        cartsDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartDetailId;
+                        cartsDto.CartDetails.First().CartDetailId = cartDetailsFromDb.CartDetailId;
+                        var value = _mapper.Map<CartDetail>(cartsDto.CartDetails.First());
                         _dbContext.CartDetails.Update(_mapper.Map<CartDetail>(cartsDto.CartDetails.First()));
                         await _dbContext.SaveChangesAsync();
                     }

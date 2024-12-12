@@ -19,7 +19,7 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrderAsync(CreateOrderCommand createOrderCommand, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOrderAsync([FromBody] CreateOrderCommand createOrderCommand, CancellationToken cancellationToken)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("CreateStripeSession")]
-        public async Task<IActionResult> CreateStripeSessionAsync(CreateStripeCommand createStripeCommand, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateStripeSessionAsync([FromBody] CreateStripeCommand createStripeCommand, CancellationToken cancellationToken)
         {
             try
             {
@@ -68,12 +68,12 @@ namespace FoodTruck.WebApi.Controllers
         }
 
         [HttpPost("ValidateStripeSession")]
-        public async Task<IActionResult> ValidateStripeSessionAsync(ValidateStripeCommand validateStripeCommand, CancellationToken cancellationToken)
+        public async Task<IActionResult> ValidateStripeSessionAsync([FromBody] ValidateStripeCommand validateStripeCommand, CancellationToken cancellationToken)
         {
             try
             {
-                await _mediator.Send(validateStripeCommand, cancellationToken);
-                _response.Result = "Stripe successfull.";
+                var value = await _mediator.Send(validateStripeCommand, cancellationToken);
+                _response.Result = value;
             }
             catch (Exception ex)
             {
@@ -82,6 +82,5 @@ namespace FoodTruck.WebApi.Controllers
             }
             return Ok(_response);
         }
-
     }
 }

@@ -14,7 +14,7 @@ namespace FoodTruck.WebUI.Models
         public int Count { get; set; } = 1;
         
         public int CountryId { get; set; }
-        public string CategoryName { get; set; }
+        public string? CategoryName { get; set; }
         public int CategoryId { get; set; }
     }
 }

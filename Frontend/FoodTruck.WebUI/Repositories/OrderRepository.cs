@@ -19,7 +19,7 @@ namespace FoodTruck.WebUI.Repositories
             {
                 ApiType = ApiType.POST,
                 Data = cartDto,
-                Url = APIBase + "/api/order/CreateOrder"
+                Url = APIBase + "/api/Order/CreateOrder"
             });
         }
 
@@ -29,7 +29,7 @@ namespace FoodTruck.WebUI.Repositories
             {
                 ApiType = ApiType.POST,
                 Data = stripeRequestDto,
-                Url = APIBase + "/api/order/CreateStripeSession"
+                Url = APIBase + "/api/Order/CreateStripeSession"
             });
         }
 
@@ -38,7 +38,7 @@ namespace FoodTruck.WebUI.Repositories
             return await _baseService.SendAsync(new RequestDto()
             {
                 ApiType = ApiType.GET,
-                Url = APIBase + "/api/order/GetOrders?userId=" + userId
+                Url = APIBase + "/api/Order/GetOrders?userId=" + userId
             });
         }
 
@@ -47,7 +47,7 @@ namespace FoodTruck.WebUI.Repositories
             return await _baseService.SendAsync(new RequestDto()
             {
                 ApiType = ApiType.GET,
-                Url = APIBase + "/api/order/GetOrder/" + orderId
+                Url = APIBase + "/api/Order/GetOrder/" + orderId
             });
         }
 
@@ -57,17 +57,17 @@ namespace FoodTruck.WebUI.Repositories
             {
                 ApiType = ApiType.POST,
                 Data = newStatus,
-                Url = APIBase + "/api/order/UpdateOrderStatus/" + orderId
+                Url = APIBase + "/api/Order/UpdateOrderStatus/" + orderId
             });
         }
 
-        public async Task<ResponseDto?> ValidateStripeSession(int orderHeaderId)
+        public async Task<ResponseDto?> ValidateStripeSession(ValidateStripeDto validateStripeDto)
         {
             return await _baseService.SendAsync(new RequestDto()
             {
                 ApiType = ApiType.POST,
-                Data = orderHeaderId,
-                Url = APIBase + "/api/order/ValidateStripeSession"
+                Data = validateStripeDto,
+                Url = APIBase + "/api/Order/ValidateStripeSession"
             });
         }
     }

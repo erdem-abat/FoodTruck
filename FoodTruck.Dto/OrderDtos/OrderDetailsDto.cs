@@ -2,9 +2,9 @@
 
 namespace FoodTruck.Dto.OrderDtos
 {
-    public class OrderDetailDto
+    public class OrderDetailsDto
     {
-        public int OrderDetailId { get; set; }
+        public int OrderDetailsId { get; set; }
         public int OrderId { get; set; }
         public int Count { get; set; }
         public int FoodId { get; set; }

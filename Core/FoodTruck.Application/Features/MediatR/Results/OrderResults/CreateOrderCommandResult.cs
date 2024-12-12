@@ -4,6 +4,6 @@ namespace FoodTruck.Application.Features.MediatR.Results.OrderResults
 {
     public class CreateOrderCommandResult
     {
-        public OrderHeaderDto orderHeaderDto { get; set; }
+        public OrderHeaderDto OrderHeaderDto { get; set; }
     }
 }

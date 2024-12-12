@@ -2,7 +2,7 @@
 {
     public class CartDetailsDto
     {
-        public int cartDetailsId { get; set; }
+        public int cartDetailId { get; set; }
         public int cartHeaderId { get; set; }
         public CartHeaderDto? cartHeader { get; set; }
         public int FoodId { get; set; }

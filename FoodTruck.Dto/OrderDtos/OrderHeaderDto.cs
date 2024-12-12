@@ -15,10 +15,7 @@ namespace FoodTruck.Dto.OrderDtos
         public string? PaymentIntentId { get; set; }
         public string? StripeSessionId { get; set; }
         public DateTime CreatedDate { get; set; }
-        [NotMapped]
-        public int? truckId { get; set; }
-
         public int OrderStatusId { get; set; }
-        public IEnumerable<OrderDetailDto> OrderDetails { get; set; }
+        public IEnumerable<OrderDetailsDto> OrderDetails { get; set; } = new List<OrderDetailsDto>();
     }
 }

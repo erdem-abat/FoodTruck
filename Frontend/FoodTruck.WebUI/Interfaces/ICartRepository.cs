@@ -6,7 +6,8 @@ namespace FoodTruck.WebUI.Interfaces
     {
         Task<ResponseDto?> GetCartByUserIdAsync(string userId);
         Task<ResponseDto?> UpsertCartAsync(CartDto cartDto);
-        Task<ResponseDto?> RemoveFromCartAsync(int cartDetailsId);
-        Task<ResponseDto?> ApplyCouponAsync(CartDto cartDto);
+        Task<ResponseDto?> RemoveFromCartAsync(int cartDetailId);
+        Task<ResponseDto?> ApplyCouponAsync(string userId, string couponCode);
+        Task<ResponseDto?> EmailCart(CartDto cartDto);
     }
 }

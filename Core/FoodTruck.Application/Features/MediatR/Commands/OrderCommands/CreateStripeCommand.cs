@@ -6,6 +6,10 @@ namespace FoodTruck.Application.Features.MediatR.Commands.OrderCommands
 {
     public class CreateStripeCommand : IRequest<CreateStripeCommandResult>
     {
-        public StripeRequestDto stripeRequestDto { get; set; }
+        public string? StripeSessionUrl { get; set; }
+        public string? StripeSessionId { get; set; }
+        public string ApprovedUrl { get; set; }
+        public string CancelUrl { get; set; }
+        public OrderHeaderDto orderHeaderDto { get; set; }
     }
 }

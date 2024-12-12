@@ -14,13 +14,22 @@ namespace FoodTruck.WebUI.Repositories
             _baseService = baseService;
         }
 
-        public async Task<ResponseDto?> ApplyCouponAsync(CartDto cartDto)
+        public async Task<ResponseDto?> ApplyCouponAsync(string userId, string couponCode)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.POST,
+                Url = $"{APIBase}/api/Cart/ApplyCoupon?userId={Uri.EscapeDataString(userId)}&couponCode={Uri.EscapeDataString(couponCode)}"
+            });
+        }
+
+        public async Task<ResponseDto?> EmailCart(CartDto cartDto)
         {
             return await _baseService.SendAsync(new RequestDto()
             {
                 ApiType = ApiType.POST,
                 Data = cartDto,
-                Url = APIBase + "/api/Cart/ApplyCoupon"
+                Url = APIBase + "/api/cart/EmailCartRequest"
             });
         }
 
@@ -33,9 +42,13 @@ namespace FoodTruck.WebUI.Repositories
             });
         }
 
-        public Task<ResponseDto?> RemoveFromCartAsync(int cartDetailsId)
+        public async Task<ResponseDto?> RemoveFromCartAsync(int cartDetailId)
         {
-            throw new NotImplementedException();
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.POST,
+                Url = $"{APIBase}/api/Cart/RemoveCart?cartDetailId={cartDetailId}"
+            });
         }
 
         public async Task<ResponseDto?> UpsertCartAsync(CartDto cartDto)
@@ -43,7 +56,7 @@ namespace FoodTruck.WebUI.Repositories
             return await _baseService.SendAsync(new RequestDto()
             {
                 ApiType = ApiType.POST,
-                Data = new CartDto { cartDetails = cartDto.cartDetails, cartHeader = cartDto.cartHeader },
+                Data = cartDto,
                 Url = APIBase + "/api/Cart/CartUpsert"
             });
         }

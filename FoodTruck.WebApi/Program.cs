@@ -73,6 +73,7 @@ builder.Services.AddScoped(typeof(IReservationRepository), typeof(ReservationRep
 builder.Services.AddScoped(typeof(IRestaurant), typeof(RestaurantRepository));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<RecommendationService>();
 builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddHostedService<RabbitMQAuthConsumer>();

@@ -25,21 +25,24 @@ namespace FoodTruck.WebApi.Repositories.CouponRepository
             {
                 Coupon obj = coupon;
                 _context.Coupons.Add(obj);
+
+                CouponDto couponDto = _mapper.Map<CouponDto>(coupon);
+
+                var options = new Stripe.CouponCreateOptions
+                {
+                    DurationInMonths = 3,
+                    Duration = "repeating",
+                    AmountOff = (long)(couponDto.DiscountAmount * 100),
+                    Name = couponDto.CouponCode,
+                    Currency = "usd",
+                    Id = couponDto.CouponCode
+                };
+                var service = new Stripe.CouponService();
+                service.Create(options);
+
                 await _context.SaveChangesAsync();
-
-                //var options = new Stripe.CouponCreateOptions
-                //{
-                //    DurationInMonths = 3,
-                //    Duration = "repeating",
-                //    AmountOff = (long)(couponDto.DiscountAmount * 100),
-                //    Name = couponDto.CouponCode,
-                //    Currency = "usd",
-                //    Id = couponDto.CouponCode
-                //};
-                //var service = new Stripe.CouponService();
-                //service.Create(options);
-
-                return _mapper.Map<CouponDto>(obj);
+                
+                return couponDto;
             }
             catch (Exception ex)
             {
