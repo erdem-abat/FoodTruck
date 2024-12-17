@@ -369,3 +369,8 @@ FodyWeavers.xsd
 /FoodTruck.WebApi/Migrations/UserIdentityDb/20241004140050_initialUserIdentityMigration.Designer.cs
 /FoodTruck.WebApi/Migrations/UserIdentityDb/UserIdentityDbContextModelSnapshot.cs
 /FoodTruck.WebApi/Migrations/FoodTruckContextModelSnapshot.cs
+/FoodTruck.WebApi/appsettings.json
+/.gitignore
+/.gitignore
+/.gitignore
+/.gitignore
