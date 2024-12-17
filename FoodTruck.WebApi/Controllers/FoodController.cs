@@ -21,9 +21,9 @@ namespace FoodTruck.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private ResponseDto _response;
-        private readonly RecommendationService _recommendationService;
+        private readonly RecommendationService2 _recommendationService;
 
-        public FoodController(IMediator mediator, RecommendationService recommendationService)
+        public FoodController(IMediator mediator, RecommendationService2 recommendationService)
         {
             _mediator = mediator;
             _response = new ResponseDto();

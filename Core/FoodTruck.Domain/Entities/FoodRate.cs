@@ -2,6 +2,7 @@
 
 public class FoodRate : DateFields
 {
+    public int FoodRateId { get; set; }
     public int FoodId { get; set; }
     public virtual Food Food { get; set; }
 

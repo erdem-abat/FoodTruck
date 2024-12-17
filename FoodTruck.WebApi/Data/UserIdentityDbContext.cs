@@ -146,7 +146,9 @@ namespace FoodTruck.WebApi.Data
                 .HasForeignKey(fr => fr.RateId);
 
             modelBuilder.Entity<FoodRate>()
-                .HasKey(fr => new { fr.FoodId, fr.RateId });
+                .HasKey(fr => fr.FoodRateId);
+            modelBuilder.Entity<FoodRate>()
+                .HasIndex(fr => new { fr.FoodId, fr.RateId, fr.UserId });
 
             modelBuilder.Entity<Food>()
                 .HasMany(f => f.FoodChefs)
